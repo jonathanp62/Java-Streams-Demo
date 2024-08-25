@@ -1,12 +1,11 @@
-package net.jmp.demo.streams.records;
+package net.jmp.demo.streams.demos;
 
 /*
- * (#)Dish.java 0.2.0   08/25/2024
- * (#)Dish.java 0.1.0   08/24/2024
+ * (#)TestBasicsDemo.java   0.2.0   08/25/2024
  *
  * @author   Jonathan Parker
  * @version  0.2.0
- * @since    0.1.0
+ * @since    0.2.0
  *
  * MIT License
  *
@@ -31,13 +30,33 @@ package net.jmp.demo.streams.records;
  * SOFTWARE.
  */
 
-/**
- * The dish record.
- */
-public record Dish(
-        String name,
-        boolean vegetarian,
-        int calories,
-        DishType type
-) {
+import java.util.List;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public final class TestBasicsDemo {
+    @Test
+    public void testGetDishNames() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("getDishNames");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final List<String> dishNames = (List<String>) method.invoke(demo);
+
+        assertNotNull(dishNames);
+        assertEquals(9, dishNames.size());
+        assertTrue(dishNames.contains("pork"));
+        assertTrue(dishNames.contains("beef"));
+        assertTrue(dishNames.contains("chicken"));
+        assertTrue(dishNames.contains("french fries"));
+        assertTrue(dishNames.contains("rice"));
+        assertTrue(dishNames.contains("seasonal fruit"));
+        assertTrue(dishNames.contains("pizza"));
+        assertTrue(dishNames.contains("prawns"));
+        assertTrue(dishNames.contains("salmon"));
+    }
 }

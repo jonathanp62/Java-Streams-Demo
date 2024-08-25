@@ -1,12 +1,11 @@
 package net.jmp.demo.streams.records;
 
 /*
- * (#)Dish.java 0.2.0   08/25/2024
- * (#)Dish.java 0.1.0   08/24/2024
+ * (#)DishType.java 0.2.0   08/25/2024
  *
  * @author   Jonathan Parker
  * @version  0.2.0
- * @since    0.1.0
+ * @since    0.2.0
  *
  * MIT License
  *
@@ -32,12 +31,10 @@ package net.jmp.demo.streams.records;
  */
 
 /**
- * The dish record.
+ * An enumeration of dish types.
  */
-public record Dish(
-        String name,
-        boolean vegetarian,
-        int calories,
-        DishType type
-) {
+public enum DishType {
+    FISH,
+    MEAT,
+    OTHER
 }

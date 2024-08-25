@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)UnnamedVariablesDemo.java 0.2.0   08/25/2024
  * (#)UnnamedVariablesDemo.java 0.1.0   08/24/2024
  *
  * @author   Jonathan Parker
- * @version  0.1.0
+ * @version  0.2.0
  * @since    0.1.0
  *
  * MIT License
@@ -29,6 +30,11 @@ package net.jmp.demo.streams.demos;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+import java.util.Arrays;
+import java.util.List;
+
+import net.jmp.demo.streams.records.*;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
@@ -57,8 +63,49 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
+        this.getDishNames().stream().forEach(name -> this.logger.info("name: {}", name));
+
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
         }
+    }
+
+    /**
+     * Return a list of dish names.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     */
+    private List<String> getDishNames() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<String> names = getDishes().stream()
+                .map(Dish::name)
+                .toList();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(names));
+        }
+
+        return names;
+    }
+
+    /**
+     * Method to return a list of dishes.
+     *
+     * @return  java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;
+     */
+    private List<Dish> getDishes() {
+        return Arrays.asList(
+                new Dish("pork", false, 800, DishType.MEAT),
+                new Dish("beef", false, 700, DishType.MEAT),
+                new Dish("chicken", false, 400, DishType.MEAT),
+                new Dish("french fries", true, 530, DishType.OTHER),
+                new Dish("rice", true, 350, DishType.OTHER),
+                new Dish("seasonal fruit", true, 120, DishType.OTHER),
+                new Dish("pizza", true, 550, DishType.OTHER),
+                new Dish("prawns", false, 300, DishType.FISH),
+                new Dish("salmon", false, 450, DishType.FISH));
     }
 }
