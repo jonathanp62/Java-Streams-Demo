@@ -34,6 +34,8 @@ package net.jmp.demo.streams.demos;
 import java.util.Arrays;
 import java.util.List;
 
+import java.util.stream.Stream;
+
 import net.jmp.demo.streams.records.*;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
@@ -63,7 +65,8 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        this.getDishNames().stream().forEach(name -> this.logger.info("name: {}", name));
+        this.getDishNames().forEach(name -> this.logger.info("name: {}", name));
+        this.getDishNameLengths().forEach(length -> this.logger.info("length: {}", length));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -71,24 +74,44 @@ public final class BasicsDemo implements Demo {
     }
 
     /**
-     * Return a list of dish names.
+     * Return a stream of dish names.
      *
-     * @return  java.util.List&lt;java.lang.String&gt;
+     * @return  java.util.stream.Stream&lt;java.lang.String&gt;
      */
-    private List<String> getDishNames() {
+    private Stream<String> getDishNames() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        final List<String> names = getDishes().stream()
-                .map(Dish::name)
-                .toList();
+        final Stream<String> names = getDishes().stream()
+                .map(Dish::name);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(names));
         }
 
         return names;
+    }
+
+    /**
+     * Return a stream of dish name lengthss.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> getDishNameLengths() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> lengths = getDishes().stream()
+                .map(Dish::name)
+                .map(String::length);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(lengths));
+        }
+
+        return lengths;
     }
 
     /**

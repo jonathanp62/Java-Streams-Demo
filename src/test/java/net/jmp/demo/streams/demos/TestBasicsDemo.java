@@ -32,6 +32,8 @@ package net.jmp.demo.streams.demos;
 
 import java.util.List;
 
+import java.util.stream.Stream;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -45,7 +47,8 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         @SuppressWarnings("unchecked")
-        final List<String> dishNames = (List<String>) method.invoke(demo);
+        final Stream<String> stream = (Stream<String>) method.invoke(demo);
+        final List<String> dishNames = stream.toList();
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -58,5 +61,29 @@ public final class TestBasicsDemo {
         assertTrue(dishNames.contains("pizza"));
         assertTrue(dishNames.contains("prawns"));
         assertTrue(dishNames.contains("salmon"));
+    }
+
+    @Test
+    public void testGetDishNameLengths() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("getDishNameLengths");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Stream<Integer> stream = (Stream<Integer>) method.invoke(demo);
+        final List<Integer> nameLengths = stream.toList();
+
+        assertNotNull(nameLengths);
+        assertEquals(9, nameLengths.size());
+        assertEquals(4, (long) nameLengths.get(0));
+        assertEquals(4, (long) nameLengths.get(1));
+        assertEquals(7, (long) nameLengths.get(2));
+        assertEquals(12, (long) nameLengths.get(3));
+        assertEquals(4, (long) nameLengths.get(4));
+        assertEquals(14, (long) nameLengths.get(5));
+        assertEquals(5, (long) nameLengths.get(6));
+        assertEquals(6, (long) nameLengths.get(7));
+        assertEquals(6, (long) nameLengths.get(8));
     }
 }
