@@ -1,8 +1,8 @@
 package net.jmp.demo.streams.demos;
 
 /*
- * (#)UnnamedVariablesDemo.java 0.2.0   08/25/2024
- * (#)UnnamedVariablesDemo.java 0.1.0   08/24/2024
+ * (#)BasicsDemo.java   0.2.0   08/25/2024
+ * (#)BasicsDemo.java   0.1.0   08/24/2024
  *
  * @author   Jonathan Parker
  * @version  0.2.0
@@ -45,6 +45,30 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A class the demonstrates the basics.
+ *
+ * Demonstrations:
+ *   allMatch()
+ *   anyMatch()
+ *   collect()
+ *   count()
+ *   distinct()
+ *   empty()
+ *   filter(*)
+ *   findAny()
+ *   findFirst()
+ *   forEach(*)
+ *   forEachOrdered()
+ *   limit()
+ *   map(*)
+ *   max()
+ *   min()
+ *   noneMatch()
+ *   of()
+ *   ofNullable()
+ *   skip()
+ *   sorted()
+ *   toArray()
+ *   toList()
  */
 public final class BasicsDemo implements Demo {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -67,6 +91,7 @@ public final class BasicsDemo implements Demo {
 
         this.getDishNames().forEach(name -> this.logger.info("name: {}", name));
         this.getDishNameLengths().forEach(length -> this.logger.info("length: {}", length));
+        this.getVegetarianDishes().forEach(dish -> this.logger.info(dish.toString()));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -74,7 +99,8 @@ public final class BasicsDemo implements Demo {
     }
 
     /**
-     * Return a stream of dish names.
+     * Return a stream of dish names. Mapping
+     * is demonstrated.
      *
      * @return  java.util.stream.Stream&lt;java.lang.String&gt;
      */
@@ -83,7 +109,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<String> names = getDishes().stream()
+        final Stream<String> names = this.getDishes().stream()
                 .map(Dish::name);
 
         if (this.logger.isTraceEnabled()) {
@@ -94,7 +120,8 @@ public final class BasicsDemo implements Demo {
     }
 
     /**
-     * Return a stream of dish name lengthss.
+     * Return a stream of dish name lengths.
+     * Two mappings are applied.
      *
      * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
      */
@@ -103,7 +130,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Integer> lengths = getDishes().stream()
+        final Stream<Integer> lengths = this.getDishes().stream()
                 .map(Dish::name)
                 .map(String::length);
 
@@ -112,6 +139,27 @@ public final class BasicsDemo implements Demo {
         }
 
         return lengths;
+    }
+
+    /**
+     * Return a stream of vegetarian dishes.
+     * A filter (predicate function) is used.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.streams.records.Dish&gt;
+     */
+    private Stream<Dish> getVegetarianDishes() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Dish> vegetarianDishes = this.getDishes().stream()
+                .filter(Dish::vegetarian);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(vegetarianDishes));
+        }
+
+        return vegetarianDishes;
     }
 
     /**

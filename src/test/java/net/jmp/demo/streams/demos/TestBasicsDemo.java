@@ -34,6 +34,8 @@ import java.util.List;
 
 import java.util.stream.Stream;
 
+import net.jmp.demo.streams.records.Dish;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -83,6 +85,23 @@ public final class TestBasicsDemo {
         assertEquals(5, (long) nameLengths.get(6));
         assertEquals(6, (long) nameLengths.get(7));
         assertEquals(6, (long) nameLengths.get(8));
+    }
+
+    @Test
+    public void testGetVegetarianDishes() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("getVegetarianDishes");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Dish> dishes = this.toList(stream, Dish.class);
+
+        assertNotNull(dishes);
+        assertEquals(4, dishes.size());
+        assertEquals("french fries", dishes.get(0).name());
+        assertEquals("rice", dishes.get(1).name());
+        assertEquals("seasonal fruit", dishes.get(2).name());
+        assertEquals("pizza", dishes.get(3).name());
     }
 
     /**
