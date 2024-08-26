@@ -46,9 +46,9 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        @SuppressWarnings("unchecked")
-        final Stream<String> stream = (Stream<String>) method.invoke(demo);
-        final List<String> dishNames = stream.toList();
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = this.cast(Stream.class, o);
+        final List<String> dishNames = this.toList(stream, String.class);
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -65,14 +65,12 @@ public final class TestBasicsDemo {
 
     @Test
     public void testGetDishNameLengths() throws Exception {
-        final var demo = new BasicsDemo();
         final var method = BasicsDemo.class.getDeclaredMethod("getDishNameLengths");
 
         method.setAccessible(true);
 
-        @SuppressWarnings("unchecked")
-        final Stream<Integer> stream = (Stream<Integer>) method.invoke(demo);
-        final List<Integer> nameLengths = stream.toList();
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> nameLengths = this.toList(stream, Integer.class);
 
         assertNotNull(nameLengths);
         assertEquals(9, nameLengths.size());
@@ -85,5 +83,32 @@ public final class TestBasicsDemo {
         assertEquals(5, (long) nameLengths.get(6));
         assertEquals(6, (long) nameLengths.get(7));
         assertEquals(6, (long) nameLengths.get(8));
+    }
+
+    /**
+     * Cast object to an instance of type T.
+     *
+     * @param   <T>     The type of instance to cast to
+     * @param   t       The class of type T
+     * @param   object  java.lang.Object
+     * @return          T
+     */
+    private <T> T cast(final Class<T> t, final Object object) {
+        return t.cast(object);
+    }
+
+    /**
+     * Create a list of elements of type T.
+     *
+     * @param   <T>     The type of element in the list
+     * @param   stream  java.util.stream.Stream&lt;?&gt;
+     * @param   clazz   The class of type T
+     * @return          java.util.List&lt;T&gt;
+     */
+    private <T> List<T> toList(final Stream<?> stream, final Class<T> clazz) {
+        return stream
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .toList();
     }
 }
