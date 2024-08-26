@@ -104,6 +104,39 @@ public final class TestBasicsDemo {
         assertEquals("pizza", dishes.get(3).name());
     }
 
+    @Test
+    public void testLimitDishes() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("limitDishes");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Dish> dishes = this.toList(stream, Dish.class);
+
+        assertNotNull(dishes);
+        assertEquals(3, dishes.size());
+        assertEquals("pork", dishes.get(0).name());
+        assertEquals("beef", dishes.get(1).name());
+        assertEquals("chicken", dishes.get(2).name());
+    }
+
+    @Test
+    public void testSkipDishes() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("skipDishes");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Dish> dishes = this.toList(stream, Dish.class);
+
+        assertNotNull(dishes);
+        assertEquals(4, dishes.size());
+        assertEquals("french fries", dishes.get(0).name());
+        assertEquals("rice", dishes.get(1).name());
+        assertEquals("pizza", dishes.get(2).name());
+        assertEquals("salmon", dishes.get(3).name());
+    }
+
     /**
      * Cast object to an instance of type T.
      *

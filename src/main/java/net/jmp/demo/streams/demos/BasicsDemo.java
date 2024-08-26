@@ -58,14 +58,14 @@ import org.slf4j.LoggerFactory;
  *   findFirst()
  *   forEach(*)
  *   forEachOrdered()
- *   limit()
+ *   limit(*)
  *   map(*)
  *   max()
  *   min()
  *   noneMatch()
  *   of()
  *   ofNullable()
- *   skip()
+ *   skip(*)
  *   sorted()
  *   toArray()
  *   toList()
@@ -91,7 +91,9 @@ public final class BasicsDemo implements Demo {
 
         this.getDishNames().forEach(name -> this.logger.info("name: {}", name));
         this.getDishNameLengths().forEach(length -> this.logger.info("length: {}", length));
-        this.getVegetarianDishes().forEach(dish -> this.logger.info(dish.toString()));
+        this.getVegetarianDishes().forEach(dish -> this.logger.info("Vegetarian: {}", dish));
+        this.limitDishes().forEach(dish -> this.logger.info("Limit: {}", dish));
+        this.skipDishes().forEach(dish -> this.logger.info("Skip: {}", dish));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -160,6 +162,50 @@ public final class BasicsDemo implements Demo {
         }
 
         return vegetarianDishes;
+    }
+
+    /**
+     * Limit the stream of high calorie dishes.
+     * A filter (predicate function) is used.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.streams.records.Dish&gt;
+     */
+    private Stream<Dish> limitDishes() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Dish> dishes = this.getDishes().stream()
+                .filter(dish -> dish.calories() > 300)
+                .limit(3);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(dishes));
+        }
+
+        return dishes;
+    }
+
+    /**
+     * Skip the first few elements in the stream of high calorie dishes.
+     * A filter (predicate function) is used.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.streams.records.Dish&gt;
+     */
+    private Stream<Dish> skipDishes() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Dish> dishes = this.getDishes().stream()
+                .filter(dish -> dish.calories() > 300)
+                .skip(3);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(dishes));
+        }
+
+        return dishes;
     }
 
     /**
