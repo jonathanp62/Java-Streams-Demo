@@ -289,6 +289,32 @@ public final class TestBasicsDemo {
         assertEquals("pork", result);
     }
 
+    @Test
+    public void testGetNameOfHighestCalorieDish() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("getNameOfHighestCalorieDish");
+
+        method.setAccessible(true);
+
+        final String result = this.cast(String.class, method.invoke(demo));
+
+        assertNotNull(result);
+        assertEquals("pork", result);
+    }
+
+    @Test
+    public void testGetNameOfLowestCalorieDish() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("getNameOfLowestCalorieDish");
+
+        method.setAccessible(true);
+
+        final String result = this.cast(String.class, method.invoke(demo));
+
+        assertNotNull(result);
+        assertEquals("seasonal fruit", result);
+    }
+
     /**
      * Cast object to an instance of type T.
      *

@@ -65,8 +65,8 @@ import org.slf4j.LoggerFactory;
  *   forEachOrdered()
  *   limit(*)
  *   map(*)
- *   max()
- *   min()
+ *   max(*)
+ *   min(*)
  *   noneMatch(*)
  *   of()
  *   ofNullable()
@@ -121,6 +121,8 @@ public final class BasicsDemo implements Demo {
         this.logger.info("Stream empty?: {}", this.empty());
         this.logger.info("Find any?: {}", this.findAny());
         this.logger.info("Find first: {}", this.findFirstName());
+        this.logger.info("Most calories: {}", this.getNameOfHighestCalorieDish());
+        this.logger.info("Least calories: {}", this.getNameOfLowestCalorieDish());
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -439,6 +441,50 @@ public final class BasicsDemo implements Demo {
         if (dish.isPresent()) {
             result = dish.get().name();
         }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Get the name of the dish with the most calories.
+     *
+     * @return  java.lang.String
+     */
+    private String getNameOfHighestCalorieDish() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Optional<Dish> dish = this.getDishes().stream()
+                .max(comparing(Dish::calories));
+
+        final String result = dish.map(Dish::name).orElse(null);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Get the name of the dish with the least calories.
+     *
+     * @return  java.lang.String
+     */
+    private String getNameOfLowestCalorieDish() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Optional<Dish> dish = this.getDishes().stream()
+                .min(comparing(Dish::calories));
+
+        final String result = dish.map(Dish::name).orElse(null);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
