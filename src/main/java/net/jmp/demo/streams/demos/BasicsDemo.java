@@ -37,6 +37,7 @@ import static java.util.Comparator.comparing;
 
 import java.util.List;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import java.util.stream.Stream;
@@ -56,10 +57,10 @@ import org.slf4j.LoggerFactory;
  *   anyMatch(*)
  *   count(*)
  *   distinct(*)
- *   empty()
+ *   empty(*)
  *   filter(*)
- *   findAny()
- *   findFirst()
+ *   findAny(*)
+ *   findFirst(*)
  *   forEach(*)
  *   forEachOrdered()
  *   limit(*)
@@ -116,6 +117,10 @@ public final class BasicsDemo implements Demo {
 
         this.sortDishesByCalories().forEach(dish -> this.logger.info("By calories: {}", dish));
         this.distinctDishTypes().forEach(type -> this.logger.info("Type: {}", type));
+
+        this.logger.info("Stream empty?: {}", this.empty());
+        this.logger.info("Find any?: {}", this.findAny());
+        this.logger.info("Find first: {}", this.findFirstName());
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -375,6 +380,71 @@ public final class BasicsDemo implements Demo {
         }
 
         return types;
+    }
+
+    /**
+     * Return true if the stream is empty.
+     *
+     * @return  boolean
+     */
+    private boolean empty() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Object> stream = Stream.empty();
+        final boolean result = stream.count() == 0;
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Return true if findAny returns a value.
+     *
+     * @return  boolean
+     */
+    private boolean findAny() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Optional<Dish> dish = this.getDishes().stream().findAny();
+        final boolean result = dish.isPresent();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Return the name of the first element in the stream.
+     *
+     * @return  java.lang.String
+     */
+    private String findFirstName() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        String result = null;
+
+        final Optional<Dish> dish = this.getDishes().stream().findFirst();
+
+        if (dish.isPresent()) {
+            result = dish.get().name();
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
     }
 
     /**

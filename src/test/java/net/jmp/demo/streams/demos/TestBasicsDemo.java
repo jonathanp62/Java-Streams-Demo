@@ -252,6 +252,43 @@ public final class TestBasicsDemo {
         assertEquals("OTHER", types.get(2));
     }
 
+    @Test
+    public void testEmpty() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("empty");
+
+        method.setAccessible(true);
+
+        final boolean result = this.cast(Boolean.class, method.invoke(demo));
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testFindAny() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("findAny");
+
+        method.setAccessible(true);
+
+        final boolean result = this.cast(Boolean.class, method.invoke(demo));
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testFindFirstName() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("findFirstName");
+
+        method.setAccessible(true);
+
+        final String result = this.cast(String.class, method.invoke(demo));
+
+        assertNotNull(result);
+        assertEquals("pork", result);
+    }
+
     /**
      * Cast object to an instance of type T.
      *
