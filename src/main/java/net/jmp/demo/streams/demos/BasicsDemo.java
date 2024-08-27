@@ -115,7 +115,7 @@ public final class BasicsDemo implements Demo {
         this.logger.info("There are {} dishes", this.countDishes());
 
         this.sortDishesByCalories().forEach(dish -> this.logger.info("By calories: {}", dish));
-        this.distinctDishTypes().forEach(dish -> this.logger.info("Type: {}", dish));
+        this.distinctDishTypes().forEach(type -> this.logger.info("Type: {}", type));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
