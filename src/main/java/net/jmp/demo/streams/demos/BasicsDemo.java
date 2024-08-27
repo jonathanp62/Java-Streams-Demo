@@ -32,7 +32,12 @@ package net.jmp.demo.streams.demos;
  */
 
 import java.util.Arrays;
+
+import static java.util.Comparator.comparing;
+
 import java.util.List;
+
+import java.util.function.Predicate;
 
 import java.util.stream.Stream;
 
@@ -47,11 +52,10 @@ import org.slf4j.LoggerFactory;
  * A class the demonstrates the basics.
  *
  * Demonstrations:
- *   allMatch()
- *   anyMatch()
- *   collect()
- *   count()
- *   distinct()
+ *   allMatch(*)
+ *   anyMatch(*)
+ *   count(*)
+ *   distinct(*)
  *   empty()
  *   filter(*)
  *   findAny()
@@ -62,11 +66,11 @@ import org.slf4j.LoggerFactory;
  *   map(*)
  *   max()
  *   min()
- *   noneMatch()
+ *   noneMatch(*)
  *   of()
  *   ofNullable()
  *   skip(*)
- *   sorted()
+ *   sorted(*)
  *   toArray()
  *   toList()
  */
@@ -89,11 +93,29 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        this.getDishNames().forEach(name -> this.logger.info("name: {}", name));
-        this.getDishNameLengths().forEach(length -> this.logger.info("length: {}", length));
+        this.getDishNames().forEach(name -> this.logger.info("Name: {}", name));
+        this.getDishNamesSorted().forEach(name -> this.logger.info("Sorted name: {}", name));
+        this.getDishNameLengths().forEach(length -> this.logger.info("Length: {}", length));
         this.getVegetarianDishes().forEach(dish -> this.logger.info("Vegetarian: {}", dish));
         this.limitDishes().forEach(dish -> this.logger.info("Limit: {}", dish));
         this.skipDishes().forEach(dish -> this.logger.info("Skip: {}", dish));
+
+        if (this.allMatches(dish -> dish.calories() < 1_000)) {
+            this.logger.info("All dishes match the predicate");
+        }
+
+        if (this.anyMatches(Dish::vegetarian)) {
+            this.logger.info("Some dishes match the predicate");
+        }
+
+        if (this.noMatches(dish -> dish.calories() > 1_000)) {
+            this.logger.info("No dishes match the predicate");
+        }
+
+        this.logger.info("There are {} dishes", this.countDishes());
+
+        this.sortDishesByCalories().forEach(dish -> this.logger.info("By calories: {}", dish));
+        this.distinctDishTypes().forEach(dish -> this.logger.info("Type: {}", dish));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -113,6 +135,28 @@ public final class BasicsDemo implements Demo {
 
         final Stream<String> names = this.getDishes().stream()
                 .map(Dish::name);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(names));
+        }
+
+        return names;
+    }
+
+    /**
+     * Return a stream of sorted dish names.
+     * Mapping is also demonstrated.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.String&gt;
+     */
+    private Stream<String> getDishNamesSorted() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<String> names = this.getDishes().stream()
+                .map(Dish::name)
+                .sorted();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(names));
@@ -206,6 +250,131 @@ public final class BasicsDemo implements Demo {
         }
 
         return dishes;
+    }
+
+    /**
+     * Return true if all dishes match the predicate.
+     *
+     * @param   predicate   java.util.function.Predicate&lt;? super Dish&gt;
+     * @return              boolean
+     */
+    private boolean allMatches(final Predicate<? super Dish> predicate) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(predicate));
+        }
+
+        final boolean result = this.getDishes().stream()
+                .allMatch(predicate);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Return true if any of the dishes match the predicate.
+     *
+     * @param   predicate   java.util.function.Predicate&lt;? super Dish&gt;
+     * @return              boolean
+     */
+    private boolean anyMatches(final Predicate<? super Dish> predicate) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(predicate));
+        }
+
+        final boolean result = this.getDishes().stream()
+                .anyMatch(predicate);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Return true if none of the dishes match the predicate.
+     *
+     * @param   predicate   java.util.function.Predicate&lt;? super Dish&gt;
+     * @return              boolean
+     */
+    private boolean noMatches(final Predicate<? super Dish> predicate) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(predicate));
+        }
+
+        final boolean result = this.getDishes().stream()
+                .noneMatch(predicate);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Return a count of the dishes.
+     *
+     * @return  long
+     */
+    private long countDishes() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final long result = this.getDishes().stream().count();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Sort the dishes in the stream by calories.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.streams.records.Dish&gt;
+     */
+    private Stream<Dish> sortDishesByCalories() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Dish> dishes = this.getDishes().stream()
+                .sorted(comparing(Dish::calories));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(dishes));
+        }
+
+        return dishes;
+    }
+
+    /**
+     * Return a stream of sorted distinct dish types.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.String&gt;
+     */
+    private Stream<String> distinctDishTypes() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<String> types = this.getDishes().stream()
+                .map(Dish::type)
+                .map(DishType::name)
+                .distinct()
+                .sorted();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(types));
+        }
+
+        return types;
     }
 
     /**

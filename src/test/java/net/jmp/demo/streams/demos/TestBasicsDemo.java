@@ -32,6 +32,8 @@ package net.jmp.demo.streams.demos;
 
 import java.util.List;
 
+import java.util.function.Predicate;
+
 import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.Dish;
@@ -63,6 +65,30 @@ public final class TestBasicsDemo {
         assertTrue(dishNames.contains("pizza"));
         assertTrue(dishNames.contains("prawns"));
         assertTrue(dishNames.contains("salmon"));
+    }
+
+    @Test
+    public void testGetDishNamesSorted() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("getDishNamesSorted");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = this.cast(Stream.class, o);
+        final List<String> dishNames = this.toList(stream, String.class);
+
+        assertNotNull(dishNames);
+        assertEquals(9, dishNames.size());
+        assertEquals("beef", dishNames.get(0));
+        assertEquals("chicken", dishNames.get(1));
+        assertEquals("french fries", dishNames.get(2));
+        assertEquals("pizza", dishNames.get(3));
+        assertEquals("pork", dishNames.get(4));
+        assertEquals("prawns", dishNames.get(5));
+        assertEquals("rice", dishNames.get(6));
+        assertEquals("salmon", dishNames.get(7));
+        assertEquals("seasonal fruit", dishNames.get(8));
     }
 
     @Test
@@ -135,6 +161,95 @@ public final class TestBasicsDemo {
         assertEquals("rice", dishes.get(1).name());
         assertEquals("pizza", dishes.get(2).name());
         assertEquals("salmon", dishes.get(3).name());
+    }
+
+    @Test
+    public void testAllMatches() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("allMatches", Predicate.class);
+
+        method.setAccessible(true);
+
+        final Predicate<Dish> p = dish -> dish.calories() < 1_000;
+        final boolean result = this.cast(Boolean.class, method.invoke(demo, p));
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testAnyMatches() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("anyMatches", Predicate.class);
+
+        method.setAccessible(true);
+
+        final Predicate<Dish> p = Dish::vegetarian;
+        final boolean result = this.cast(Boolean.class, method.invoke(demo, p));
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testNoMatches() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("noMatches", Predicate.class);
+
+        method.setAccessible(true);
+
+        final Predicate<Dish> p = dish -> dish.calories() > 1_000;
+        final boolean result = this.cast(Boolean.class, method.invoke(demo, p));
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testCountDishes() throws Exception {
+        final var demo = new BasicsDemo();
+        final var method = BasicsDemo.class.getDeclaredMethod("countDishes");
+
+        method.setAccessible(true);
+
+        final long result = this.cast(Long.class, method.invoke(demo));
+
+        assertEquals(9, result);
+    }
+
+    @Test
+    public void testSortDishesByCalories() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("sortDishesByCalories");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Dish> dishes = this.toList(stream, Dish.class);
+
+        assertNotNull(dishes);
+        assertEquals(9, dishes.size());
+        assertEquals("seasonal fruit", dishes.get(0).name());
+        assertEquals("prawns", dishes.get(1).name());
+        assertEquals("rice", dishes.get(2).name());
+        assertEquals("chicken", dishes.get(3).name());
+        assertEquals("salmon", dishes.get(4).name());
+        assertEquals("french fries", dishes.get(5).name());
+        assertEquals("pizza", dishes.get(6).name());
+        assertEquals("beef", dishes.get(7).name());
+        assertEquals("pork", dishes.get(8).name());
+    }
+
+    @Test
+    public void testDistinctDishTypes() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("distinctDishTypes");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<String> types = this.toList(stream, String.class);
+
+        assertNotNull(types);
+        assertEquals(3, types.size());
+        assertEquals("FISH", types.get(0));
+        assertEquals("MEAT", types.get(1));
+        assertEquals("OTHER", types.get(2));
     }
 
     /**
