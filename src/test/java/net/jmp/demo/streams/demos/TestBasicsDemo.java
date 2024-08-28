@@ -315,6 +315,62 @@ public final class TestBasicsDemo {
         assertEquals("seasonal fruit", result);
     }
 
+    @Test
+    public void testOneElement() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("oneElement");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = this.toList(stream, Integer.class);
+
+        assertNotNull(elements);
+        assertEquals(1, elements.size());
+        assertEquals(1, (long) elements.getFirst());
+    }
+
+    @Test
+    public void testThreeElements() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("threeElements");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = this.toList(stream, Integer.class);
+
+        assertNotNull(elements);
+        assertEquals(3, elements.size());
+        assertEquals(1, (long) elements.get(0));
+        assertEquals(2, (long) elements.get(1));
+        assertEquals(3, (long) elements.get(2));
+    }
+
+    @Test
+    public void testOfNullableAndNotEmpty() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("ofNullableAndNotEmpty");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = this.toList(stream, Integer.class);
+
+        assertNotNull(elements);
+        assertEquals(1, elements.size());
+        assertEquals(1, (long) elements.getFirst());
+    }
+
+    @Test
+    public void testOfNullableAndEmpty() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("ofNullableAndEmpty");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final boolean result = stream.findAny().isEmpty();
+
+        assertTrue(result);
+    }
+
     /**
      * Cast object to an instance of type T.
      *

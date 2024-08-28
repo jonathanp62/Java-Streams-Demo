@@ -34,14 +34,12 @@ package net.jmp.demo.streams.demos;
  * Demonstrate the basics along with:
  *   builder()
  *   collect()
- *   concat()
  *   dropWhile()
  *   flatMap()
  *   gather()
  *   generate()
  *   iterate()
  *   mapMulti()
- *   peek()
  *   reduce()
  *   takeWhile()
  */
