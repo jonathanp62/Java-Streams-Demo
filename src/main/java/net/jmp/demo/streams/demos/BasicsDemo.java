@@ -55,6 +55,7 @@ import org.slf4j.LoggerFactory;
  * Demonstrations:
  *   allMatch(*)
  *   anyMatch(*)
+ *   concat()
  *   count(*)
  *   distinct(*)
  *   empty(*)
@@ -68,8 +69,9 @@ import org.slf4j.LoggerFactory;
  *   max(*)
  *   min(*)
  *   noneMatch(*)
- *   of()
- *   ofNullable()
+ *   of(*)
+ *   ofNullable(*)
+ *   peek()
  *   skip(*)
  *   sorted(*)
  *   toArray()
@@ -94,38 +96,45 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        this.getDishNames().forEach(name -> this.logger.info("Name: {}", name));
-        this.getDishNamesSorted().forEach(name -> this.logger.info("Sorted name: {}", name));
-        this.getDishNameLengths().forEach(length -> this.logger.info("Length: {}", length));
-        this.getVegetarianDishes().forEach(dish -> this.logger.info("Vegetarian: {}", dish));
-        this.limitDishes().forEach(dish -> this.logger.info("Limit: {}", dish));
-        this.skipDishes().forEach(dish -> this.logger.info("Skip: {}", dish));
+        if (this.logger.isInfoEnabled()) {
+            this.getDishNames().forEach(name -> this.logger.info("Name: {}", name));
+            this.getDishNamesSorted().forEach(name -> this.logger.info("Sorted name: {}", name));
+            this.getDishNameLengths().forEach(length -> this.logger.info("Length: {}", length));
+            this.getVegetarianDishes().forEach(dish -> this.logger.info("Vegetarian: {}", dish));
+            this.limitDishes().forEach(dish -> this.logger.info("Limit: {}", dish));
+            this.skipDishes().forEach(dish -> this.logger.info("Skip: {}", dish));
 
-        if (this.allMatches(dish -> dish.calories() < 1_000)) {
-            this.logger.info("All dishes match the predicate");
-        }
+            if (this.allMatches(dish -> dish.calories() < 1_000)) {
+                this.logger.info("All dishes match the predicate");
+            }
 
-        if (this.anyMatches(Dish::vegetarian)) {
-            this.logger.info("Some dishes match the predicate");
-        }
+            if (this.anyMatches(Dish::vegetarian)) {
+                this.logger.info("Some dishes match the predicate");
+            }
 
-        if (this.noMatches(dish -> dish.calories() > 1_000)) {
-            this.logger.info("No dishes match the predicate");
-        }
+            if (this.noMatches(dish -> dish.calories() > 1_000)) {
+                this.logger.info("No dishes match the predicate");
+            }
 
-        this.logger.info("There are {} dishes", this.countDishes());
+            this.logger.info("There are {} dishes", this.countDishes());
 
-        this.sortDishesByCalories().forEach(dish -> this.logger.info("By calories: {}", dish));
-        this.distinctDishTypes().forEach(type -> this.logger.info("Type: {}", type));
+            this.sortDishesByCalories().forEach(dish -> this.logger.info("By calories: {}", dish));
+            this.distinctDishTypes().forEach(type -> this.logger.info("Type: {}", type));
 
-        this.logger.info("Stream empty?: {}", this.empty());
-        this.logger.info("Find any?: {}", this.findAny());
-        this.logger.info("Find first: {}", this.findFirstName());
-        this.logger.info("Most calories: {}", this.getNameOfHighestCalorieDish());
-        this.logger.info("Least calories: {}", this.getNameOfLowestCalorieDish());
+            this.logger.info("Stream empty?: {}", this.empty());
+            this.logger.info("Find any?: {}", this.findAny());
+            this.logger.info("Find first: {}", this.findFirstName());
+            this.logger.info("Most calories: {}", this.getNameOfHighestCalorieDish());
+            this.logger.info("Least calories: {}", this.getNameOfLowestCalorieDish());
 
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            if (this.logger.isTraceEnabled()) {
+                this.logger.trace(exit());
+            }
+
+            this.oneElement().forEach(e -> this.logger.info("{}", e));
+            this.threeElements().forEach(e -> this.logger.info("{}", e));
+            this.ofNullableAndNotEmpty().forEach(e -> this.logger.info("{}", e));
+            this.ofNullableAndEmpty().forEach(e -> this.logger.info("This won't print: {}", e));
         }
     }
 
@@ -442,6 +451,8 @@ public final class BasicsDemo implements Demo {
             result = dish.get().name();
         }
 
+        assert result != null;
+
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
         }
@@ -463,6 +474,8 @@ public final class BasicsDemo implements Demo {
                 .max(comparing(Dish::calories));
 
         final String result = dish.map(Dish::name).orElse(null);
+
+        assert result != null;
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
@@ -486,11 +499,89 @@ public final class BasicsDemo implements Demo {
 
         final String result = dish.map(Dish::name).orElse(null);
 
+        assert result != null;
+
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
         }
 
         return result;
+    }
+
+    /**
+     * A stream of one element.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> oneElement() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> stream = Stream.of(1);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * A stream of three elements.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> threeElements() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> stream = Stream.of(1, 2, 3);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * A stream of one element that is not empty.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> ofNullableAndNotEmpty() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> stream = Stream.ofNullable(1);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * A stream that is empty.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> ofNullableAndEmpty() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> stream = Stream.ofNullable(null);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
     }
 
     /**
