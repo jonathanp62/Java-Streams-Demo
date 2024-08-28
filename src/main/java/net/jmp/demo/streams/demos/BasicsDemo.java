@@ -31,6 +31,8 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.lang.reflect.Array;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -142,6 +144,14 @@ public final class BasicsDemo implements Demo {
             this.peek().forEach(e -> this.logger.info("Peek: {}", e));
 
             this.logger.info(this.forEachOrdered());
+
+            for (final var string: this.toArray()) {
+                this.logger.info("Array: {}", string);
+            }
+
+            for (final var integer: this.toArrayUsingGenerator()) {
+                this.logger.info("Array: {}", integer);
+            }
         }
     }
 
@@ -670,6 +680,46 @@ public final class BasicsDemo implements Demo {
     }
 
     /**
+     * Demonstrate creating an array of
+     * objects from a stream.
+     */
+    private String[] toArray() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Object[] array = this.getDishNames().toArray();
+        final String[] strings = this.toTypedArray(array, String.class);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(strings));
+        }
+
+        return strings;
+    }
+
+    /**
+     * Demonstrate creating an array of
+     * objects from a stream using a
+     * generator function.
+     */
+    private Integer[] toArrayUsingGenerator() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Integer[] array = new Integer[1];
+
+        array[0] = 0;
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(array));
+        }
+
+        return array;
+    }
+
+    /**
      * Method to return a list of dishes.
      *
      * @return  java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;
@@ -685,5 +735,24 @@ public final class BasicsDemo implements Demo {
                 new Dish("pizza", true, 550, DishType.OTHER),
                 new Dish("prawns", false, 300, DishType.FISH),
                 new Dish("salmon", false, 450, DishType.FISH));
+    }
+
+    /**
+     * Create an array of elements of type T.
+     *
+     * @param   <T>     The type of element in the list
+     * @param   array   java.lang.Object[]
+     * @param   clazz   The class of type T
+     * @return          T[]
+     */
+    private <T> T[] toTypedArray(final Object[] array, final Class<T> clazz) {
+        @SuppressWarnings("unchecked")
+        final T[] typedArray = (T[]) Array.newInstance(clazz, array.length);
+
+        for (int i = 0; i < array.length; i++) {
+            typedArray[i] = clazz.cast(array[i]);
+        }
+
+        return typedArray;
     }
 }

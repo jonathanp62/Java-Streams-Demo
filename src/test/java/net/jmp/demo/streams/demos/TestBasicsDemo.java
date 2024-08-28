@@ -421,6 +421,27 @@ public final class TestBasicsDemo {
         assertEquals(expected, result);
     }
 
+    @Test
+    public void testToArray() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("toArray");
+
+        method.setAccessible(true);
+
+        final String[] result = this.cast(String[].class, method.invoke(new BasicsDemo()));
+
+        assertNotNull(result);
+        assertEquals(9, result.length);
+        assertEquals("pork", result[0]);
+        assertEquals("beef", result[1]);
+        assertEquals("chicken", result[2]);
+        assertEquals("french fries", result[3]);
+        assertEquals("rice", result[4]);
+        assertEquals("seasonal fruit", result[5]);
+        assertEquals("pizza", result[6]);
+        assertEquals("prawns", result[7]);
+        assertEquals("salmon", result[8]);
+    }
+
     /**
      * Cast object to an instance of type T.
      *
