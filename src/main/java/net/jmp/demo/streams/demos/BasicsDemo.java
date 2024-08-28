@@ -31,6 +31,7 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.util.Comparator.comparing;
@@ -71,7 +72,7 @@ import org.slf4j.LoggerFactory;
  *   noneMatch(*)
  *   of(*)
  *   ofNullable(*)
- *   peek()
+ *   peek(*)
  *   skip(*)
  *   sorted(*)
  *   toArray()
@@ -137,6 +138,7 @@ public final class BasicsDemo implements Demo {
             this.ofNullableAndEmpty().forEach(e -> this.logger.info("This won't print: {}", e));
             this.getDishNames().toList().forEach(name -> this.logger.info("List: {}", name));
             this.concatenateTwoStreams().forEach(e -> this.logger.info("Concat: {}", e));
+            this.peek().forEach(e -> this.logger.info("Peek: {}", e));
         }
     }
 
@@ -600,6 +602,37 @@ public final class BasicsDemo implements Demo {
         final List<Integer> second = List.of(4, 5, 6);
 
         final Stream<Integer> stream = Stream.concat(first.stream(), second.stream());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * Peet at the stream. Same as forEach()
+     * but peek() is not a terminal operation
+     * and exists mostly as an intermediate
+     * debugging operation. In this instance
+     * the use of map() should be substituted
+     * for peek().
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> peek() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Integer> list = List.of(1, 2, 3, 4, 5);
+        final List<Integer> results = new ArrayList<>(list.size());
+
+        list.stream()
+                .peek(e -> results.add(e * 11))
+                .forEach(e -> this.logger.debug("e: {}", e));
+
+        final Stream<Integer> stream = results.stream();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(stream));

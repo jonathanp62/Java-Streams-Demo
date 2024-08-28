@@ -390,6 +390,24 @@ public final class TestBasicsDemo {
         assertEquals(6, (long) elements.get(5));
     }
 
+    @Test
+    public void testPeek() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("peek");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = this.toList(stream, Integer.class);
+
+        assertNotNull(elements);
+        assertEquals(5, elements.size());
+        assertEquals(11, (long) elements.get(0));
+        assertEquals(22, (long) elements.get(1));
+        assertEquals(33, (long) elements.get(2));
+        assertEquals(44, (long) elements.get(3));
+        assertEquals(55, (long) elements.get(4));
+    }
+
     /**
      * Cast object to an instance of type T.
      *
