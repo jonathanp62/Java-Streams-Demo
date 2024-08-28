@@ -37,10 +37,11 @@ import java.util.Arrays;
 import static java.util.Comparator.comparing;
 
 import java.util.List;
-
 import java.util.Optional;
+
 import java.util.function.Predicate;
 
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.*;
@@ -64,7 +65,7 @@ import org.slf4j.LoggerFactory;
  *   findAny(*)
  *   findFirst(*)
  *   forEach(*)
- *   forEachOrdered()
+ *   forEachOrdered(*)
  *   limit(*)
  *   map(*)
  *   max(*)
@@ -139,6 +140,8 @@ public final class BasicsDemo implements Demo {
             this.getDishNames().toList().forEach(name -> this.logger.info("List: {}", name));
             this.concatenateTwoStreams().forEach(e -> this.logger.info("Concat: {}", e));
             this.peek().forEach(e -> this.logger.info("Peek: {}", e));
+
+            this.logger.info(this.forEachOrdered());
         }
     }
 
@@ -639,6 +642,31 @@ public final class BasicsDemo implements Demo {
         }
 
         return stream;
+    }
+
+    /**
+     * Demonstrate foreachOrder().
+     *
+     * @return  java.lang.String
+     */
+    private String forEachOrdered() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        IntStream.rangeClosed(1, 100)
+                .parallel()
+                .forEachOrdered(e -> sb.append(e).append(' '));
+
+        final String result = sb.toString().trim();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
     }
 
     /**
