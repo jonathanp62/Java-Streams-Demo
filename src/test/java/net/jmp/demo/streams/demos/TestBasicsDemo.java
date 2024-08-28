@@ -371,6 +371,25 @@ public final class TestBasicsDemo {
         assertTrue(result);
     }
 
+    @Test
+    public void testConcatenateTwoStreams() throws Exception {
+        final var method = BasicsDemo.class.getDeclaredMethod("concatenateTwoStreams");
+
+        method.setAccessible(true);
+
+        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = this.toList(stream, Integer.class);
+
+        assertNotNull(elements);
+        assertEquals(6, elements.size());
+        assertEquals(1, (long) elements.get(0));
+        assertEquals(2, (long) elements.get(1));
+        assertEquals(3, (long) elements.get(2));
+        assertEquals(4, (long) elements.get(3));
+        assertEquals(5, (long) elements.get(4));
+        assertEquals(6, (long) elements.get(5));
+    }
+
     /**
      * Cast object to an instance of type T.
      *
@@ -384,7 +403,8 @@ public final class TestBasicsDemo {
     }
 
     /**
-     * Create a list of elements of type T.
+     * Create a list of elements of type T. Also
+     * serves as a test for Stream.toList().
      *
      * @param   <T>     The type of element in the list
      * @param   stream  java.util.stream.Stream&lt;?&gt;

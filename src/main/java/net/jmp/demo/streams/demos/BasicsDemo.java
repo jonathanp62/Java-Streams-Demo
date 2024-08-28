@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * Demonstrations:
  *   allMatch(*)
  *   anyMatch(*)
- *   concat()
+ *   concat(*)
  *   count(*)
  *   distinct(*)
  *   empty(*)
@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
  *   skip(*)
  *   sorted(*)
  *   toArray()
- *   toList()
+ *   toList(*)
  */
 public final class BasicsDemo implements Demo {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -135,6 +135,8 @@ public final class BasicsDemo implements Demo {
             this.threeElements().forEach(e -> this.logger.info("{}", e));
             this.ofNullableAndNotEmpty().forEach(e -> this.logger.info("{}", e));
             this.ofNullableAndEmpty().forEach(e -> this.logger.info("This won't print: {}", e));
+            this.getDishNames().toList().forEach(name -> this.logger.info("List: {}", name));
+            this.concatenateTwoStreams().forEach(e -> this.logger.info("Concat: {}", e));
         }
     }
 
@@ -576,6 +578,28 @@ public final class BasicsDemo implements Demo {
         }
 
         final Stream<Integer> stream = Stream.ofNullable(null);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * Concatenate two streams into one.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> concatenateTwoStreams() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Integer> first = List.of(1, 2, 3);
+        final List<Integer> second = List.of(4, 5, 6);
+
+        final Stream<Integer> stream = Stream.concat(first.stream(), second.stream());
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(stream));
