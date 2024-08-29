@@ -68,6 +68,9 @@ public final class AdvancedDemo implements Demo {
         }
     }
 
+    /**
+     * Demonstrate dropWhile.
+     */
     public void dropWhile() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
@@ -78,6 +81,9 @@ public final class AdvancedDemo implements Demo {
         }
     }
 
+    /**
+     * Demonstrate takeWhile.
+     */
     public void takeWhile() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
