@@ -10,7 +10,33 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
 
 == Demonstrated Concepts
 
-* Terminal operations
+* Basics
+  - allMatch
+  - anyMatch
+  - concat
+  - count
+  - distinct
+  - empty
+  - filter
+  - findAny
+  - findFirst
+  - forEach
+  - forEachOrdered
+  - limit
+  - map
+  - max
+  - min
+  - noneMatch
+  - of
+  - ofNullable
+  - peek
+  - skip
+  - sorted
+  - toArray
+  - toList
+* Builder
+* Collectors
+* Gatherers
 
 == Additional Features
 
@@ -25,5 +51,5 @@ Gradle JavaExec Tasks
 |execute                |No arguments
 |=======================
 
-Current version: 0.2.0.
+Current version: 0.3.0.
 ~~~~~~~~~~~~~~~~~~~~~~~
