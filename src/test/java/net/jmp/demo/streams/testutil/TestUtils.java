@@ -31,6 +31,7 @@ package net.jmp.demo.streams.testutil;
  */
 
 import java.util.List;
+
 import java.util.stream.Stream;
 
 public final class TestUtils {
