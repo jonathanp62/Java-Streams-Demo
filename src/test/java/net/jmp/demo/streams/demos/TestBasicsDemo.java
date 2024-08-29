@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestBasicsDemo.java   0.3.0   08/29/2024
  * (#)TestBasicsDemo.java   0.2.0   08/25/2024
  *
  * @author   Jonathan Parker
- * @version  0.2.0
+ * @version  0.3.0
  * @since    0.2.0
  *
  * MIT License
@@ -38,6 +39,8 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.Dish;
 
+import static net.jmp.demo.streams.testutil.TestUtils.*;
+
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -51,8 +54,8 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Object o = method.invoke(demo);
-        final Stream<?> stream = this.cast(Stream.class, o);
-        final List<String> dishNames = this.toList(stream, String.class);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<String> dishNames = toTypedList(stream, String.class);
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -75,8 +78,8 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Object o = method.invoke(demo);
-        final Stream<?> stream = this.cast(Stream.class, o);
-        final List<String> dishNames = this.toList(stream, String.class);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<String> dishNames = toTypedList(stream, String.class);
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -97,8 +100,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> nameLengths = this.toList(stream, Integer.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> nameLengths = toTypedList(stream, Integer.class);
 
         assertNotNull(nameLengths);
         assertEquals(9, nameLengths.size());
@@ -119,8 +122,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Dish> dishes = this.toList(stream, Dish.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Dish> dishes = toTypedList(stream, Dish.class);
 
         assertNotNull(dishes);
         assertEquals(4, dishes.size());
@@ -136,8 +139,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Dish> dishes = this.toList(stream, Dish.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Dish> dishes = toTypedList(stream, Dish.class);
 
         assertNotNull(dishes);
         assertEquals(3, dishes.size());
@@ -152,8 +155,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Dish> dishes = this.toList(stream, Dish.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Dish> dishes = toTypedList(stream, Dish.class);
 
         assertNotNull(dishes);
         assertEquals(4, dishes.size());
@@ -171,7 +174,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Predicate<Dish> p = dish -> dish.calories() < 1_000;
-        final boolean result = this.cast(Boolean.class, method.invoke(demo, p));
+        final boolean result = castToType(Boolean.class, method.invoke(demo, p));
 
         assertTrue(result);
     }
@@ -184,7 +187,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Predicate<Dish> p = Dish::vegetarian;
-        final boolean result = this.cast(Boolean.class, method.invoke(demo, p));
+        final boolean result = castToType(Boolean.class, method.invoke(demo, p));
 
         assertTrue(result);
     }
@@ -197,7 +200,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Predicate<Dish> p = dish -> dish.calories() > 1_000;
-        final boolean result = this.cast(Boolean.class, method.invoke(demo, p));
+        final boolean result = castToType(Boolean.class, method.invoke(demo, p));
 
         assertTrue(result);
     }
@@ -209,7 +212,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final long result = this.cast(Long.class, method.invoke(demo));
+        final long result = castToType(Long.class, method.invoke(demo));
 
         assertEquals(9, result);
     }
@@ -220,8 +223,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Dish> dishes = this.toList(stream, Dish.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Dish> dishes = toTypedList(stream, Dish.class);
 
         assertNotNull(dishes);
         assertEquals(9, dishes.size());
@@ -242,8 +245,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<String> types = this.toList(stream, String.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<String> types = toTypedList(stream, String.class);
 
         assertNotNull(types);
         assertEquals(3, types.size());
@@ -259,7 +262,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final boolean result = this.cast(Boolean.class, method.invoke(demo));
+        final boolean result = castToType(Boolean.class, method.invoke(demo));
 
         assertTrue(result);
     }
@@ -271,7 +274,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final boolean result = this.cast(Boolean.class, method.invoke(demo));
+        final boolean result = castToType(Boolean.class, method.invoke(demo));
 
         assertTrue(result);
     }
@@ -283,7 +286,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final String result = this.cast(String.class, method.invoke(demo));
+        final String result = castToType(String.class, method.invoke(demo));
 
         assertNotNull(result);
         assertEquals("pork", result);
@@ -296,7 +299,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final String result = this.cast(String.class, method.invoke(demo));
+        final String result = castToType(String.class, method.invoke(demo));
 
         assertNotNull(result);
         assertEquals("pork", result);
@@ -309,7 +312,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final String result = this.cast(String.class, method.invoke(demo));
+        final String result = castToType(String.class, method.invoke(demo));
 
         assertNotNull(result);
         assertEquals("seasonal fruit", result);
@@ -321,8 +324,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = this.toList(stream, Integer.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = toTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(1, elements.size());
@@ -335,8 +338,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = this.toList(stream, Integer.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = toTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(3, elements.size());
@@ -351,8 +354,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = this.toList(stream, Integer.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = toTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(1, elements.size());
@@ -365,7 +368,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
         final boolean result = stream.findAny().isEmpty();
 
         assertTrue(result);
@@ -377,8 +380,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = this.toList(stream, Integer.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = toTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(6, elements.size());
@@ -396,8 +399,8 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final Stream<?> stream = this.cast(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = this.toList(stream, Integer.class);
+        final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
+        final List<Integer> elements = toTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(5, elements.size());
@@ -414,7 +417,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final String result = this.cast(String.class, method.invoke(new BasicsDemo()));
+        final String result = castToType(String.class, method.invoke(new BasicsDemo()));
         final String expected = "1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100";
 
         assertNotNull(result);
@@ -427,7 +430,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final String[] result = this.cast(String[].class, method.invoke(new BasicsDemo()));
+        final String[] result = castToType(String[].class, method.invoke(new BasicsDemo()));
 
         assertNotNull(result);
         assertEquals(9, result.length);
@@ -448,7 +451,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final String[] result = this.cast(String[].class, method.invoke(new BasicsDemo()));
+        final String[] result = castToType(String[].class, method.invoke(new BasicsDemo()));
 
         assertNotNull(result);
         assertEquals(9, result.length);
@@ -469,7 +472,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final String[] result = this.cast(String[].class, method.invoke(new BasicsDemo()));
+        final String[] result = castToType(String[].class, method.invoke(new BasicsDemo()));
 
         assertNotNull(result);
         assertEquals(9, result.length);
@@ -490,7 +493,7 @@ public final class TestBasicsDemo {
 
         method.setAccessible(true);
 
-        final String[] result = this.cast(String[].class, method.invoke(new BasicsDemo()));
+        final String[] result = castToType(String[].class, method.invoke(new BasicsDemo()));
 
         assertNotNull(result);
         assertEquals(9, result.length);
@@ -503,33 +506,5 @@ public final class TestBasicsDemo {
         assertEquals("pizza", result[6]);
         assertEquals("prawns", result[7]);
         assertEquals("salmon", result[8]);
-    }
-
-    /**
-     * Cast object to an instance of type T.
-     *
-     * @param   <T>     The type of instance to cast to
-     * @param   t       The class of type T
-     * @param   object  java.lang.Object
-     * @return          T
-     */
-    private <T> T cast(final Class<T> t, final Object object) {
-        return t.cast(object);
-    }
-
-    /**
-     * Create a list of elements of type T. Also
-     * serves as a test for Stream.toList().
-     *
-     * @param   <T>     The type of element in the list
-     * @param   stream  java.util.stream.Stream&lt;?&gt;
-     * @param   clazz   The class of type T
-     * @return          java.util.List&lt;T&gt;
-     */
-    private <T> List<T> toList(final Stream<?> stream, final Class<T> clazz) {
-        return stream
-                .filter(clazz::isInstance)
-                .map(clazz::cast)
-                .toList();
     }
 }

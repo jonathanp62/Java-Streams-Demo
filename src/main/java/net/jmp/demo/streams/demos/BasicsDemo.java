@@ -32,10 +32,7 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-import java.lang.reflect.Array;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static java.util.Comparator.comparing;
 
@@ -50,6 +47,7 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.*;
 
+import static net.jmp.demo.streams.util.DemoUtils.*;
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -209,7 +207,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<String> names = this.getDishes().stream()
+        final Stream<String> names = getDishes().stream()
                 .map(Dish::name);
 
         if (this.logger.isTraceEnabled()) {
@@ -230,7 +228,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<String> names = this.getDishes().stream()
+        final Stream<String> names = getDishes().stream()
                 .map(Dish::name)
                 .sorted();
 
@@ -252,7 +250,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Integer> lengths = this.getDishes().stream()
+        final Stream<Integer> lengths = getDishes().stream()
                 .map(Dish::name)
                 .map(String::length);
 
@@ -274,7 +272,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Dish> vegetarianDishes = this.getDishes().stream()
+        final Stream<Dish> vegetarianDishes = getDishes().stream()
                 .filter(Dish::vegetarian);
 
         if (this.logger.isTraceEnabled()) {
@@ -295,7 +293,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Dish> dishes = this.getDishes().stream()
+        final Stream<Dish> dishes = getDishes().stream()
                 .filter(dish -> dish.calories() > 300)
                 .limit(3);
 
@@ -317,7 +315,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Dish> dishes = this.getDishes().stream()
+        final Stream<Dish> dishes = getDishes().stream()
                 .filter(dish -> dish.calories() > 300)
                 .skip(3);
 
@@ -339,7 +337,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entryWith(predicate));
         }
 
-        final boolean result = this.getDishes().stream()
+        final boolean result = getDishes().stream()
                 .allMatch(predicate);
 
         if (this.logger.isTraceEnabled()) {
@@ -360,7 +358,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entryWith(predicate));
         }
 
-        final boolean result = this.getDishes().stream()
+        final boolean result = getDishes().stream()
                 .anyMatch(predicate);
 
         if (this.logger.isTraceEnabled()) {
@@ -381,7 +379,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entryWith(predicate));
         }
 
-        final boolean result = this.getDishes().stream()
+        final boolean result = getDishes().stream()
                 .noneMatch(predicate);
 
         if (this.logger.isTraceEnabled()) {
@@ -401,7 +399,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final long result = this.getDishes().stream().count();
+        final long result = getDishes().stream().count();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
@@ -420,7 +418,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Dish> dishes = this.getDishes().stream()
+        final Stream<Dish> dishes = getDishes().stream()
                 .sorted(comparing(Dish::calories));
 
         if (this.logger.isTraceEnabled()) {
@@ -440,7 +438,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<String> types = this.getDishes().stream()
+        final Stream<String> types = getDishes().stream()
                 .map(Dish::type)
                 .map(DishType::name)
                 .distinct()
@@ -483,7 +481,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Optional<Dish> dish = this.getDishes().stream().findAny();
+        final Optional<Dish> dish = getDishes().stream().findAny();
         final boolean result = dish.isPresent();
 
         if (this.logger.isTraceEnabled()) {
@@ -505,7 +503,7 @@ public final class BasicsDemo implements Demo {
 
         String result = null;
 
-        final Optional<Dish> dish = this.getDishes().stream().findFirst();
+        final Optional<Dish> dish = getDishes().stream().findFirst();
 
         if (dish.isPresent()) {
             result = dish.get().name();
@@ -530,7 +528,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Optional<Dish> dish = this.getDishes().stream()
+        final Optional<Dish> dish = getDishes().stream()
                 .max(comparing(Dish::calories));
 
         final String result = dish.map(Dish::name).orElse(null);
@@ -554,7 +552,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Optional<Dish> dish = this.getDishes().stream()
+        final Optional<Dish> dish = getDishes().stream()
                 .min(comparing(Dish::calories));
 
         final String result = dish.map(Dish::name).orElse(null);
@@ -734,7 +732,7 @@ public final class BasicsDemo implements Demo {
         }
 
         final Object[] array = this.getDishNames().toArray();
-        final String[] strings = this.toTypedArray(array, String.class);
+        final String[] strings = toTypedArray(array, String.class);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(strings));
@@ -805,43 +803,6 @@ public final class BasicsDemo implements Demo {
         }
 
         return strings;
-    }
-
-    /**
-     * Method to return a list of dishes.
-     *
-     * @return  java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;
-     */
-    private List<Dish> getDishes() {
-        return Arrays.asList(
-                new Dish("pork", false, 800, DishType.MEAT),
-                new Dish("beef", false, 700, DishType.MEAT),
-                new Dish("chicken", false, 400, DishType.MEAT),
-                new Dish("french fries", true, 530, DishType.OTHER),
-                new Dish("rice", true, 350, DishType.OTHER),
-                new Dish("seasonal fruit", true, 120, DishType.OTHER),
-                new Dish("pizza", true, 550, DishType.OTHER),
-                new Dish("prawns", false, 300, DishType.FISH),
-                new Dish("salmon", false, 450, DishType.FISH));
-    }
-
-    /**
-     * Create an array of elements of type T.
-     *
-     * @param   <T>     The type of element in the list
-     * @param   array   java.lang.Object[]
-     * @param   clazz   The class of type T
-     * @return          T[]
-     */
-    private <T> T[] toTypedArray(final Object[] array, final Class<T> clazz) {
-        @SuppressWarnings("unchecked")
-        final T[] typedArray = (T[]) Array.newInstance(clazz, array.length);
-
-        for (int i = 0; i < array.length; i++) {
-            typedArray[i] = clazz.cast(array[i]);
-        }
-
-        return typedArray;
     }
 
     /**
