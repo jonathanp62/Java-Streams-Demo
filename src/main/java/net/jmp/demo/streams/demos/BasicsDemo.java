@@ -41,6 +41,7 @@ import static java.util.Comparator.comparing;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
 import java.util.stream.IntStream;
@@ -78,7 +79,7 @@ import org.slf4j.LoggerFactory;
  *   peek(*)
  *   skip(*)
  *   sorted(*)
- *   toArray()
+ *   toArray(*)
  *   toList(*)
  */
 public final class BasicsDemo implements Demo {
@@ -146,11 +147,19 @@ public final class BasicsDemo implements Demo {
             this.logger.info(this.forEachOrdered());
 
             for (final var string: this.toArray()) {
-                this.logger.info("Array: {}", string);
+                this.logger.info("Array1: {}", string);
+            }
+
+            for (final var string: this.toArrayUsingConstructorReference()) {
+                this.logger.info("Array2: {}", string);
+            }
+
+            for (final var string: this.toArrayUsingLambda()) {
+                this.logger.info("Array3: {}", string);
             }
 
             for (final var integer: this.toArrayUsingGenerator()) {
-                this.logger.info("Array: {}", integer);
+                this.logger.info("Array4: {}", integer);
             }
         }
     }
@@ -682,6 +691,8 @@ public final class BasicsDemo implements Demo {
     /**
      * Demonstrate creating an array of
      * objects from a stream.
+     *
+     * @return  java.lang.String[]
      */
     private String[] toArray() {
         if (this.logger.isTraceEnabled()) {
@@ -699,24 +710,67 @@ public final class BasicsDemo implements Demo {
     }
 
     /**
-     * Demonstrate creating an array of
-     * objects from a stream using a
-     * generator function.
+     * Demonstrate creating an array
+     * from a stream's toArray method
+     * and a constructor reference.
+     *
+     * @return  java.lang.String[]
      */
-    private Integer[] toArrayUsingGenerator() {
+    private String[] toArrayUsingConstructorReference() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        final Integer[] array = new Integer[1];
-
-        array[0] = 0;
+        final String[] strings = this.getDishNames().toArray(String[]::new);
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(array));
+            this.logger.trace(exitWith(strings));
         }
 
-        return array;
+        return strings;
+    }
+
+    /**
+     * Demonstrate creating an array
+     * from a stream's toArray method
+     * and a lambda (the same as the
+     * constructor reference).
+     *
+     * @return  java.lang.String[]
+     */
+    private String[] toArrayUsingLambda() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final String[] strings = this.getDishNames().toArray(size -> new String[size]);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(strings));
+        }
+
+        return strings;
+    }
+
+    /**
+     * Demonstrate creating an array of
+     * objects from a stream using a
+     * generator function.
+     *
+     * @return  java.lang.String[]
+     */
+    private String[] toArrayUsingGenerator() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final String[] strings = this.getDishNames().toArray(new GeneratorFunction());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(strings));
+        }
+
+        return strings;
     }
 
     /**
@@ -754,5 +808,16 @@ public final class BasicsDemo implements Demo {
         }
 
         return typedArray;
+    }
+
+    /**
+     * A generator function class used
+     * when converting streams to arrays.
+     */
+    static class GeneratorFunction implements IntFunction<String[]> {
+        @Override
+        public String[] apply(final int size) {
+            return new String[size];
+        }
     }
 }
