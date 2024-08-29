@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)BasicsDemo.java   0.3.0   08/29/2024
  * (#)BasicsDemo.java   0.2.0   08/25/2024
  * (#)BasicsDemo.java   0.1.0   08/24/2024
  *
  * @author   Jonathan Parker
- * @version  0.2.0
+ * @version  0.3.0
  * @since    0.1.0
  *
  * MIT License
@@ -109,18 +110,6 @@ public final class BasicsDemo implements Demo {
             this.limitDishes().forEach(dish -> this.logger.info("Limit: {}", dish));
             this.skipDishes().forEach(dish -> this.logger.info("Skip: {}", dish));
 
-            if (this.allMatches(dish -> dish.calories() < 1_000)) {
-                this.logger.info("All dishes match the predicate");
-            }
-
-            if (this.anyMatches(Dish::vegetarian)) {
-                this.logger.info("Some dishes match the predicate");
-            }
-
-            if (this.noMatches(dish -> dish.calories() > 1_000)) {
-                this.logger.info("No dishes match the predicate");
-            }
-
             this.logger.info("There are {} dishes", this.countDishes());
 
             this.sortDishesByCalories().forEach(dish -> this.logger.info("By calories: {}", dish));
@@ -132,10 +121,6 @@ public final class BasicsDemo implements Demo {
             this.logger.info("Most calories: {}", this.getNameOfHighestCalorieDish());
             this.logger.info("Least calories: {}", this.getNameOfLowestCalorieDish());
 
-            if (this.logger.isTraceEnabled()) {
-                this.logger.trace(exit());
-            }
-
             this.oneElement().forEach(e -> this.logger.info("{}", e));
             this.threeElements().forEach(e -> this.logger.info("{}", e));
             this.ofNullableAndNotEmpty().forEach(e -> this.logger.info("{}", e));
@@ -145,22 +130,71 @@ public final class BasicsDemo implements Demo {
             this.peek().forEach(e -> this.logger.info("Peek: {}", e));
 
             this.logger.info(this.forEachOrdered());
+        }
 
-            for (final var string: this.toArray()) {
+        this.demoPredicates();
+        this.demoArrays();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Demo the stream predicate methods.
+     */
+    private void demoPredicates() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        if (this.logger.isInfoEnabled()) {
+            if (this.allMatches(dish -> dish.calories() < 1_000)) {
+                this.logger.info("All dishes match the predicate");
+            }
+
+            if (this.anyMatches(Dish::vegetarian)) {
+                this.logger.info("Some dishes match the predicate");
+            }
+
+            if (this.noMatches(dish -> dish.calories() > 1_000)) {
+                this.logger.info("No dishes match the predicate");
+            }
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Demo the stream to array methods.
+     */
+    private void demoArrays() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        if (this.logger.isInfoEnabled()) {
+            for (final var string : this.toArray()) {
                 this.logger.info("Array1: {}", string);
             }
 
-            for (final var string: this.toArrayUsingConstructorReference()) {
+            for (final var string : this.toArrayUsingConstructorReference()) {
                 this.logger.info("Array2: {}", string);
             }
 
-            for (final var string: this.toArrayUsingLambda()) {
+            for (final var string : this.toArrayUsingLambda()) {
                 this.logger.info("Array3: {}", string);
             }
 
-            for (final var integer: this.toArrayUsingGenerator()) {
+            for (final var integer : this.toArrayUsingGenerator()) {
                 this.logger.info("Array4: {}", integer);
             }
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
         }
     }
 
