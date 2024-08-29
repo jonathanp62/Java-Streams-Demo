@@ -60,6 +60,29 @@ public final class AdvancedDemo implements Demo {
             this.logger.trace(entry());
         }
 
+        this.dropWhile();
+        this.takeWhile();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    public void dropWhile() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    public void takeWhile() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
         }
