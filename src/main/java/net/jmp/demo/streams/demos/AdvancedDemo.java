@@ -30,6 +30,7 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.util.stream.Stream;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
@@ -60,20 +61,9 @@ public final class AdvancedDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        this.dropWhile();
-        this.takeWhile();
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
-        }
-    }
-
-    /**
-     * Demonstrate dropWhile.
-     */
-    public void dropWhile() {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
+        if (this.logger.isInfoEnabled()) {
+            this.dropWhile().forEach(e -> this.logger.info("Drop: {}", e));
+            this.takeWhile().forEach(e -> this.logger.info("Take: {}", e));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -82,15 +72,45 @@ public final class AdvancedDemo implements Demo {
     }
 
     /**
-     * Demonstrate takeWhile.
+     * Demonstrate dropWhile. The first three ones
+     * are dropped leaving the twos and three.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
      */
-    public void takeWhile() {
+    private Stream<Integer> dropWhile() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 2, 2, 3, 1);
+        final Stream<Integer> results = integers.dropWhile(i -> i == 1);
+
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(results));
         }
+
+        return results;
+    }
+
+    /**
+     * Demonstrate takeWhile. The first ones are
+     * taken and the twos and three and final one
+     * dropped.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> takeWhile() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 2, 2, 3, 1);
+        final Stream<Integer> results = integers.takeWhile(i -> i == 1);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(results));
+        }
+
+        return results;
     }
 }

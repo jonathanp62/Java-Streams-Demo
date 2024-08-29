@@ -30,13 +30,52 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-import org.junit.Test;
+import java.util.List;
+
+import java.util.stream.Stream;
+
+import static net.jmp.demo.streams.testutil.TestUtils.castToType;
+import static net.jmp.demo.streams.testutil.TestUtils.toTypedList;
 
 import static org.junit.Assert.*;
 
+import org.junit.Test;
+
 public class TestAdvancedDemo {
     @Test
-    public void test() {
-        assertTrue(true);
+    public void testDropWhile() throws Exception {
+        final var demo = new AdvancedDemo();
+        final var method = AdvancedDemo.class.getDeclaredMethod("dropWhile");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<Integer> results = toTypedList(stream, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(4, results.size());
+        assertEquals(Integer.valueOf(2), results.get(0));
+        assertEquals(Integer.valueOf(2), results.get(1));
+        assertEquals(Integer.valueOf(3), results.get(2));
+        assertEquals(Integer.valueOf(1), results.get(3));
+    }
+
+    @Test
+    public void testTakeWhile() throws Exception {
+        final var demo = new AdvancedDemo();
+        final var method = AdvancedDemo.class.getDeclaredMethod("takeWhile");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<Integer> results = toTypedList(stream, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(3, results.size());
+        assertEquals(Integer.valueOf(1), results.get(0));
+        assertEquals(Integer.valueOf(1), results.get(1));
+        assertEquals(Integer.valueOf(1), results.get(2));
     }
 }

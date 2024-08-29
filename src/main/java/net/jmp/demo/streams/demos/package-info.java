@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)package-info.java 0.3.0   08/29/2024
  * (#)package-info.java 0.2.0   08/25/2024
  *
  * @author   Jonathan Parker
- * @version  0.2.0
+ * @version  0.3.0
  * @since    0.2.0
  *
  * MIT License
@@ -34,12 +35,12 @@ package net.jmp.demo.streams.demos;
  * Demonstrate the basics along with:
  *   builder()
  *   collect()
- *   dropWhile()
+ *   dropWhile(*)
  *   flatMap()
  *   gather()
  *   generate()
  *   iterate()
  *   mapMulti()
  *   reduce()
- *   takeWhile()
+ *   takeWhile(*)
  */
