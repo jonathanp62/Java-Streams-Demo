@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.util;
 
 /*
+ * (#)DemoUtils.java    0.4.0   08/30/2024
  * (#)DemoUtils.java    0.3.0   08/29/2024
  *
  * @author   Jonathan Parker
- * @version  0.3.0
+ * @version  0.4.0
  * @since    0.3.0
  *
  * MIT License
@@ -37,6 +38,7 @@ import java.lang.reflect.Array;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import java.util.stream.Stream;
 
@@ -100,6 +102,9 @@ public final class DemoUtils {
      * @return          T[]
      */
     public static <T> T[] toTypedArray(final Object[] array, final Class<T> clazz) {
+        Objects.requireNonNull(array, () -> "Object[] array is null");
+        Objects.requireNonNull(clazz, () -> "Class<T> clazz is null");
+
         @SuppressWarnings("unchecked")
         final T[] typedArray = (T[]) Array.newInstance(clazz, array.length);
 

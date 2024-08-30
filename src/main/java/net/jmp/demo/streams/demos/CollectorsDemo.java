@@ -1,7 +1,7 @@
 package net.jmp.demo.streams.demos;
 
 /*
- * (#)AdvancedDemo.java 0.4.0   08/30/2024
+ * (#)CollectorsDemo.java   0.4.0   08/30/2024
  *
  * @author   Jonathan Parker
  * @version  0.4.0
@@ -30,6 +30,19 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
+import java.util.function.Function;
+
+import java.util.stream.Collectors;
+
+import net.jmp.demo.streams.records.Dish;
+import net.jmp.demo.streams.records.DishType;
+
+import static net.jmp.demo.streams.util.DemoUtils.*;
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -55,10 +68,11 @@ import org.slf4j.LoggerFactory;
  *     summarizing...()
  *     summing...()
  *     teeing()
+ *     toCollection() (i.e. LinkedHashSet::new)
  *     toConcurrentMap()
- *     toList()
- *     toMap()
- *     toSet()
+ *     toList(*)
+ *     toMap(*)
+ *     toSet(*)
  *     toUnmodifiableList()
  *     toUnmodifiableMap()
  *     toUnmodifiableSet()
@@ -84,11 +98,123 @@ public final class CollectorsDemo implements Demo {
         }
 
         if (this.logger.isInfoEnabled()) {
-
+            this.toList().forEach(this.logger::info);
+            this.toMap().forEach((key, value) -> this.logger.info("Key: {}; Value: {}", key, value));
+            this.toMapWithMerge().forEach((key, value) -> this.logger.info("Key: {}; Value: {}", key, value));
+            this.toSet().forEach(this.logger::info);
         }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
         }
+    }
+
+    /**
+     * Collect the names of dishes into a list.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     */
+    private List<String> toList() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        /* An ArrayList is the default implementation */
+
+        final List<String> names = streamOfDishes()
+                .map(Dish::name)
+                .map(e -> "List: " + e)
+                .collect(Collectors.toList());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(names));
+        }
+
+        return names;
+    }
+
+    /**
+     * Collect the upper-cased names and
+     * calories of the dishes into a map.
+     *
+     * @return  java.util.Map&lt;java.lang.String, java.lang.Integer&gt;
+     */
+    private Map<String, Integer> toMap() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Function<Dish, String> keyMapper = dish -> dish.name().toUpperCase();
+        final Function<Dish, Integer> valueMapper = Dish::calories;
+
+        /* A HashMap is the default implementation */
+
+        final Map<String, Integer> map = streamOfDishes()
+                .collect(Collectors.toMap(keyMapper, valueMapper));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(map));
+        }
+
+        return map;
+    }
+
+    /**
+     * Collect the dish types and dish
+     * objects of the dishes into a map.
+     *
+     * @return  java.util.Map&lt;java.lang.String, java.lang.Integer&gt;
+     */
+    private Map<DishType, Dish> toMapWithMerge() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        /*
+         * A hashmap is the default implementation
+         * but in this case a TreeMap will be used.
+         */
+
+        final Map<DishType, Dish> map = streamOfDishes()
+                .collect(Collectors.toMap(Dish::type,   // Key - Dish type
+                        Function.identity(),            // Value - Dish
+                        (existing, replacement) -> existing,
+                        TreeMap::new));
+
+        /*
+         * The above merge function retains the first value
+         * associated with the key and an IllegalStateException
+         * is avoided.
+         */
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(map));
+        }
+
+        return map;
+    }
+
+    /**
+     * Collect the names of dishes into a set.
+     *
+     * @return  java.util.Set&lt;java.lang.String&gt;
+     */
+    private Set<String> toSet() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        /* A HashSet is the default implementation */
+
+        final Set<String> names = streamOfDishes()
+                .map(Dish::name)
+                .map(e -> "Set : " + e)
+                .collect(Collectors.toSet());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(names));
+        }
+
+        return names;
     }
 }

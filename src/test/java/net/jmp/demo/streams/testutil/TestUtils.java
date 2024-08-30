@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.testutil;
 
 /*
+ * (#)TestUtils.java    0.4.0   08/30/2024
  * (#)TestUtils.java    0.3.0   08/29/2024
  *
  * @author   Jonathan Parker
- * @version  0.3.0
+ * @version  0.4.0
  * @since    0.3.0
  *
  * MIT License
@@ -31,6 +32,7 @@ package net.jmp.demo.streams.testutil;
  */
 
 import java.util.List;
+import java.util.Objects;
 
 import java.util.stream.Stream;
 
@@ -51,6 +53,9 @@ public final class TestUtils {
      * @return          T
      */
     public static <T> T castToType(final Class<T> t, final Object object) {
+        Objects.requireNonNull(t, () -> "Class<T> t is null");
+        Objects.requireNonNull(object, () -> "Object object is null");
+
         return t.cast(object);
     }
 
@@ -64,6 +69,9 @@ public final class TestUtils {
      * @return          java.util.List&lt;T&gt;
      */
     public static <T> List<T> toTypedList(final Stream<?> stream, final Class<T> clazz) {
+        Objects.requireNonNull(stream, () -> "Stream<?> stream is null");
+        Objects.requireNonNull(clazz, () -> "Class<T> clazz");
+
         return stream
                 .filter(clazz::isInstance)
                 .map(clazz::cast)
