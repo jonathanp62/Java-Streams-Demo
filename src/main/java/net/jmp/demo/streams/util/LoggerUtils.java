@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.util;
 
 /*
+ * (#)LoggerUtils.java  0.3.0   08/30/2024
  * (#)LoggerUtils.java  0.1.0   08/24/2024
  *
  * @author   Jonathan Parker
- * @version  0.1.0
+ * @version  0.3.0
  * @since    0.1.0
  *
  * MIT License
@@ -51,7 +52,7 @@ public final class LoggerUtils {
      * @return  java.lang.String
      */
     public static String entry() {
-        return STR."\{ENTRY}";
+        return ENTRY;
     }
 
     /**
@@ -63,7 +64,7 @@ public final class LoggerUtils {
     public static String entryWith(final Object... objArray) {
         final StringBuilder sb = new StringBuilder();
 
-        sb.append(STR."\{ENTRY} with (");
+        sb.append(ENTRY).append(" with (");
 
         for (int i = 0; i < objArray.length; i++) {
             sb.append(objArray[i]);
@@ -84,16 +85,20 @@ public final class LoggerUtils {
      * @return  java.lang.String
      */
     public static String exit() {
-        return STR."\{EXIT}";
+        return EXIT;
     }
 
     /**
      * Format a trace exit message with an argument.
      *
-     * @param   object  java.lang.Object[]
+     * @param   object  java.lang.Object
      * @return          java.lang.String
      */
     public static String exitWith(final Object object) {
-        return STR."\{EXIT} with (\{object.toString()})";
+        final StringBuilder sb = new StringBuilder();
+
+        sb.append(EXIT).append(" with (").append(object).append(")");
+
+        return sb.toString();
     }
 }
