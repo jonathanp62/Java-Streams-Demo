@@ -30,6 +30,10 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+
 import java.util.stream.Stream;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
@@ -64,6 +68,9 @@ public final class AdvancedDemo implements Demo {
         if (this.logger.isInfoEnabled()) {
             this.dropWhile().forEach(e -> this.logger.info("Drop: {}", e));
             this.takeWhile().forEach(e -> this.logger.info("Take: {}", e));
+            this.generate().forEach(e -> this.logger.info("{}", e));
+            this.iterateNumbers().forEach(e -> this.logger.info("{}", e));
+            this.iterateNumbersWithPredicate().forEach(e -> this.logger.info("{}", e));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -112,5 +119,70 @@ public final class AdvancedDemo implements Demo {
         }
 
         return results;
+    }
+
+    /**
+     * Generate a stream of random
+     * numbers, limiting it to five
+     * elements.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Double&gt;
+     */
+    private Stream<Double> generate() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Supplier<Double> supplier = Math::random;
+        final Stream<Double> stream = Stream.generate(supplier).limit(5);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * Iterate a stream of integers
+     * from 1 to 5.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> iterateNumbers() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> stream = Stream.iterate(1, i -> i + 1).limit(5);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * Iterate a stream of integers
+     * from 1 to 5 using a predicate
+     * function instead of limit.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
+     */
+    private Stream<Integer> iterateNumbersWithPredicate() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final UnaryOperator<Integer> next = i -> i + 1;
+        final Predicate<Integer> hasNext = i -> i <= 5;
+        final Stream<Integer> stream = Stream.iterate(1, hasNext, next);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
     }
 }

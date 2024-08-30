@@ -78,4 +78,64 @@ public class TestAdvancedDemo {
         assertEquals(Integer.valueOf(1), results.get(1));
         assertEquals(Integer.valueOf(1), results.get(2));
     }
+
+    @Test
+    public void testGenerate() throws Exception {
+        final var demo = new AdvancedDemo();
+        final var method = AdvancedDemo.class.getDeclaredMethod("generate");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<Double> results = toTypedList(stream, Double.class);
+
+        assertNotNull(results);
+        assertEquals(5, results.size());
+        assertTrue(results.get(0) > 0 && results.get(0) < 1);
+        assertTrue(results.get(1) > 0 && results.get(1) < 1);
+        assertTrue(results.get(2) > 0 && results.get(2) < 1);
+        assertTrue(results.get(3) > 0 && results.get(3) < 1);
+        assertTrue(results.get(4) > 0 && results.get(4) < 1);
+    }
+
+    @Test
+    public void testIterateNumbers() throws Exception {
+        final var demo = new AdvancedDemo();
+        final var method = AdvancedDemo.class.getDeclaredMethod("iterateNumbers");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<Integer> results = toTypedList(stream, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(5, results.size());
+        assertEquals(Integer.valueOf(1), results.get(0));
+        assertEquals(Integer.valueOf(2), results.get(1));
+        assertEquals(Integer.valueOf(3), results.get(2));
+        assertEquals(Integer.valueOf(4), results.get(3));
+        assertEquals(Integer.valueOf(5), results.get(4));
+    }
+
+    @Test
+    public void testIterateNumbersWithPredicate() throws Exception {
+        final var demo = new AdvancedDemo();
+        final var method = AdvancedDemo.class.getDeclaredMethod("iterateNumbersWithPredicate");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<Integer> results = toTypedList(stream, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(5, results.size());
+        assertEquals(Integer.valueOf(1), results.get(0));
+        assertEquals(Integer.valueOf(2), results.get(1));
+        assertEquals(Integer.valueOf(3), results.get(2));
+        assertEquals(Integer.valueOf(4), results.get(3));
+        assertEquals(Integer.valueOf(5), results.get(4));
+    }
 }
