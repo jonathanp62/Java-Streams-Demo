@@ -39,6 +39,30 @@ import org.slf4j.LoggerFactory;
  * A class the demonstrates collectors.
  *
  * Demonstrations:
+ *   Stream.collect() using the following collectors:
+ *     averaging...()
+ *     collectingAndThen()
+ *     counting()
+ *     filtering()
+ *     flatMapping()
+ *     groupingBy()
+ *     joining()
+ *     mapping()
+ *     maxBy()
+ *     minBy()
+ *     partitioningBy()
+ *     reducing()
+ *     summarizing...()
+ *     summing...()
+ *     teeing()
+ *     toConcurrentMap()
+ *     toList()
+ *     toMap()
+ *     toSet()
+ *     toUnmodifiableList()
+ *     toUnmodifiableMap()
+ *     toUnmodifiableSet()
+ *  Stream.collect() using a custom created collector
  */
 public final class CollectorsDemo implements Demo {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());

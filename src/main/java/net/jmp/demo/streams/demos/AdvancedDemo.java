@@ -50,6 +50,7 @@ import org.slf4j.LoggerFactory;
  *
  * Demonstrations:
  *   builder(*)
+ *   collect(using supplier)
  *   dropWhile(*)
  *   generate(*)
  *   iterate(*)
