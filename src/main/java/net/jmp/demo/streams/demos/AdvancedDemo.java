@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)AdvancedDemo.java 0.4.0   08/30/2024
  * (#)AdvancedDemo.java 0.3.0   08/29/2024
  *
  * @author   Jonathan Parker
- * @version  0.3.0
+ * @version  0.4.0
  * @since    0.3.0
  *
  * MIT License
@@ -48,6 +49,11 @@ import org.slf4j.LoggerFactory;
  * A class the demonstrates more advanced concepts.
  *
  * Demonstrations:
+ *   builder(*)
+ *   dropWhile(*)
+ *   generate(*)
+ *   iterate(*)
+ *   takeWhile(*)
  */
 public final class AdvancedDemo implements Demo {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
