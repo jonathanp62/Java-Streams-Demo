@@ -34,6 +34,8 @@ import java.util.List;
 
 import java.util.stream.Stream;
 
+import net.jmp.demo.streams.records.Dish;
+
 import static net.jmp.demo.streams.testutil.TestUtils.castToType;
 import static net.jmp.demo.streams.testutil.TestUtils.toTypedList;
 
@@ -137,5 +139,29 @@ public class TestAdvancedDemo {
         assertEquals(Integer.valueOf(3), results.get(2));
         assertEquals(Integer.valueOf(4), results.get(3));
         assertEquals(Integer.valueOf(5), results.get(4));
+    }
+
+    @Test
+    public void testBuildDishes() throws Exception {
+        final var demo = new AdvancedDemo();
+        final var method = AdvancedDemo.class.getDeclaredMethod("buildDishes");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<Dish> results = toTypedList(stream, Dish.class);
+
+        assertNotNull(results);
+        assertEquals(9, results.size());
+        assertEquals("pork", results.get(0).name());
+        assertEquals("beef", results.get(1).name());
+        assertEquals("chicken", results.get(2).name());
+        assertEquals("french fries", results.get(3).name());
+        assertEquals("rice", results.get(4).name());
+        assertEquals("seasonal fruit", results.get(5).name());
+        assertEquals("pizza", results.get(6).name());
+        assertEquals("prawns", results.get(7).name());
+        assertEquals("salmon", results.get(8).name());
     }
 }

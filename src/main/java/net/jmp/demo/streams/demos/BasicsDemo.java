@@ -207,7 +207,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<String> names = getDishes().stream()
+        final Stream<String> names = listOfDishes().stream()
                 .map(Dish::name);
 
         if (this.logger.isTraceEnabled()) {
@@ -228,7 +228,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<String> names = getDishes().stream()
+        final Stream<String> names = listOfDishes().stream()
                 .map(Dish::name)
                 .sorted();
 
@@ -250,7 +250,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Integer> lengths = getDishes().stream()
+        final Stream<Integer> lengths = listOfDishes().stream()
                 .map(Dish::name)
                 .map(String::length);
 
@@ -272,7 +272,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Dish> vegetarianDishes = getDishes().stream()
+        final Stream<Dish> vegetarianDishes = listOfDishes().stream()
                 .filter(Dish::vegetarian);
 
         if (this.logger.isTraceEnabled()) {
@@ -293,7 +293,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Dish> dishes = getDishes().stream()
+        final Stream<Dish> dishes = listOfDishes().stream()
                 .filter(dish -> dish.calories() > 300)
                 .limit(3);
 
@@ -315,7 +315,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Dish> dishes = getDishes().stream()
+        final Stream<Dish> dishes = listOfDishes().stream()
                 .filter(dish -> dish.calories() > 300)
                 .skip(3);
 
@@ -337,7 +337,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entryWith(predicate));
         }
 
-        final boolean result = getDishes().stream()
+        final boolean result = listOfDishes().stream()
                 .allMatch(predicate);
 
         if (this.logger.isTraceEnabled()) {
@@ -358,7 +358,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entryWith(predicate));
         }
 
-        final boolean result = getDishes().stream()
+        final boolean result = listOfDishes().stream()
                 .anyMatch(predicate);
 
         if (this.logger.isTraceEnabled()) {
@@ -379,7 +379,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entryWith(predicate));
         }
 
-        final boolean result = getDishes().stream()
+        final boolean result = listOfDishes().stream()
                 .noneMatch(predicate);
 
         if (this.logger.isTraceEnabled()) {
@@ -399,7 +399,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final long result = getDishes().stream().count();
+        final long result = listOfDishes().stream().count();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
@@ -418,7 +418,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Dish> dishes = getDishes().stream()
+        final Stream<Dish> dishes = listOfDishes().stream()
                 .sorted(comparing(Dish::calories));
 
         if (this.logger.isTraceEnabled()) {
@@ -438,7 +438,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<String> types = getDishes().stream()
+        final Stream<String> types = listOfDishes().stream()
                 .map(Dish::type)
                 .map(DishType::name)
                 .distinct()
@@ -481,7 +481,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Optional<Dish> dish = getDishes().stream().findAny();
+        final Optional<Dish> dish = listOfDishes().stream().findAny();
         final boolean result = dish.isPresent();
 
         if (this.logger.isTraceEnabled()) {
@@ -503,7 +503,7 @@ public final class BasicsDemo implements Demo {
 
         String result = null;
 
-        final Optional<Dish> dish = getDishes().stream().findFirst();
+        final Optional<Dish> dish = listOfDishes().stream().findFirst();
 
         if (dish.isPresent()) {
             result = dish.get().name();
@@ -528,7 +528,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Optional<Dish> dish = getDishes().stream()
+        final Optional<Dish> dish = listOfDishes().stream()
                 .max(comparing(Dish::calories));
 
         final String result = dish.map(Dish::name).orElse(null);
@@ -552,7 +552,7 @@ public final class BasicsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Optional<Dish> dish = getDishes().stream()
+        final Optional<Dish> dish = listOfDishes().stream()
                 .min(comparing(Dish::calories));
 
         final String result = dish.map(Dish::name).orElse(null);

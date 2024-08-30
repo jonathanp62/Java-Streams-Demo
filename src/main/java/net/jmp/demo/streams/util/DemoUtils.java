@@ -38,6 +38,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
+import java.util.stream.Stream;
+
 /**
  * Demo utilities.
  */
@@ -54,7 +56,7 @@ public final class DemoUtils {
      *
      * @return  java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;
      */
-    public static List<Dish> getDishes() {
+    public static List<Dish> listOfDishes() {
         return Arrays.asList(
                 new Dish("pork", false, 800, DishType.MEAT),
                 new Dish("beef", false, 700, DishType.MEAT),
@@ -65,6 +67,27 @@ public final class DemoUtils {
                 new Dish("pizza", true, 550, DishType.OTHER),
                 new Dish("prawns", false, 300, DishType.FISH),
                 new Dish("salmon", false, 450, DishType.FISH));
+    }
+
+    /**
+     * Method to return a stream of dishes.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.streams.records.Dish&gt;
+     */
+    public static Stream<Dish> streamOfDishes() {
+        final Stream.Builder<Dish> builder = Stream.builder();
+
+        builder.accept(new Dish("pork", false, 800, DishType.MEAT));
+        builder.accept(new Dish("beef", false, 700, DishType.MEAT));
+        builder.accept(new Dish("chicken", false, 400, DishType.MEAT));
+        builder.accept(new Dish("french fries", true, 530, DishType.OTHER));
+        builder.accept(new Dish("rice", true, 350, DishType.OTHER));
+        builder.accept(new Dish("seasonal fruit", true, 120, DishType.OTHER));
+        builder.accept(new Dish("pizza", true, 550, DishType.OTHER));
+        builder.accept(new Dish("prawns", false, 300, DishType.FISH));
+        builder.accept(new Dish("salmon", false, 450, DishType.FISH));
+
+        return builder.build();
     }
 
     /**

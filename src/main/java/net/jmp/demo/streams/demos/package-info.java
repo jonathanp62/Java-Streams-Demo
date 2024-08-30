@@ -33,7 +33,7 @@ package net.jmp.demo.streams.demos;
 
 /*
  * Demonstrate the basics along with:
- *   builder()
+ *   builder(*)
  *   collect()
  *   dropWhile(*)
  *   flatMap()

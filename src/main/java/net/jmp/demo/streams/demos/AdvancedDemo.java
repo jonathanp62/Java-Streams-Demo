@@ -38,6 +38,9 @@ import java.util.stream.Stream;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
+import net.jmp.demo.streams.records.Dish;
+import net.jmp.demo.streams.records.DishType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +74,7 @@ public final class AdvancedDemo implements Demo {
             this.generate().forEach(e -> this.logger.info("{}", e));
             this.iterateNumbers().forEach(e -> this.logger.info("{}", e));
             this.iterateNumbersWithPredicate().forEach(e -> this.logger.info("{}", e));
+            this.buildDishes().forEach(e -> this.logger.info("{}", e));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -178,6 +182,38 @@ public final class AdvancedDemo implements Demo {
         final UnaryOperator<Integer> next = i -> i + 1;
         final Predicate<Integer> hasNext = i -> i <= 5;
         final Stream<Integer> stream = Stream.iterate(1, hasNext, next);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * Use a stream builder to
+     * build a stream of dishes.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.records.Dish&gt;
+     */
+    private Stream<Dish> buildDishes() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream.Builder<Dish> builder = Stream.builder();
+
+        builder.add(new Dish("pork", false, 800, DishType.MEAT))
+                .add(new Dish("beef", false, 700, DishType.MEAT))
+                .add(new Dish("chicken", false, 400, DishType.MEAT))
+                .add(new Dish("french fries", true, 530, DishType.OTHER))
+                .add(new Dish("rice", true, 350, DishType.OTHER))
+                .add(new Dish("seasonal fruit", true, 120, DishType.OTHER))
+                .add(new Dish("pizza", true, 550, DishType.OTHER))
+                .add(new Dish("prawns", false, 300, DishType.FISH))
+                .add(new Dish("salmon", false, 450, DishType.FISH));
+
+        final Stream<Dish> stream = builder.build();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(stream));

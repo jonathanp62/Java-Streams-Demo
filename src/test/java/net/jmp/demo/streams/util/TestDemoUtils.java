@@ -30,13 +30,51 @@ package net.jmp.demo.streams.util;
  * SOFTWARE.
  */
 
-import static net.jmp.demo.streams.util.DemoUtils.toTypedArray;
+import java.util.List;
+
+import static net.jmp.demo.streams.util.DemoUtils.*;
 
 import static org.junit.Assert.*;
+
+import net.jmp.demo.streams.records.Dish;
 
 import org.junit.Test;
 
 public final class TestDemoUtils {
+    @Test
+    public void testListOfDishes() throws Exception {
+        final List<Dish> dishes = listOfDishes();
+
+        assertNotNull(dishes);
+        assertEquals(9, dishes.size());
+        assertEquals("pork", dishes.get(0).name());
+        assertEquals("beef", dishes.get(1).name());
+        assertEquals("chicken", dishes.get(2).name());
+        assertEquals("french fries", dishes.get(3).name());
+        assertEquals("rice", dishes.get(4).name());
+        assertEquals("seasonal fruit", dishes.get(5).name());
+        assertEquals("pizza", dishes.get(6).name());
+        assertEquals("prawns", dishes.get(7).name());
+        assertEquals("salmon", dishes.get(8).name());
+    }
+
+    @Test
+    public void testStreamOfDishes() throws Exception {
+        final List<Dish> dishes = streamOfDishes().toList();
+
+        assertNotNull(dishes);
+        assertEquals(9, dishes.size());
+        assertEquals("pork", dishes.get(0).name());
+        assertEquals("beef", dishes.get(1).name());
+        assertEquals("chicken", dishes.get(2).name());
+        assertEquals("french fries", dishes.get(3).name());
+        assertEquals("rice", dishes.get(4).name());
+        assertEquals("seasonal fruit", dishes.get(5).name());
+        assertEquals("pizza", dishes.get(6).name());
+        assertEquals("prawns", dishes.get(7).name());
+        assertEquals("salmon", dishes.get(8).name());
+    }
+
     @Test
     public void testToTypedArray() {
         final Object[] array1 = new Object[] { "a", "b", "c" };
