@@ -68,7 +68,7 @@ public final class TestUtils {
      * @param   clazz   The class of type T
      * @return          java.util.List&lt;T&gt;
      */
-    public static <T> List<T> toTypedList(final Stream<?> stream, final Class<T> clazz) {
+    public static <T> List<T> streamToTypedList(final Stream<?> stream, final Class<T> clazz) {
         Objects.requireNonNull(stream, () -> "Stream<?> stream is null");
         Objects.requireNonNull(clazz, () -> "Class<T> clazz");
 

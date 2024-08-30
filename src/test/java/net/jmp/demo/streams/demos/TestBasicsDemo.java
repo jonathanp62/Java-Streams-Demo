@@ -55,7 +55,7 @@ public final class TestBasicsDemo {
 
         final Object o = method.invoke(demo);
         final Stream<?> stream = castToType(Stream.class, o);
-        final List<String> dishNames = toTypedList(stream, String.class);
+        final List<String> dishNames = streamToTypedList(stream, String.class);
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -79,7 +79,7 @@ public final class TestBasicsDemo {
 
         final Object o = method.invoke(demo);
         final Stream<?> stream = castToType(Stream.class, o);
-        final List<String> dishNames = toTypedList(stream, String.class);
+        final List<String> dishNames = streamToTypedList(stream, String.class);
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -101,7 +101,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> nameLengths = toTypedList(stream, Integer.class);
+        final List<Integer> nameLengths = streamToTypedList(stream, Integer.class);
 
         assertNotNull(nameLengths);
         assertEquals(9, nameLengths.size());
@@ -123,7 +123,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Dish> dishes = toTypedList(stream, Dish.class);
+        final List<Dish> dishes = streamToTypedList(stream, Dish.class);
 
         assertNotNull(dishes);
         assertEquals(4, dishes.size());
@@ -140,7 +140,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Dish> dishes = toTypedList(stream, Dish.class);
+        final List<Dish> dishes = streamToTypedList(stream, Dish.class);
 
         assertNotNull(dishes);
         assertEquals(3, dishes.size());
@@ -156,7 +156,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Dish> dishes = toTypedList(stream, Dish.class);
+        final List<Dish> dishes = streamToTypedList(stream, Dish.class);
 
         assertNotNull(dishes);
         assertEquals(4, dishes.size());
@@ -224,7 +224,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Dish> dishes = toTypedList(stream, Dish.class);
+        final List<Dish> dishes = streamToTypedList(stream, Dish.class);
 
         assertNotNull(dishes);
         assertEquals(9, dishes.size());
@@ -246,7 +246,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<String> types = toTypedList(stream, String.class);
+        final List<String> types = streamToTypedList(stream, String.class);
 
         assertNotNull(types);
         assertEquals(3, types.size());
@@ -325,7 +325,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = toTypedList(stream, Integer.class);
+        final List<Integer> elements = streamToTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(1, elements.size());
@@ -339,7 +339,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = toTypedList(stream, Integer.class);
+        final List<Integer> elements = streamToTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(3, elements.size());
@@ -355,7 +355,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = toTypedList(stream, Integer.class);
+        final List<Integer> elements = streamToTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(1, elements.size());
@@ -381,7 +381,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = toTypedList(stream, Integer.class);
+        final List<Integer> elements = streamToTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(6, elements.size());
@@ -400,7 +400,7 @@ public final class TestBasicsDemo {
         method.setAccessible(true);
 
         final Stream<?> stream = castToType(Stream.class, method.invoke(new BasicsDemo()));
-        final List<Integer> elements = toTypedList(stream, Integer.class);
+        final List<Integer> elements = streamToTypedList(stream, Integer.class);
 
         assertNotNull(elements);
         assertEquals(5, elements.size());

@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 import net.jmp.demo.streams.records.Dish;
 
 import static net.jmp.demo.streams.testutil.TestUtils.castToType;
-import static net.jmp.demo.streams.testutil.TestUtils.toTypedList;
+import static net.jmp.demo.streams.testutil.TestUtils.streamToTypedList;
 
 import static org.junit.Assert.*;
 
@@ -53,7 +53,7 @@ public class TestAdvancedDemo {
 
         final Object o = method.invoke(demo);
         final Stream<?> stream = castToType(Stream.class, o);
-        final List<Integer> results = toTypedList(stream, Integer.class);
+        final List<Integer> results = streamToTypedList(stream, Integer.class);
 
         assertNotNull(results);
         assertEquals(4, results.size());
@@ -72,7 +72,7 @@ public class TestAdvancedDemo {
 
         final Object o = method.invoke(demo);
         final Stream<?> stream = castToType(Stream.class, o);
-        final List<Integer> results = toTypedList(stream, Integer.class);
+        final List<Integer> results = streamToTypedList(stream, Integer.class);
 
         assertNotNull(results);
         assertEquals(3, results.size());
@@ -90,7 +90,7 @@ public class TestAdvancedDemo {
 
         final Object o = method.invoke(demo);
         final Stream<?> stream = castToType(Stream.class, o);
-        final List<Double> results = toTypedList(stream, Double.class);
+        final List<Double> results = streamToTypedList(stream, Double.class);
 
         assertNotNull(results);
         assertEquals(5, results.size());
@@ -110,7 +110,7 @@ public class TestAdvancedDemo {
 
         final Object o = method.invoke(demo);
         final Stream<?> stream = castToType(Stream.class, o);
-        final List<Integer> results = toTypedList(stream, Integer.class);
+        final List<Integer> results = streamToTypedList(stream, Integer.class);
 
         assertNotNull(results);
         assertEquals(5, results.size());
@@ -130,7 +130,7 @@ public class TestAdvancedDemo {
 
         final Object o = method.invoke(demo);
         final Stream<?> stream = castToType(Stream.class, o);
-        final List<Integer> results = toTypedList(stream, Integer.class);
+        final List<Integer> results = streamToTypedList(stream, Integer.class);
 
         assertNotNull(results);
         assertEquals(5, results.size());
@@ -150,7 +150,7 @@ public class TestAdvancedDemo {
 
         final Object o = method.invoke(demo);
         final Stream<?> stream = castToType(Stream.class, o);
-        final List<Dish> results = toTypedList(stream, Dish.class);
+        final List<Dish> results = streamToTypedList(stream, Dish.class);
 
         assertNotNull(results);
         assertEquals(9, results.size());
