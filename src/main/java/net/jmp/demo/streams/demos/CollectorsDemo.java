@@ -54,7 +54,8 @@ import org.slf4j.LoggerFactory;
  *     averaging...(*)
  *     collectingAndThen()
  *     counting(*)
- *     filtering()
+ *     filtering(*)
+ *     filtering() and groupingBy() together
  *     flatMapping()
  *     groupingBy()
  *     joining(*)
@@ -111,6 +112,8 @@ public final class CollectorsDemo implements Demo {
             this.logger.info("Joining: {}", this.joining());
             this.logger.info("Joining: {}", this.joiningWithDelimiter());
             this.logger.info("Joining: {}", this.joiningWithPrefixAndSuffix());
+
+            this.filtering().forEach(dish -> this.logger.info("High calorie: {}", dish));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -133,7 +136,7 @@ public final class CollectorsDemo implements Demo {
         final List<String> names = streamOfDishes()
                 .map(Dish::name)
                 .map(e -> "List: " + e)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());  // Using .toList() creates an ImmutableCollection$ListN instance
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(names));
@@ -444,5 +447,28 @@ public final class CollectorsDemo implements Demo {
         }
 
         return joined;
+    }
+
+    /**
+     * Return a list of the names of high calorie dishes.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     */
+    private List<String> filtering() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<String> names = streamOfDishes()
+                .collect(Collectors.filtering(dish -> dish.calories() > 500, Collectors.toList()))
+                .stream()
+                .map(Dish::name)
+                .collect(Collectors.toList());  // Using .toList() creates an ImmutableCollection$ListN instance
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(names));
+        }
+
+        return names;
     }
 }

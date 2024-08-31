@@ -141,7 +141,7 @@ public final class TestCollectorsDemo {
         final Object o = method.invoke(demo);
         final TreeSet<?> hashSet = castToType(TreeSet.class, o);
         final Set<String> dishNames = setToTypedSet(hashSet, String.class);
-        final String[] names = dishNames.toArray(new String[dishNames.size()]);
+        final String[] names = dishNames.toArray(new String[0]);
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -283,5 +283,24 @@ public final class TestCollectorsDemo {
 
         assertNotNull(joined);
         assertEquals("<pork, beef, chicken, french fries, rice, seasonal fruit, pizza, prawns, salmon>", joined);
+    }
+
+    @Test
+    public void testFiltering() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("filtering");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final ArrayList<?> arrayList = castToType(ArrayList.class, o);
+        final List<String> dishNames = listToTypedList(arrayList, String.class);
+
+        assertNotNull(dishNames);
+        assertEquals(4, dishNames.size());
+        assertTrue(dishNames.contains("pork"));
+        assertTrue(dishNames.contains("beef"));
+        assertTrue(dishNames.contains("french fries"));
+        assertTrue(dishNames.contains("pizza"));
     }
 }
