@@ -32,9 +32,10 @@ package net.jmp.demo.streams.demos;
 
 import java.util.*;
 
-import java.util.stream.Collectors;
+import net.jmp.demo.streams.records.Dish;
+import net.jmp.demo.streams.records.DishType;
 
-import static net.jmp.demo.streams.testutil.TestUtils.castToType;
+import static net.jmp.demo.streams.testutil.TestUtils.*;
 
 import static org.junit.Assert.*;
 
@@ -50,7 +51,7 @@ public final class TestCollectorsDemo {
 
         final Object o = method.invoke(demo);
         final ArrayList<?> arrayList = castToType(ArrayList.class, o);
-        final List<String> dishNames = arrayListToTypedList(arrayList, String.class);
+        final List<String> dishNames = listToTypedList(arrayList, String.class);
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -66,6 +67,48 @@ public final class TestCollectorsDemo {
     }
 
     @Test
+    public void testToMap() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("toMap");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final HashMap<?, ?> hashMap = castToType(HashMap.class, o);
+        final Map<String, Integer> map = mapToTypedMap(hashMap, String.class, Integer.class);
+
+        assertNotNull(map);
+        assertEquals(9, map.size());
+        assertEquals(800, (long) map.get("PORK"));
+        assertEquals(700, (long) map.get("BEEF"));
+        assertEquals(400, (long) map.get("CHICKEN"));
+        assertEquals(530, (long) map.get("FRENCH FRIES"));
+        assertEquals(350, (long) map.get("RICE"));
+        assertEquals(120, (long) map.get("SEASONAL FRUIT"));
+        assertEquals(550, (long) map.get("PIZZA"));
+        assertEquals(300, (long) map.get("PRAWNS"));
+        assertEquals(450, (long) map.get("SALMON"));
+    }
+
+    @Test
+    public void toMapWithMerge() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("toMapWithMerge");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final TreeMap<?, ?> treeMap = castToType(TreeMap.class, o);
+        final Map<DishType, Dish> map = mapToTypedMap(treeMap, DishType.class, Dish.class);
+
+        assertNotNull(map);
+        assertEquals(3, map.size());
+        assertEquals("prawns", map.get(DishType.FISH).name());
+        assertEquals("pork", map.get(DishType.MEAT).name());
+        assertEquals("french fries", map.get(DishType.OTHER).name());
+    }
+
+    @Test
     public void testToSet() throws Exception {
         final var demo = new CollectorsDemo();
         final var method = CollectorsDemo.class.getDeclaredMethod("toSet");
@@ -74,7 +117,7 @@ public final class TestCollectorsDemo {
 
         final Object o = method.invoke(demo);
         final HashSet<?> hashSet = castToType(HashSet.class, o);
-        final Set<String> dishNames = hashSetToTypedSet(hashSet, String.class);
+        final Set<String> dishNames = setToTypedSet(hashSet, String.class);
 
         assertNotNull(dishNames);
         assertEquals(9, dishNames.size());
@@ -87,45 +130,5 @@ public final class TestCollectorsDemo {
         assertTrue(dishNames.contains("Set : pizza"));
         assertTrue(dishNames.contains("Set : prawns"));
         assertTrue(dishNames.contains("Set : salmon"));
-    }
-
-    /**
-     * Create a list of elements of type T from
-     * an ArrayList of wildcard-typed objects.
-     *
-     * @param   <T>         The type of element in the list
-     * @param   arrayList   java.util.ArrayList&lt;?&gt;
-     * @param   clazz       The class of type T
-     * @return              java.util.List&lt;T&gt;
-     */
-    private static <T> List<T> arrayListToTypedList(final ArrayList<?> arrayList, final Class<T> clazz) {
-        Objects.requireNonNull(arrayList, () -> "ArrayList<?> arrayList is null");
-        Objects.requireNonNull(clazz, () -> "Class<T> clazz");
-
-        return arrayList
-                .stream()
-                .filter(clazz::isInstance)
-                .map(clazz::cast)
-                .toList();
-    }
-
-    /**
-     * Create a set of elements of type T from
-     * a HashSet of wildcard-typed objects.
-     *
-     * @param   <T>         The type of element in the list
-     * @param   hashSet     java.util.HashSet&lt;?&gt;
-     * @param   clazz       The class of type T
-     * @return              java.util.Set&lt;T&gt;
-     */
-    private static <T> Set<T> hashSetToTypedSet(final HashSet<?> hashSet, final Class<T> clazz) {
-        Objects.requireNonNull(hashSet, () -> "HashSet<?> hashSet is null");
-        Objects.requireNonNull(clazz, () -> "Class<T> clazz");
-
-        return hashSet
-                .stream()
-                .filter(clazz::isInstance)
-                .map(clazz::cast)
-                .collect(Collectors.toSet());
     }
 }

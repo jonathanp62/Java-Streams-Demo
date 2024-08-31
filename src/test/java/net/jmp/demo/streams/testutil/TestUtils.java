@@ -31,9 +31,9 @@ package net.jmp.demo.streams.testutil;
  * SOFTWARE.
  */
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class TestUtils {
@@ -76,5 +76,70 @@ public final class TestUtils {
                 .filter(clazz::isInstance)
                 .map(clazz::cast)
                 .toList();
+    }
+
+    /**
+     * Create a list of elements of type T from
+     * a List of wildcard-typed objects.
+     *
+     * @param   <T>         The type of element in the list
+     * @param   list        java.util.List&lt;?&gt;
+     * @param   clazz       The class of type T
+     * @return              java.util.List&lt;T&gt;
+     */
+    public static <T> List<T> listToTypedList(final List<?> list, final Class<T> clazz) {
+        Objects.requireNonNull(list, () -> "List<?> list is null");
+        Objects.requireNonNull(clazz, () -> "Class<T> clazz");
+
+        return list
+                .stream()
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .toList();
+    }
+
+    /**
+     * Create a map of elements of types K and V
+     * from a Map of wildcard-typed objects.
+     *
+     * @param   <K>         The type of key element in the map
+     * @param   <V>         The type of value element in the map
+     * @param   map         java.util.Map&lt;?, ?&gt;
+     * @param   keyClazz    The class of key type K
+     * @param   valueClazz  The class of value type V
+     * @return              java.util.Map&lt;K, V&gt;
+     */
+    public static <K, V> Map<K, V> mapToTypedMap(final Map<?, ?> map, final Class<K> keyClazz, final Class<V> valueClazz) {
+        Objects.requireNonNull(map, () -> "Map<?, ?> map is null");
+        Objects.requireNonNull(keyClazz, () -> "Class<T> keyClazz");
+        Objects.requireNonNull(valueClazz, () -> "Class<T> valueClazz");
+
+        final Map<K, V> typedMap = new HashMap<>();
+
+        for (final Map.Entry<?, ?> entry : map.entrySet()) {
+            typedMap.put(keyClazz.cast(entry.getKey()), valueClazz.cast(entry.getValue()));
+        }
+
+        return typedMap;
+    }
+
+    /**
+     * Create a set of elements of type T from
+     * a Set of wildcard-typed objects.
+     *
+     * @param   <T>         The type of element in the list
+     * @param   set         java.util.Set&lt;?&gt;
+     * @param   clazz       The class of type T
+     * @return              java.util.Set&lt;T&gt;
+     */
+    public static <T> Set<T> setToTypedSet(final Set<?> set, final Class<T> clazz) {
+        Objects.requireNonNull(set, () -> "Set<?> set is null");
+        Objects.requireNonNull(clazz, () -> "Class<T> clazz");
+
+        return set
+                .stream()
+                .filter(clazz::isInstance)
+                .map(clazz::cast)
+                .collect(Collectors.toSet());
     }
 }
