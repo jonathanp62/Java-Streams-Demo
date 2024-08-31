@@ -187,4 +187,32 @@ public final class TestCollectorsDemo {
         assertEquals(800, summary.getMax());
         assertEquals(466.6666666666667, summary.getAverage(), 0.001);
     }
+
+    @Test
+    public void testMaxBy() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("maxBy");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String name = castToType(String.class, o);
+
+        assertNotNull(name);
+        assertEquals("pork", name);
+    }
+
+    @Test
+    public void testMinBy() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("minBy");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String name = castToType(String.class, o);
+
+        assertNotNull(name);
+        assertEquals("seasonal fruit", name);
+    }
 }
