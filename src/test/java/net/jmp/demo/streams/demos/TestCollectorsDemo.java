@@ -215,4 +215,46 @@ public final class TestCollectorsDemo {
         assertNotNull(name);
         assertEquals("seasonal fruit", name);
     }
+
+    @Test
+    public void testJoining() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("joining");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String joined = castToType(String.class, o);
+
+        assertNotNull(joined);
+        assertEquals("porkbeefchickenfrench friesriceseasonal fruitpizzaprawnssalmon", joined);
+    }
+
+    @Test
+    public void testJoiningWithDelimiter() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("joiningWithDelimiter");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String joined = castToType(String.class, o);
+
+        assertNotNull(joined);
+        assertEquals("pork, beef, chicken, french fries, rice, seasonal fruit, pizza, prawns, salmon", joined);
+    }
+
+    @Test
+    public void testJoiningWithPrefixAndSuffix() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("joiningWithPrefixAndSuffix");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String joined = castToType(String.class, o);
+
+        assertNotNull(joined);
+        assertEquals("<pork, beef, chicken, french fries, rice, seasonal fruit, pizza, prawns, salmon>", joined);
+    }
 }

@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  *     filtering()
  *     flatMapping()
  *     groupingBy()
- *     joining()
+ *     joining(*)
  *     mapping()
  *     maxBy(*)
  *     minBy(*)
@@ -107,6 +107,9 @@ public final class CollectorsDemo implements Demo {
             this.logger.info("Calories summary: {}", this.summarizing());
             this.logger.info("Most calories: {}", this.maxBy());
             this.logger.info("Least calories: {}", this.minBy());
+            this.logger.info("Joining: {}", this.joining());
+            this.logger.info("Joining: {}", this.joiningWithDelimiter());
+            this.logger.info("Joining: {}", this.joiningWithPrefixAndSuffix());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -349,5 +352,71 @@ public final class CollectorsDemo implements Demo {
         }
 
         return name;
+    }
+
+    /**
+     * Return the names of the dishes joined together.
+     *
+     * @return  java.lang.String
+     */
+    private String joining() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final String joined = streamOfDishes()
+                .map(Dish::name)
+                .collect(Collectors.joining());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(joined));
+        }
+
+        return joined;
+    }
+
+    /**
+     * Return the names of the dishes
+     * joined together with a delimiter.
+     *
+     * @return  java.lang.String
+     */
+    private String joiningWithDelimiter() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final String joined = streamOfDishes()
+                .map(Dish::name)
+                .collect(Collectors.joining(", "));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(joined));
+        }
+
+        return joined;
+    }
+
+    /**
+     * Return the names of the dishes
+     * joined together with a delimiter
+     * applying a prefix and suffix.
+     *
+     * @return  java.lang.String
+     */
+    private String joiningWithPrefixAndSuffix() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final String joined = streamOfDishes()
+                .map(Dish::name)
+                .collect(Collectors.joining(", ", "<", ">"));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(joined));
+        }
+
+        return joined;
     }
 }
