@@ -34,6 +34,7 @@ import java.util.*;
 
 import java.util.function.Function;
 
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import net.jmp.demo.streams.records.Dish;
@@ -58,8 +59,8 @@ import org.slf4j.LoggerFactory;
  *     groupingBy()
  *     joining()
  *     mapping()
- *     maxBy()
- *     minBy()
+ *     maxBy(*)
+ *     minBy(*)
  *     partitioningBy()
  *     reducing()
  *     summarizing...(*)
@@ -104,6 +105,8 @@ public final class CollectorsDemo implements Demo {
             this.logger.info("Number of dishes: {}", this.counting());
             this.logger.info("Total calories: {}", this.summing());
             this.logger.info("Calories summary: {}", this.summarizing());
+            this.logger.info("Most calories: {}", this.maxBy());
+            this.logger.info("Least calories: {}", this.minBy());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -298,5 +301,53 @@ public final class CollectorsDemo implements Demo {
         }
 
         return summary;
+    }
+
+    /**
+     * Return the name of the dish with the most calories.
+     *
+     * @return  java.lang.String
+     */
+    private String maxBy() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Collector<Dish, ?, Optional<Dish>> collectorMax = Collectors.maxBy(Comparator.comparing(Dish::calories));
+
+        final Optional<Dish> dish = streamOfDishes()
+                .collect(collectorMax);
+
+        final String name = dish.map(Dish::name).orElseThrow(() -> new RuntimeException("No dish returned"));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(name));
+        }
+
+        return name;
+    }
+
+    /**
+     * Return the name of the dish with the least calories.
+     *
+     * @return  java.lang.String
+     */
+    private String minBy() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Collector<Dish, ?, Optional<Dish>> collectorMin = Collectors.minBy(Comparator.comparing(Dish::calories));
+
+        final Optional<Dish> dish = streamOfDishes()
+                .collect(collectorMin);
+
+        final String name = dish.map(Dish::name).orElseThrow(() -> new RuntimeException("No dish returned"));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(name));
+        }
+
+        return name;
     }
 }

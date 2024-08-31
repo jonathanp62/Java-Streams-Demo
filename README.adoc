@@ -44,6 +44,8 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
 * Collectors
   - averaging
   - counting
+  - maxBy
+  - minBy
   - summarizing
   - summing
   - toList
