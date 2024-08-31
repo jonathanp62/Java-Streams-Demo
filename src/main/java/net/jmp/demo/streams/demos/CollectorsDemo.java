@@ -114,6 +114,10 @@ public final class CollectorsDemo implements Demo {
             this.logger.info("Joining: {}", this.joiningWithPrefixAndSuffix());
 
             this.filtering().forEach(dish -> this.logger.info("High calorie: {}", dish));
+
+            this.partitioning().forEach((key, value) -> {
+                value.forEach(dish -> this.logger.info("Vegetarian? {}: {}", key, dish.name()));
+            });
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -470,5 +474,26 @@ public final class CollectorsDemo implements Demo {
         }
 
         return names;
+    }
+
+    /**
+     * Partition the dishes by vegetarian
+     * and non-vegetarian status.
+     *
+     * @return  java.util.Map&lt;java.lang.Boolean, java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;&gt;
+     */
+    private Map<Boolean, List<Dish>> partitioning() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Map<Boolean, List<Dish>> dishes = streamOfDishes()
+                .collect(Collectors.partitioningBy(Dish::vegetarian));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(dishes));
+        }
+
+        return dishes;
     }
 }

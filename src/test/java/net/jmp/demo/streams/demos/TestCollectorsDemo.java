@@ -303,4 +303,37 @@ public final class TestCollectorsDemo {
         assertTrue(dishNames.contains("french fries"));
         assertTrue(dishNames.contains("pizza"));
     }
+
+    @Test
+    public void testPartitioning() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("partitioning");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Map<Boolean, List<Dish>> map = (Map<Boolean, List<Dish>>) method.invoke(demo);
+
+        assertNotNull(map);
+        assertEquals(2, map.size());
+
+        final List<Dish> vegetarianDishes = map.get(true);
+        final List<Dish> nonVegetarianDishes = map.get(false);
+
+        assertNotNull(vegetarianDishes);
+        assertEquals(4, vegetarianDishes.size());
+        assertNotNull(nonVegetarianDishes);
+        assertEquals(5, nonVegetarianDishes.size());
+
+        assertEquals("french fries", vegetarianDishes.get(0).name());
+        assertEquals("rice", vegetarianDishes.get(1).name());
+        assertEquals("seasonal fruit", vegetarianDishes.get(2).name());
+        assertEquals("pizza", vegetarianDishes.get(3).name());
+
+        assertEquals("pork", nonVegetarianDishes.get(0).name());
+        assertEquals("beef", nonVegetarianDishes.get(1).name());
+        assertEquals("chicken", nonVegetarianDishes.get(2).name());
+        assertEquals("prawns", nonVegetarianDishes.get(3).name());
+        assertEquals("salmon", nonVegetarianDishes.get(4).name());
+    }
 }
