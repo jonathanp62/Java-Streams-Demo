@@ -53,9 +53,9 @@ import org.slf4j.LoggerFactory;
  *
  * Demonstrations:
  *   Stream.collect() using the following collectors:
- *     averaging...()
+ *     averaging...(*)
  *     collectingAndThen()
- *     counting()
+ *     counting(*)
  *     filtering()
  *     flatMapping()
  *     groupingBy()
@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
  *     partitioningBy()
  *     reducing()
  *     summarizing...()
- *     summing...()
+ *     summing...(*)
  *     teeing()
  *     toCollection() (i.e. LinkedHashSet::new)
  *     toConcurrentMap()
@@ -102,6 +102,11 @@ public final class CollectorsDemo implements Demo {
             this.toMap().forEach((key, value) -> this.logger.info("Key: {}; Value: {}", key, value));
             this.toMapWithMerge().forEach((key, value) -> this.logger.info("Key: {}; Value: {}", key, value));
             this.toSet().forEach(this.logger::info);
+
+            this.logger.info("Average calories: {}", this.averaging());
+            this.logger.info("Number of dishes: {}", this.counting());
+            this.logger.info("Total calories: {}", this.summing());
+
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -216,5 +221,65 @@ public final class CollectorsDemo implements Demo {
         }
 
         return names;
+    }
+
+    /**
+     * Return the average calories of the dishes.
+     *
+     * @return  double
+     */
+    private double averaging() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final double average = streamOfDishes()
+                .collect(Collectors.averagingInt(Dish::calories));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(average));
+        }
+
+        return average;
+    }
+
+    /**
+     * Return the number of dishes.
+     *
+     * @return  long
+     */
+    private long counting() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final long count = streamOfDishes()
+                .collect(Collectors.counting());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(count));
+        }
+
+        return count;
+    }
+
+    /**
+     * Return the sum of the calories in the dishes.
+     *
+     * @return  int
+     */
+    private int summing() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final int sum = streamOfDishes()
+                .collect(Collectors.summingInt(Dish::calories));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(sum));
+        }
+
+        return sum;
     }
 }

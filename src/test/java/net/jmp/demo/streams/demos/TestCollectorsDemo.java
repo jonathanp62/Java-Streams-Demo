@@ -131,4 +131,43 @@ public final class TestCollectorsDemo {
         assertTrue(dishNames.contains("Set : prawns"));
         assertTrue(dishNames.contains("Set : salmon"));
     }
+
+    @Test
+    public void testAveraging() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("averaging");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final double average = castToType(Double.class, o);
+
+        assertEquals(466.6666666666667, average, 0.001);
+    }
+
+    @Test
+    public void testCounting() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("counting");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final long count = castToType(Long.class, o);
+
+        assertEquals(9, count);
+    }
+
+    @Test
+    public void testSumming() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("summing");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final int sum = castToType(Integer.class, o);
+
+        assertEquals(4200, sum);
+    }
 }
