@@ -132,6 +132,33 @@ public final class TestCollectorsDemo {
         assertTrue(dishNames.contains("Set : salmon"));
     }
 
+    public void testToSortedSet() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("toSortedSet");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final TreeSet<?> hashSet = castToType(TreeSet.class, o);
+        final Set<String> dishNames = setToTypedSet(hashSet, String.class);
+        final String[] names = dishNames.toArray(new String[dishNames.size()]);
+
+        assertNotNull(dishNames);
+        assertEquals(9, dishNames.size());
+        assertNotNull(names);
+        assertEquals(9, names.length);
+
+        assertEquals("Sorted : beef", names[0]);
+        assertEquals("Sorted : chicken", names[1]);
+        assertEquals("Sorted : french fries", names[2]);
+        assertEquals("Sorted : pizza", names[3]);
+        assertEquals("Sorted : pork", names[4]);
+        assertEquals("Sorted : prawns", names[5]);
+        assertEquals("Sorted : rice", names[6]);
+        assertEquals("Sorted : salmon", names[7]);
+        assertEquals("Sorted : seasonal fruit", names[8]);
+    }
+
     @Test
     public void testAveraging() throws Exception {
         final var demo = new CollectorsDemo();

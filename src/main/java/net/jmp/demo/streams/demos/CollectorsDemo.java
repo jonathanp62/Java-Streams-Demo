@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
  *     summarizing...(*)
  *     summing...(*)
  *     teeing()
- *     toCollection() (i.e. LinkedHashSet::new)
+ *     toCollection(*) (i.e. LinkedHashSet::new)
  *     toConcurrentMap()
  *     toList(*)
  *     toMap(*)
@@ -100,6 +100,7 @@ public final class CollectorsDemo implements Demo {
             this.toMap().forEach((key, value) -> this.logger.info("Key: {}; Value: {}", key, value));
             this.toMapWithMerge().forEach((key, value) -> this.logger.info("Key: {}; Value: {}", key, value));
             this.toSet().forEach(this.logger::info);
+            this.toSortedSet().forEach(this.logger::info);
 
             this.logger.info("Average calories: {}", this.averaging());
             this.logger.info("Number of dishes: {}", this.counting());
@@ -218,6 +219,31 @@ public final class CollectorsDemo implements Demo {
                 .map(Dish::name)
                 .map(e -> "Set : " + e)
                 .collect(Collectors.toSet());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(names));
+        }
+
+        return names;
+    }
+
+    /**
+     * Collect the names of dishes into a sorted set.
+     *
+     * @return  java.util.Set&lt;java.lang.String&gt;
+     */
+    private Set<String> toSortedSet() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        /* Using TreeSet instead of default HashSet */
+
+        final Set<String> names = streamOfDishes()
+                .map(Dish::name)
+                .map(e -> "Sorted : " + e)
+                .sorted()
+                .collect(Collectors.toCollection(TreeSet::new));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(names));
