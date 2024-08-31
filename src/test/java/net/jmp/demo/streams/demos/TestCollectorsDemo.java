@@ -170,4 +170,21 @@ public final class TestCollectorsDemo {
 
         assertEquals(4200, sum);
     }
+
+    @Test
+    public void testSummarizing() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("summarizing");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final IntSummaryStatistics summary = castToType(IntSummaryStatistics.class, o);
+
+        assertEquals(9, summary.getCount());
+        assertEquals(4200, summary.getSum());
+        assertEquals(120, summary.getMin());
+        assertEquals(800, summary.getMax());
+        assertEquals(466.6666666666667, summary.getAverage(), 0.001);
+    }
 }

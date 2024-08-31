@@ -30,10 +30,7 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 import java.util.function.Function;
 
@@ -65,7 +62,7 @@ import org.slf4j.LoggerFactory;
  *     minBy()
  *     partitioningBy()
  *     reducing()
- *     summarizing...()
+ *     summarizing...(*)
  *     summing...(*)
  *     teeing()
  *     toCollection() (i.e. LinkedHashSet::new)
@@ -106,7 +103,7 @@ public final class CollectorsDemo implements Demo {
             this.logger.info("Average calories: {}", this.averaging());
             this.logger.info("Number of dishes: {}", this.counting());
             this.logger.info("Total calories: {}", this.summing());
-
+            this.logger.info("Calories summary: {}", this.summarizing());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -281,5 +278,25 @@ public final class CollectorsDemo implements Demo {
         }
 
         return sum;
+    }
+
+    /**
+     * Return the summary of the calories in the dishes.
+     *
+     * @return  java.util.IntSummaryStatistics
+     */
+    private IntSummaryStatistics summarizing() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final IntSummaryStatistics summary = streamOfDishes()
+                .collect(Collectors.summarizingInt(Dish::calories));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(summary));
+        }
+
+        return summary;
     }
 }
