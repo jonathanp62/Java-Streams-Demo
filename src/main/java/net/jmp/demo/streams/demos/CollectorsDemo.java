@@ -62,7 +62,7 @@ import org.slf4j.LoggerFactory;
  *     mapping()
  *     maxBy(*)
  *     minBy(*)
- *     partitioningBy()
+ *     partitioningBy(*)
  *     reducing()
  *     summarizing...(*)
  *     summing...(*)
