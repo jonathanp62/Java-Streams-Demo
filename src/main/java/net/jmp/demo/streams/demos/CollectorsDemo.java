@@ -99,6 +99,7 @@ public final class CollectorsDemo implements Demo {
         if (this.logger.isInfoEnabled()) {
             final var keyValue = "Key: {}; Value: {}";
             final var joining = "Joining: {}";
+            final var vegetarian = "Vegetarian? {}: {}";
 
             this.toList().forEach(this.logger::info);
             this.toMap().forEach((key, value) -> this.logger.info(keyValue, key, value));
@@ -118,7 +119,8 @@ public final class CollectorsDemo implements Demo {
 
             this.filtering().forEach(dish -> this.logger.info("High calorie: {}", dish));
 
-            this.partitioning().forEach((key, value) -> value.forEach(dish -> this.logger.info("Vegetarian? {}: {}", key, dish.name())));
+            this.partitioning().forEach((key, value) -> value.forEach(dish -> this.logger.info(vegetarian, key, dish.name())));
+            this.partitioningToSum().forEach((key, value) -> this.logger.info(vegetarian, key, value));
 
             this.groupingToList().forEach((key, value) -> value.forEach(dish -> this.logger.info("List {}: {}", key, dish.name())));
             this.groupingToSet().forEach((key, value) -> value.forEach(dish -> this.logger.info("Set {}: {}", key, dish.name())));
@@ -495,13 +497,33 @@ public final class CollectorsDemo implements Demo {
         final Map<Boolean, List<Dish>> dishes = streamOfDishes()
                 .collect(Collectors.partitioningBy(Dish::vegetarian));
 
-        // @todo Add a sample where the downstream collector is used
-
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(dishes));
         }
 
         return dishes;
+    }
+
+    /**
+     * Partition the dishes by vegetarian
+     * and non-vegetarian status and return
+     * the sum of the calories for each.
+     *
+     * @return  java.util.Map&lt;java.lang.Boolean, java.lang.Integer&gt;
+     */
+    private Map<Boolean, Integer> partitioningToSum() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Map<Boolean, Integer> sums = streamOfDishes()
+                .collect(Collectors.partitioningBy(Dish::vegetarian, Collectors.summingInt(Dish::calories)));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(sums));
+        }
+
+        return sums;
     }
 
     /**

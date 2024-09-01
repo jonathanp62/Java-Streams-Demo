@@ -338,6 +338,26 @@ public final class TestCollectorsDemo {
     }
 
     @Test
+    public void testPartitioningToSum() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("partitioningToSum");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Map<Boolean, Integer> map = (Map<Boolean, Integer>) method.invoke(demo);
+
+        assertNotNull(map);
+        assertEquals(2, map.size());
+
+        final int vegetarianCalories = map.get(true);
+        final int nonVegetarianCalories = map.get(false);
+
+        assertEquals(1550, vegetarianCalories);
+        assertEquals(2650, nonVegetarianCalories);
+    }
+
+    @Test
     public void testGroupingToList() throws Exception {
         final var demo = new CollectorsDemo();
         final var method = CollectorsDemo.class.getDeclaredMethod("groupingToList");
