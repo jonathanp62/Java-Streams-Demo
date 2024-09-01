@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  *     collectingAndThen()
  *     counting(*)
  *     filtering(*)
- *     filtering() and groupingBy() together
+ *     filtering(*) and groupingBy(*) together
  *     flatMapping()
  *     groupingBy(*)
  *     joining(*)
@@ -118,6 +118,7 @@ public final class CollectorsDemo implements Demo {
             this.logger.info(joining, this.joiningWithPrefixAndSuffix());
 
             this.filtering().forEach(dish -> this.logger.info("High calorie: {}", dish));
+            this.filteringAndGrouping().forEach((key, value) -> this.logger.info("High calorie {}: {}", key, value));
 
             this.partitioning().forEach((key, value) -> value.forEach(dish -> this.logger.info(vegetarian, key, dish.name())));
             this.partitioningToSum().forEach((key, value) -> this.logger.info(vegetarian, key, value));
@@ -484,6 +485,34 @@ public final class CollectorsDemo implements Demo {
     }
 
     /**
+     * Group the dishes by type and filter
+     * for high calorie dishes counting
+     * the number for each type.
+     *
+     * @return  java.util.Map&lt;net.jmp.demo.streams.records.DishType, java.lang.Long&gt;
+     */
+    private Map<DishType, Long> filteringAndGrouping() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        // Count the number of dishes for each type that are high calorie
+
+        final Map<DishType, Long> counts = streamOfDishes()
+                .collect(Collectors.groupingBy(Dish::type,
+                        Collectors.filtering(dish -> dish.calories() > 500,
+                                Collectors.counting()
+                        )
+                ));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(counts));
+        }
+
+        return counts;
+    }
+
+    /**
      * Partition the dishes by vegetarian
      * and non-vegetarian status.
      *
@@ -592,5 +621,4 @@ public final class CollectorsDemo implements Demo {
 
         return sums;
     }
-
 }

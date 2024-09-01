@@ -305,6 +305,28 @@ public final class TestCollectorsDemo {
     }
 
     @Test
+    public void testFilteringAndGrouping() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("filteringAndGrouping");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Map<DishType, Long> map = (Map<DishType, Long>) method.invoke(demo);
+
+        assertNotNull(map);
+        assertEquals(3, map.size());
+
+        final long otherCalories = map.get(DishType.OTHER);
+        final long meatCalories = map.get(DishType.MEAT);
+        final long fishCalories = map.get(DishType.FISH);
+
+        assertEquals(2, otherCalories);
+        assertEquals(2, meatCalories);
+        assertEquals(0, fishCalories);
+    }
+
+    @Test
     public void testPartitioning() throws Exception {
         final var demo = new CollectorsDemo();
         final var method = CollectorsDemo.class.getDeclaredMethod("partitioning");
