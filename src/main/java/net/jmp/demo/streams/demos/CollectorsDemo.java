@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  *     filtering(*)
  *     filtering() and groupingBy() together
  *     flatMapping()
- *     groupingBy()
+ *     groupingBy(*)
  *     joining(*)
  *     mapping()
  *     maxBy(*)
@@ -97,9 +97,12 @@ public final class CollectorsDemo implements Demo {
         }
 
         if (this.logger.isInfoEnabled()) {
+            final var keyValue = "Key: {}; Value: {}";
+            final var joining = "Joining: {}";
+
             this.toList().forEach(this.logger::info);
-            this.toMap().forEach((key, value) -> this.logger.info("Key: {}; Value: {}", key, value));
-            this.toMapWithMerge().forEach((key, value) -> this.logger.info("Key: {}; Value: {}", key, value));
+            this.toMap().forEach((key, value) -> this.logger.info(keyValue, key, value));
+            this.toMapWithMerge().forEach((key, value) -> this.logger.info(keyValue, key, value));
             this.toSet().forEach(this.logger::info);
             this.toSortedSet().forEach(this.logger::info);
 
@@ -109,15 +112,17 @@ public final class CollectorsDemo implements Demo {
             this.logger.info("Calories summary: {}", this.summarizing());
             this.logger.info("Most calories: {}", this.maxBy());
             this.logger.info("Least calories: {}", this.minBy());
-            this.logger.info("Joining: {}", this.joining());
-            this.logger.info("Joining: {}", this.joiningWithDelimiter());
-            this.logger.info("Joining: {}", this.joiningWithPrefixAndSuffix());
+            this.logger.info(joining, this.joining());
+            this.logger.info(joining, this.joiningWithDelimiter());
+            this.logger.info(joining, this.joiningWithPrefixAndSuffix());
 
             this.filtering().forEach(dish -> this.logger.info("High calorie: {}", dish));
 
-            this.partitioning().forEach((key, value) -> {
-                value.forEach(dish -> this.logger.info("Vegetarian? {}: {}", key, dish.name()));
-            });
+            this.partitioning().forEach((key, value) -> value.forEach(dish -> this.logger.info("Vegetarian? {}: {}", key, dish.name())));
+
+            this.groupingToList().forEach((key, value) -> value.forEach(dish -> this.logger.info("List {}: {}", key, dish.name())));
+            this.groupingToSet().forEach((key, value) -> value.forEach(dish -> this.logger.info("Set {}: {}", key, dish.name())));
+            this.groupingToSum().forEach((key, value) -> this.logger.info("Sum {}: {}", key, value));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -490,10 +495,80 @@ public final class CollectorsDemo implements Demo {
         final Map<Boolean, List<Dish>> dishes = streamOfDishes()
                 .collect(Collectors.partitioningBy(Dish::vegetarian));
 
+        // @todo Add a sample where the downstream collector is used
+
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(dishes));
         }
 
         return dishes;
     }
+
+    /**
+     * Group the dishes by type.
+     *
+     * @return  java.util.Map&lt;net.jmp.demo.streams.records.DishType, java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;&gt;
+     */
+    private Map<DishType, List<Dish>> groupingToList() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        // The default downstream collector is a list
+
+        final Map<DishType, List<Dish>> dishes = streamOfDishes()
+                .collect(Collectors.groupingBy(Dish::type));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(dishes));
+        }
+
+        return dishes;
+    }
+
+    /**
+     * Group the dishes by type
+     * but use a set rather than
+     * a list.
+     *
+     * @return  java.util.Map&lt;net.jmp.demo.streams.records.DishType, java.util.Set&lt;net.jmp.demo.streams.records.Dish&gt;&gt;
+     */
+    private Map<DishType, Set<Dish>> groupingToSet() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        // The default downstream collector is a list
+
+        final Map<DishType, Set<Dish>> dishes = streamOfDishes()
+                .collect(Collectors.groupingBy(Dish::type, Collectors.toSet()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(dishes));
+        }
+
+        return dishes;
+    }
+
+    /**
+     * Group the dishes by type
+     * summing their calories.
+     *
+     * @return  java.util.Map&lt;net.jmp.demo.streams.records.DishType, java.lang.Integer&gt;
+     */
+    private Map<DishType, Integer> groupingToSum() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Map<DishType, Integer> sums = streamOfDishes()
+                .collect(Collectors.groupingBy(Dish::type, Collectors.summingInt(Dish::calories)));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(sums));
+        }
+
+        return sums;
+    }
+
 }
