@@ -336,4 +336,112 @@ public final class TestCollectorsDemo {
         assertEquals("prawns", nonVegetarianDishes.get(3).name());
         assertEquals("salmon", nonVegetarianDishes.get(4).name());
     }
+
+    @Test
+    public void testGroupingToList() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("groupingToList");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Map<DishType, List<Dish>> map = (Map<DishType, List<Dish>>) method.invoke(demo);
+
+        assertNotNull(map);
+        assertEquals(3, map.size());
+
+        final List<Dish> otherDishes = map.get(DishType.OTHER);
+        final List<Dish> meatDishes = map.get(DishType.MEAT);
+        final List<Dish> fishDishes = map.get(DishType.FISH);
+
+        assertNotNull(otherDishes);
+        assertEquals(4, otherDishes.size());
+        assertNotNull(meatDishes);
+        assertEquals(3, meatDishes.size());
+        assertNotNull(fishDishes);
+        assertEquals(2, fishDishes.size());
+
+        assertEquals("french fries", otherDishes.get(0).name());
+        assertEquals("rice", otherDishes.get(1).name());
+        assertEquals("seasonal fruit", otherDishes.get(2).name());
+        assertEquals("pizza", otherDishes.get(3).name());
+
+        assertEquals("pork", meatDishes.get(0).name());
+        assertEquals("beef", meatDishes.get(1).name());
+        assertEquals("chicken", meatDishes.get(2).name());
+
+        assertEquals("prawns", fishDishes.get(0).name());
+        assertEquals("salmon", fishDishes.get(1).name());
+    }
+
+    @Test
+    public void testGroupingToSet() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("groupingToSet");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Map<DishType, Set<Dish>> map = (Map<DishType, Set<Dish>>) method.invoke(demo);
+
+        assertNotNull(map);
+        assertEquals(3, map.size());
+
+        final Set<Dish> otherDishes = map.get(DishType.OTHER);
+        final Set<Dish> meatDishes = map.get(DishType.MEAT);
+        final Set<Dish> fishDishes = map.get(DishType.FISH);
+
+        assertNotNull(otherDishes);
+        assertEquals(4, otherDishes.size());
+        assertNotNull(meatDishes);
+        assertEquals(3, meatDishes.size());
+        assertNotNull(fishDishes);
+        assertEquals(2, fishDishes.size());
+
+        final Dish[] otherArray = otherDishes.toArray(new Dish[0]);
+
+        Arrays.sort(otherArray, Comparator.comparing(Dish::name));
+
+        assertEquals("french fries", otherArray[0].name());
+        assertEquals("pizza", otherArray[1].name());
+        assertEquals("rice", otherArray[2].name());
+        assertEquals("seasonal fruit", otherArray[3].name());
+
+        final Dish[] meatArray = meatDishes.toArray(new Dish[0]);
+
+        Arrays.sort(meatArray, Comparator.comparing(Dish::name));
+
+        assertEquals("beef", meatArray[0].name());
+        assertEquals("chicken", meatArray[1].name());
+        assertEquals("pork", meatArray[2].name());
+
+        final Dish[] fishArray = fishDishes.toArray(new Dish[0]);
+
+        Arrays.sort(fishArray, Comparator.comparing(Dish::name));
+
+        assertEquals("prawns", fishArray[0].name());
+        assertEquals("salmon", fishArray[1].name());
+    }
+
+    @Test
+    public void testGroupingToSum() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("groupingToSum");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Map<DishType, Integer> map = (Map<DishType, Integer>) method.invoke(demo);
+
+        assertNotNull(map);
+        assertEquals(3, map.size());
+
+        final int otherCalories = map.get(DishType.OTHER);
+        final int meatCalories = map.get(DishType.MEAT);
+        final int fishCalories = map.get(DishType.FISH);
+
+        assertEquals(1550, otherCalories);
+        assertEquals(1900, meatCalories);
+        assertEquals(750, fishCalories);
+    }
 }
