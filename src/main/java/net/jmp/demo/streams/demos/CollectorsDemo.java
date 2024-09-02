@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  *     counting(*)
  *     filtering(*)
  *     filtering(*) and groupingBy(*) together
- *     flatMapping()
+ *     flatMapping(*)
  *     groupingBy(*)
  *     joining(*)
  *     mapping(*)
@@ -80,6 +80,13 @@ import org.slf4j.LoggerFactory;
  */
 public final class CollectorsDemo implements Demo {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+    /** A capitalizer function. A UnaryOperator<T> is preferred to Function<T, T>. */
+    private final UnaryOperator<String> capitalizer = string -> {
+        final String firstLetter = string.substring(0, 1).toUpperCase();
+
+        return firstLetter + string.substring(1);
+    };
 
     /**
      * The default constructor.
@@ -129,6 +136,8 @@ public final class CollectorsDemo implements Demo {
             this.groupingToSum().forEach((key, value) -> this.logger.info("Sum {}: {}", key, value));
 
             this.mapping().forEach(this.logger::info);
+
+            this.flatMapping().forEach((key, value) -> this.logger.info("Name {}: {}", key, value));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -636,17 +645,9 @@ public final class CollectorsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        // A UnaryOperator<T> is preferred to Function<T, T>
-
-        final UnaryOperator<String> capitalizer = string -> {
-            final String firstLetter = string.substring(0, 1).toUpperCase();
-
-            return firstLetter + string.substring(1);
-        };
-
         final List<String> names = streamOfDishes()
                 .map(Dish::name)
-                .collect(Collectors.mapping(capitalizer, Collectors.toList()));
+                .collect(Collectors.mapping(this.capitalizer, Collectors.toList()));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(names));
@@ -654,4 +655,66 @@ public final class CollectorsDemo implements Demo {
 
         return names;
     }
+
+    private Map<String, List<String>> flatMapping() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Dishes favoriteDishes = new Dishes("Favorites",
+                List.of(
+                        new Dish("pork", false, 800, DishType.MEAT),
+                        new Dish("beef", false, 700, DishType.MEAT),
+                        new Dish("chicken", false, 400, DishType.MEAT),
+                        new Dish("rice", true, 350, DishType.OTHER),
+                        new Dish("seasonal fruit", true, 120, DishType.OTHER)
+                        )
+        );
+
+        final Dishes regularDishes = new Dishes("Regular",
+                List.of(
+                        new Dish("french fries", true, 530, DishType.OTHER),
+                        new Dish("pizza", true, 550, DishType.OTHER),
+                        new Dish("prawns", false, 300, DishType.FISH),
+                        new Dish("salmon", false, 450, DishType.FISH)
+                )
+        );
+
+        // Remember flat mapping involves data structures involving a collection of collections
+
+        final List<Dishes> allDishes = List.of(favoriteDishes, regularDishes);
+
+        /*
+         * The two Dishes records are grouped by name and
+         * then each list of dishes streamed and mapped to
+         * its capitalized dish name and finally collected
+         * into a list which is aggregated into the final map.
+         */
+
+        final Map<String, List<String>> dishNames = allDishes.stream()
+                .collect(Collectors.groupingBy(Dishes::name,
+                        Collectors.flatMapping(dishes -> dishes.listOfDishes().stream()
+                                        .map(Dish::name)
+                                        .map(capitalizer),
+                                Collectors.mapping(this.capitalizer, Collectors.toList())
+                        )
+                ));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(dishNames));
+        }
+
+        return dishNames;
+    }
+
+    /**
+     * A record that describes dishes by a name
+     *
+     * @param   name            java.lang.String
+     * @param   listOfDishes    java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;
+     */
+    record Dishes(
+            String name,
+            List<Dish> listOfDishes
+    ) {}
 }
