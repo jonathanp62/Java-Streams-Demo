@@ -543,4 +543,9 @@ public final class TestCollectorsDemo {
         assertEquals("Rice", favoriteDishes.get(3));
         assertEquals("Seasonal fruit", favoriteDishes.get(4));
     }
+
+    @Test
+    public void testCollectingAndThen() {
+
+    }
 }

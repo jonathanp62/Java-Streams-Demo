@@ -137,6 +137,8 @@ public final class CollectorsDemo implements Demo {
 
             this.mapping().forEach(this.logger::info);
             this.flatMapping().forEach((key, value) -> value.forEach(name -> this.logger.info("Name {}: {}", key, name)));
+
+            this.collectingAndThen();
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -704,6 +706,20 @@ public final class CollectorsDemo implements Demo {
         }
 
         return dishNames;
+    }
+
+    /**
+     * Adapt a collector to perform an
+     * additional finishing transformation.
+     */
+    private void collectingAndThen() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
     }
 
     /**
