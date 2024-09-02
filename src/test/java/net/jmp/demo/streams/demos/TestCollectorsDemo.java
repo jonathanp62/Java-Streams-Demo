@@ -486,4 +486,29 @@ public final class TestCollectorsDemo {
         assertEquals(1900, meatCalories);
         assertEquals(750, fishCalories);
     }
+
+    @Test
+    public void testMapping() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("mapping");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final ArrayList<?> arrayList = castToType(ArrayList.class, o);
+        final List<String> dishNames = listToTypedList(arrayList, String.class);
+
+        assertNotNull(dishNames);
+        assertEquals(9, dishNames.size());
+        assertTrue(dishNames.contains("Pork"));
+        assertTrue(dishNames.contains("Beef"));
+        assertTrue(dishNames.contains("Chicken"));
+        assertTrue(dishNames.contains("French fries"));
+        assertTrue(dishNames.contains("Rice"));
+        assertTrue(dishNames.contains("Seasonal fruit"));
+        assertTrue(dishNames.contains("Pizza"));
+        assertTrue(dishNames.contains("Prawns"));
+        assertTrue(dishNames.contains("Salmon"));
+    }
+
 }

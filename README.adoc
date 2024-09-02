@@ -47,6 +47,7 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - filtering
   - groupingBy
   - joining
+  - mapping
   - maxBy
   - minBy
   - partitioningBy

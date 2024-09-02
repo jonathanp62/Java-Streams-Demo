@@ -33,6 +33,7 @@ package net.jmp.demo.streams.demos;
 import java.util.*;
 
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ import org.slf4j.LoggerFactory;
  *     flatMapping()
  *     groupingBy(*)
  *     joining(*)
- *     mapping()
+ *     mapping(*)
  *     maxBy(*)
  *     minBy(*)
  *     partitioningBy(*)
@@ -126,6 +127,8 @@ public final class CollectorsDemo implements Demo {
             this.groupingToList().forEach((key, value) -> value.forEach(dish -> this.logger.info("List {}: {}", key, dish.name())));
             this.groupingToSet().forEach((key, value) -> value.forEach(dish -> this.logger.info("Set {}: {}", key, dish.name())));
             this.groupingToSum().forEach((key, value) -> this.logger.info("Sum {}: {}", key, value));
+
+            this.mapping().forEach(this.logger::info);
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -620,5 +623,35 @@ public final class CollectorsDemo implements Demo {
         }
 
         return sums;
+    }
+
+    /**
+     * Apply a mapping function to the name
+     * of each dish and return the list.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     */
+    private List<String> mapping() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        // A UnaryOperator<T> is preferred to Function<T, T>
+
+        final UnaryOperator<String> capitalizer = string -> {
+            final String firstLetter = string.substring(0, 1).toUpperCase();
+
+            return firstLetter + string.substring(1);
+        };
+
+        final List<String> names = streamOfDishes()
+                .map(Dish::name)
+                .collect(Collectors.mapping(capitalizer, Collectors.toList()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(names));
+        }
+
+        return names;
     }
 }
