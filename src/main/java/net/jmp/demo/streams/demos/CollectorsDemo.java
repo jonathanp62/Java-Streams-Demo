@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * Demonstrations:
  *   Stream.collect() using the following collectors:
  *     averaging...(*)
- *     collectingAndThen()
+ *     collectingAndThen(*)
  *     counting(*)
  *     filtering(*)
  *     filtering(*) and groupingBy(*) together
@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
  *     reducing()
  *     summarizing...(*)
  *     summing...(*)
- *     teeing()
+ *     teeing(*)
  *     toCollection(*) (i.e. LinkedHashSet::new)
  *     toConcurrentMap()
  *     toList(*)
@@ -138,7 +138,9 @@ public final class CollectorsDemo implements Demo {
             this.mapping().forEach(this.logger::info);
             this.flatMapping().forEach((key, value) -> value.forEach(name -> this.logger.info("Name {}: {}", key, name)));
 
-            this.collectingAndThen();
+            this.logger.info("Longest name: {}", this.collectingAndThen());
+
+            this.teeing();
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -711,8 +713,53 @@ public final class CollectorsDemo implements Demo {
     /**
      * Adapt a collector to perform an
      * additional finishing transformation.
+     *
+     * @return  java.lang.String
      */
-    private void collectingAndThen() {
+    private String collectingAndThen() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final boolean result = streamOfDishes()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        List::isEmpty   // The finisher returns something different
+                ));
+
+        assert !result;
+
+        /*
+         * Stream all the dishes mapping each dish to its name.
+         * Collect those names while capitalizing them into a
+         * list.
+         * The finisher transformation streams those capitalized
+         * names comparing each for the long string length, which
+         * is returned.
+         */
+        final String longestName = streamOfDishes()
+                .map(Dish::name)
+                .collect(Collectors.collectingAndThen(
+                        Collectors.mapping(this.capitalizer, Collectors.toList()),
+                        names -> names.stream()
+                                .collect(Collectors.maxBy(Comparator.comparing(String::length)))
+                                .orElse("?")
+                        )
+                );
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(longestName));
+        }
+
+        return longestName;
+    }
+
+    /**
+     * Demonstrate a collector that is a
+     * composite of two downstream
+     * collectors.
+     */
+    private void teeing() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }

@@ -55,6 +55,7 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - partitioningBy
   - summarizing
   - summing
+  - teeing
   - toCollection
   - toList
   - toMap

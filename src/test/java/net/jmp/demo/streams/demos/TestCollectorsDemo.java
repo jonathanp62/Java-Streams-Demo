@@ -545,7 +545,21 @@ public final class TestCollectorsDemo {
     }
 
     @Test
-    public void testCollectingAndThen() {
+    public void testCollectingAndThen() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("collectingAndThen");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String longestName = castToType(String.class, o);
+
+        assertNotNull(longestName);
+        assertEquals("Seasonal fruit", longestName);
+    }
+
+    @Test
+    public void testTeeing() throws Exception {
 
     }
 }
