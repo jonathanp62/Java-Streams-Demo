@@ -511,4 +511,36 @@ public final class TestCollectorsDemo {
         assertTrue(dishNames.contains("Salmon"));
     }
 
+    @Test
+    public void testFlatMapping() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("flatMapping");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Map<String, List<String>> map = (Map<String, List<String>>) method.invoke(demo);
+
+        assertNotNull(map);
+        assertEquals(2, map.size());
+
+        final List<String> favoriteDishes = map.get("Favorites");
+        final List<String> regularDishes = map.get("Regular");
+
+        assertNotNull(favoriteDishes);
+        assertEquals(5, favoriteDishes.size());
+        assertNotNull(regularDishes);
+        assertEquals(4, regularDishes.size());
+
+        assertEquals("French fries", regularDishes.get(0));
+        assertEquals("Pizza", regularDishes.get(1));
+        assertEquals("Prawns", regularDishes.get(2));
+        assertEquals("Salmon", regularDishes.get(3));
+
+        assertEquals("Pork", favoriteDishes.get(0));
+        assertEquals("Beef", favoriteDishes.get(1));
+        assertEquals("Chicken", favoriteDishes.get(2));
+        assertEquals("Rice", favoriteDishes.get(3));
+        assertEquals("Seasonal fruit", favoriteDishes.get(4));
+    }
 }

@@ -136,8 +136,7 @@ public final class CollectorsDemo implements Demo {
             this.groupingToSum().forEach((key, value) -> this.logger.info("Sum {}: {}", key, value));
 
             this.mapping().forEach(this.logger::info);
-
-            this.flatMapping().forEach((key, value) -> this.logger.info("Name {}: {}", key, value));
+            this.flatMapping().forEach((key, value) -> value.forEach(name -> this.logger.info("Name {}: {}", key, name)));
         }
 
         if (this.logger.isTraceEnabled()) {
