@@ -590,4 +590,45 @@ public final class TestCollectorsDemo {
         assertEquals("French fries", highCalorie.get(2));
         assertEquals("Pizza", highCalorie.get(3));
     }
+
+    @Test
+    public void testReducingToHighestCalorieDish() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("reducingToHighestCalorieDish");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String name = castToType(String.class, o);
+
+        assertNotNull(name);
+        assertEquals("Pork", name);
+    }
+
+    @Test
+    public void testReducingToLowestCalorieDish() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("reducingToLowestCalorieDish");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String name = castToType(String.class, o);
+
+        assertNotNull(name);
+        assertEquals("Water", name);
+    }
+
+    @Test
+    public void testReducingToShortestName() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("reducingToShortestName");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final int length = castToType(Integer.class, o);
+
+        assertEquals(4, length);
+    }
 }
