@@ -141,6 +141,7 @@ public final class CollectorsDemo implements Demo {
 
             this.logger.info("Highest cal: {}", this.reducingToHighestCalorieDish());
             this.logger.info("Lowest cal: {}", this.reducingToLowestCalorieDish());
+            this.logger.info("Shortest name: {}", this.reducingToShortestName());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -843,6 +844,31 @@ public final class CollectorsDemo implements Demo {
         }
 
         return this.capitalizer.apply(result.name());
+    }
+
+    /**
+     * Demonstrate a collector which performs a reduction
+     * of its input elements under a specified mapping
+     * function and BinaryOperator.
+     *
+     * @return  int
+     */
+    private int reducingToShortestName() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final int result = streamOfDishes()
+                .collect(Collectors.reducing(14,    // The longest name, seasonal fruit
+                        d -> d.name().length(),
+                        BinaryOperator.minBy(Comparator.comparingInt(i -> i))
+                ));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
     }
 
     /**
