@@ -140,7 +140,7 @@ public final class CollectorsDemo implements Demo {
 
             this.logger.info("Longest name: {}", this.collectingAndThen());
 
-            this.teeing();
+            this.teeing().forEach((key, value) -> value.forEach(name -> this.logger.info("{}: {}", key, name)));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -692,14 +692,17 @@ public final class CollectorsDemo implements Demo {
          * then each list of dishes streamed and mapped to
          * its capitalized dish name and finally collected
          * into a list which is aggregated into the final map.
+         * The identity function is a means of just using the
+         * incoming element from the stream, in this case, the
+         * result of the capitalizer function.
          */
 
         final Map<String, List<String>> dishNames = allDishes.stream()
                 .collect(Collectors.groupingBy(Dishes::name,
                         Collectors.flatMapping(dishes -> dishes.listOfDishes().stream()
                                         .map(Dish::name)
-                                        .map(capitalizer),
-                                Collectors.mapping(this.capitalizer, Collectors.toList())
+                                        .map(this.capitalizer),
+                                Collectors.mapping(Function.identity(), Collectors.toList())
                         )
                 ));
 
@@ -758,19 +761,44 @@ public final class CollectorsDemo implements Demo {
      * Demonstrate a collector that is a
      * composite of two downstream
      * collectors.
+     *
+     * @return  hava.util.Map&lt;java.lang.String, java.util.List&lt;java.lang.String&gt;&gt;
      */
-    private void teeing() {
+    private Map<String, List<String>> teeing() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
+        final Map<String, List<String>> results = streamOfDishes()
+                .collect(Collectors.teeing(
+                        Collectors.filtering(dish -> dish.calories() > 500, Collectors.toList()),
+                        Collectors.filtering(dish -> dish.calories() <= 500, Collectors.toList()),
+                        (high, low) -> {
+                            final List<String> highs = new ArrayList<>();
+                            final List<String> lows = new ArrayList<>();
+
+                            high.stream().forEach(d -> highs.add(this.capitalizer.apply(d.name())));
+                            low.stream().forEach(d -> lows.add(this.capitalizer.apply(d.name())));
+
+                            final Map<String, List<String>> map = new HashMap<>();
+
+                            map.put("High calorie", highs);
+                            map.put("Low calorie", lows);
+
+                            return map;
+                        }
+                ));
+
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(results));
         }
+
+        return results;
     }
 
     /**
-     * A record that describes dishes by a name
+     * A record that describes dishes by a name. It
+     * is used here by the flatMapping method.
      *
      * @param   name            java.lang.String
      * @param   listOfDishes    java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;

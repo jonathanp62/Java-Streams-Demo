@@ -560,6 +560,34 @@ public final class TestCollectorsDemo {
 
     @Test
     public void testTeeing() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("teeing");
 
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Map<String, List<String>> map = (Map<String, List<String>>) method.invoke(demo);
+
+        assertNotNull(map);
+        assertEquals(2, map.size());
+
+        final List<String> highCalorie = map.get("High calorie");
+        final List<String> lowCalorie = map.get("Low calorie");
+
+        assertNotNull(highCalorie);
+        assertEquals(4, highCalorie.size());
+        assertNotNull(lowCalorie);
+        assertEquals(5, lowCalorie.size());
+
+        assertEquals("Chicken", lowCalorie.get(0));
+        assertEquals("Rice", lowCalorie.get(1));
+        assertEquals("Seasonal fruit", lowCalorie.get(2));
+        assertEquals("Prawns", lowCalorie.get(3));
+        assertEquals("Salmon", lowCalorie.get(4));
+
+        assertEquals("Pork", highCalorie.get(0));
+        assertEquals("Beef", highCalorie.get(1));
+        assertEquals("French fries", highCalorie.get(2));
+        assertEquals("Pizza", highCalorie.get(3));
     }
 }
