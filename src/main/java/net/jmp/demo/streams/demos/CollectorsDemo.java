@@ -34,10 +34,14 @@ import java.util.*;
 
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import net.jmp.demo.streams.collectors.DroppingWhileCollector;
 
 import net.jmp.demo.streams.records.Dish;
 import net.jmp.demo.streams.records.DishType;
@@ -171,6 +175,11 @@ public final class CollectorsDemo implements Demo {
     private void customCollectors() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
+        }
+
+        if (this.logger.isInfoEnabled()) {
+            this.droppingWhile().forEach(i -> this.logger.info("Dropping: {}", i));
+
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -898,6 +907,28 @@ public final class CollectorsDemo implements Demo {
         }
 
         return result;
+    }
+
+    /**
+     * Demonstrate the droppingWhile custom collector.
+     *
+     * @return  java.util.List&lt;java.lang.Integer&gt;
+     */
+    private List<Integer> droppingWhile() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
+
+        final Predicate<Integer> p = i -> i ==  1;
+        final List<Integer> ints = integers.collect(DroppingWhileCollector.droppingWhile(p));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(ints));
+        }
+
+        return ints;
     }
 
     /**
