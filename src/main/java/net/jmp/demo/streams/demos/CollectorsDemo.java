@@ -32,6 +32,7 @@ package net.jmp.demo.streams.demos;
 
 import java.util.*;
 
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -64,18 +65,14 @@ import org.slf4j.LoggerFactory;
  *     maxBy(*)
  *     minBy(*)
  *     partitioningBy(*)
- *     reducing()
+ *     reducing(*)
  *     summarizing...(*)
  *     summing...(*)
  *     teeing(*)
  *     toCollection(*) (i.e. LinkedHashSet::new)
- *     toConcurrentMap()
  *     toList(*)
  *     toMap(*)
  *     toSet(*)
- *     toUnmodifiableList()
- *     toUnmodifiableMap()
- *     toUnmodifiableSet()
  *  Stream.collect() using a custom created collector
  */
 public final class CollectorsDemo implements Demo {
@@ -141,6 +138,9 @@ public final class CollectorsDemo implements Demo {
             this.logger.info("Longest name: {}", this.collectingAndThen());
 
             this.teeing().forEach((key, value) -> value.forEach(name -> this.logger.info("{}: {}", key, name)));
+
+            this.logger.info("Highest cal: {}", this.reducingToHighestCalorieDish());
+            this.logger.info("Lowest cal: {}", this.reducingToLowestCalorieDish());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -794,6 +794,55 @@ public final class CollectorsDemo implements Demo {
         }
 
         return results;
+    }
+
+    /**
+     * Demonstrate a collector which performs a reduction
+     * of its input elements under a specified BinaryOperator.
+     *
+     * @return  java.lang.String
+     */
+    private String reducingToHighestCalorieDish() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Optional<Dish> result = streamOfDishes()
+                .collect(Collectors.reducing(
+                        BinaryOperator.maxBy(Comparator.comparingInt(Dish::calories))
+                ));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        assert result.isPresent();
+
+        return this.capitalizer.apply(result.get().name());
+    }
+
+    /**
+     * Demonstrate a collector which performs a reduction
+     * of its input elements under a specified BinaryOperator
+     * using the provided identity.
+     *
+     * @return  java.lang.String
+     */
+    private String reducingToLowestCalorieDish() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Dish result = streamOfDishes()
+                .collect(Collectors.reducing(new Dish("water", true, 0, DishType.OTHER),
+                        BinaryOperator.minBy(Comparator.comparingInt(Dish::calories))
+                ));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return this.capitalizer.apply(result.name());
     }
 
     /**
