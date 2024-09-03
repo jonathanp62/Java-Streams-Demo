@@ -91,6 +91,8 @@ public final class AdvancedDemo implements Demo {
     /**
      * Demonstrate dropWhile. The first three ones
      * are dropped leaving the twos and three.
+     * Drop-while is really intended for ordered
+     * streams.
      *
      * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
      */
@@ -99,7 +101,7 @@ public final class AdvancedDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Integer> integers = Stream.of(1, 1, 1, 2, 2, 3, 1);
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 2, 2, 3);
         final Stream<Integer> results = integers.dropWhile(i -> i == 1);
 
         if (this.logger.isTraceEnabled()) {
@@ -111,8 +113,9 @@ public final class AdvancedDemo implements Demo {
 
     /**
      * Demonstrate takeWhile. The first ones are
-     * taken and the twos and three and final one
-     * dropped.
+     * taken and the twos and three are dropped.
+     * Take-while is really intended for
+     * ordered streams.
      *
      * @return  java.util.stream.Stream&lt;java.lang.Integer&gt;
      */
@@ -121,7 +124,7 @@ public final class AdvancedDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Stream<Integer> integers = Stream.of(1, 1, 1, 2, 2, 3, 1);
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 2, 2, 3);
         final Stream<Integer> results = integers.takeWhile(i -> i == 1);
 
         if (this.logger.isTraceEnabled()) {

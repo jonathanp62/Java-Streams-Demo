@@ -101,6 +101,22 @@ public final class CollectorsDemo implements Demo {
             this.logger.trace(entry());
         }
 
+        this.standardCollectors();
+        this.customCollectors();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Standard collectors.
+     */
+    private void standardCollectors() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
         if (this.logger.isInfoEnabled()) {
             final var keyValue = "Key: {}; Value: {}";
             final var joining = "Joining: {}";
@@ -142,6 +158,19 @@ public final class CollectorsDemo implements Demo {
             this.logger.info("Highest cal: {}", this.reducingToHighestCalorieDish());
             this.logger.info("Lowest cal: {}", this.reducingToLowestCalorieDish());
             this.logger.info("Shortest name: {}", this.reducingToShortestName());
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Custom collectors.
+     */
+    private void customCollectors() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
         }
 
         if (this.logger.isTraceEnabled()) {

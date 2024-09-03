@@ -56,11 +56,10 @@ public class TestAdvancedDemo {
         final List<Integer> results = streamToTypedList(stream, Integer.class);
 
         assertNotNull(results);
-        assertEquals(4, results.size());
+        assertEquals(3, results.size());
         assertEquals(Integer.valueOf(2), results.get(0));
         assertEquals(Integer.valueOf(2), results.get(1));
         assertEquals(Integer.valueOf(3), results.get(2));
-        assertEquals(Integer.valueOf(1), results.get(3));
     }
 
     @Test
