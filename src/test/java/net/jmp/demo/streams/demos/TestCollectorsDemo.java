@@ -31,6 +31,7 @@ package net.jmp.demo.streams.demos;
  */
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.Dish;
 import net.jmp.demo.streams.records.DishType;
@@ -630,5 +631,26 @@ public final class TestCollectorsDemo {
         final int length = castToType(Integer.class, o);
 
         assertEquals(4, length);
+    }
+
+    @Test
+    public void testDroppingWhile() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("droppingWhile");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final ArrayList<?> list = castToType(ArrayList.class, o);
+        final List<Integer> results = listToTypedList(list, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(6, results.size());
+        assertEquals(Integer.valueOf(2), results.get(0));
+        assertEquals(Integer.valueOf(2), results.get(1));
+        assertEquals(Integer.valueOf(2), results.get(2));
+        assertEquals(Integer.valueOf(3), results.get(3));
+        assertEquals(Integer.valueOf(3), results.get(4));
+        assertEquals(Integer.valueOf(4), results.get(5));
     }
 }

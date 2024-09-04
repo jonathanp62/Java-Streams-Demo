@@ -36,8 +36,17 @@ import java.util.function.*;
 
 import java.util.stream.Collector;
 
+/**
+ * An implementation of the stream
+ * dropping-while as a collector.
+ *
+ * @param   <T> The type being collected
+ */
 public final class DroppingWhileCollector<T> implements Collector<T, List<T>, List<T>> {
+    /** The predicate function. */
     private final Predicate<? super T> predicate;
+
+    /** Set to true when elements are no longer dropped. */
     private boolean doneDropping;
 
     /**
@@ -50,15 +59,32 @@ public final class DroppingWhileCollector<T> implements Collector<T, List<T>, Li
         this.doneDropping = false;
     }
 
+    /**
+     * Return an instance of the dropping-while collector.
+     *
+     * @param   <T>         The type being collected
+     * @param   predicate   java.util.function.Predicate&lt;T&gt;
+     * @return              net.jmp.demo.streams.collectors.DroppingWhileCollector
+     */
     public static <T> DroppingWhileCollector<T> droppingWhile(final Predicate<? super T> predicate) {
         return new DroppingWhileCollector<>(predicate);
     }
 
+    /**
+     * The supplier.
+     *
+     * @return  java.util.function.Supplier&lt;java.util.List&lt;T&gt;&gt;
+     */
     @Override
     public Supplier<List<T>> supplier() {
         return ArrayList::new;
     }
 
+    /**
+     * The accumulator.
+     *
+     * @return  java.util.function.BiConsumer&lt;java.util.List&lt;T&gt;&gt;
+     */
     @Override
     public BiConsumer<List<T>, T> accumulator() {
         return (list, element) -> {
@@ -74,6 +100,11 @@ public final class DroppingWhileCollector<T> implements Collector<T, List<T>, Li
         };
     }
 
+    /**
+     * The combiner.
+     *
+     * @return  java.util.function.BinaryOperator&lt;java.util.List&lt;T&gt;&gt;
+     */
     @Override
     public BinaryOperator<List<T>> combiner() {
         return (list1, list2) -> {
@@ -83,11 +114,21 @@ public final class DroppingWhileCollector<T> implements Collector<T, List<T>, Li
         };
     }
 
+    /**
+     * The finisher.
+     *
+     * @return  java.util.function.Function&lt;java.util.List&lt;T&gt;&gt;, &lt;java.util.List&lt;T&gt;&gt;
+     */
     @Override
     public Function<List<T>, List<T>> finisher() {
         return Function.identity();
     }
 
+    /**
+     * Return the collector's characteristics.
+     *
+     * @return  java.util.Set&lt;java.util.stream.Characteristics&gt;
+     */
     @Override
     public Set<Characteristics> characteristics() {
         return Collections.unmodifiableSet(EnumSet.of(Characteristics.IDENTITY_FINISH));

@@ -922,13 +922,13 @@ public final class CollectorsDemo implements Demo {
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
 
         final Predicate<Integer> p = i -> i ==  1;
-        final List<Integer> ints = integers.collect(DroppingWhileCollector.droppingWhile(p));
+        final List<Integer> list = integers.collect(DroppingWhileCollector.droppingWhile(p));
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(ints));
+            this.logger.trace(exitWith(list));
         }
 
-        return ints;
+        return list;
     }
 
     /**
