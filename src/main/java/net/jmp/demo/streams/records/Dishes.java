@@ -1,13 +1,11 @@
-package net.jmp.demo.streams.demos;
+package net.jmp.demo.streams.records;
 
 /*
- * (#)package-info.java 0.5.0   09/04/2024
- * (#)package-info.java 0.3.0   08/29/2024
- * (#)package-info.java 0.2.0   08/25/2024
+ * (#)Dishes.java   0.5.0   09/04/2024
  *
  * @author   Jonathan Parker
  * @version  0.5.0
- * @since    0.2.0
+ * @since    0.5.0
  *
  * MIT License
  *
@@ -32,16 +30,17 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-/*
- * Demonstrate the basics along with:
- *   builder(*)
- *   collect(*)
- *   dropWhile(*)
- *   flatMap(*)
- *   gather()
- *   generate(*)
- *   iterate(*)
- *   mapMulti()
- *   reduce()
- *   takeWhile(*)
+import java.util.List;
+
+/**
+ * A record that describes dishes by a name. It
+ * is used by methods that demonstrate using
+ * flat maps.
+ *
+ * @param   name            java.lang.String
+ * @param   listOfDishes    java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;
  */
+public record Dishes(
+        String name,
+        List<Dish> listOfDishes
+) {}

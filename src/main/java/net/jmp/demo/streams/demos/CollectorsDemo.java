@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)CollectorsDemo.java   0.5.0   09/05/2024
  * (#)CollectorsDemo.java   0.4.0   08/30/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.5.0
  * @since    0.4.0
  *
  * MIT License
@@ -43,8 +44,7 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.collectors.*;
 
-import net.jmp.demo.streams.records.Dish;
-import net.jmp.demo.streams.records.DishType;
+import net.jmp.demo.streams.records.*;
 
 import static net.jmp.demo.streams.util.DemoUtils.*;
 import static net.jmp.demo.streams.util.LoggerUtils.*;
@@ -708,28 +708,13 @@ public final class CollectorsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Dishes favoriteDishes = new Dishes("Favorites",
-                List.of(
-                        new Dish("pork", false, 800, DishType.MEAT),
-                        new Dish("beef", false, 700, DishType.MEAT),
-                        new Dish("chicken", false, 400, DishType.MEAT),
-                        new Dish("rice", true, 350, DishType.OTHER),
-                        new Dish("seasonal fruit", true, 120, DishType.OTHER)
-                        )
-        );
+        /*
+         * Remember flat mapping involves data structures involving
+         *  a collection of collections and that its output is
+         *  a stream
+         */
 
-        final Dishes regularDishes = new Dishes("Regular",
-                List.of(
-                        new Dish("french fries", true, 530, DishType.OTHER),
-                        new Dish("pizza", true, 550, DishType.OTHER),
-                        new Dish("prawns", false, 300, DishType.FISH),
-                        new Dish("salmon", false, 450, DishType.FISH)
-                )
-        );
-
-        // Remember flat mapping involves data structures involving a collection of collections
-
-        final List<Dishes> allDishes = List.of(favoriteDishes, regularDishes);
+        final List<Dishes> allDishes = this.getAllDishes();
 
         /*
          * The two Dishes records are grouped by name and
@@ -755,6 +740,44 @@ public final class CollectorsDemo implements Demo {
         }
 
         return dishNames;
+    }
+
+    /**
+     * Get all the dishes.
+     *
+     * @return  java.util.List&lt;net.jmp.demo.streams.records.Dishes&gt;
+     */
+    private List<Dishes> getAllDishes() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Dishes favoriteDishes = new Dishes("Favorites",
+                List.of(
+                        new Dish("pork", false, 800, DishType.MEAT),
+                        new Dish("beef", false, 700, DishType.MEAT),
+                        new Dish("chicken", false, 400, DishType.MEAT),
+                        new Dish("rice", true, 350, DishType.OTHER),
+                        new Dish("seasonal fruit", true, 120, DishType.OTHER)
+                )
+        );
+
+        final Dishes regularDishes = new Dishes("Regular",
+                List.of(
+                        new Dish("french fries", true, 530, DishType.OTHER),
+                        new Dish("pizza", true, 550, DishType.OTHER),
+                        new Dish("prawns", false, 300, DishType.FISH),
+                        new Dish("salmon", false, 450, DishType.FISH)
+                )
+        );
+
+        final List<Dishes> allDishes = List.of(favoriteDishes, regularDishes);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(allDishes));
+        }
+
+        return allDishes;
     }
 
     /**
@@ -1038,16 +1061,4 @@ public final class CollectorsDemo implements Demo {
 
         return list;
     }
-
-    /**
-     * A record that describes dishes by a name. It
-     * is used here by the flatMapping method.
-     *
-     * @param   name            java.lang.String
-     * @param   listOfDishes    java.util.List&lt;net.jmp.demo.streams.records.Dish&gt;
-     */
-    record Dishes(
-            String name,
-            List<Dish> listOfDishes
-    ) {}
 }

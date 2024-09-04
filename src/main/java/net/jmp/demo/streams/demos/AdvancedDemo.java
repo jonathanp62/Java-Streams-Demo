@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)AdvancedDemo.java 0.5.0   09/04/2024
  * (#)AdvancedDemo.java 0.4.0   08/30/2024
  * (#)AdvancedDemo.java 0.3.0   08/29/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.5.0
  * @since    0.3.0
  *
  * MIT License
@@ -31,6 +32,8 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.util.List;
+
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -39,8 +42,7 @@ import java.util.stream.Stream;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
-import net.jmp.demo.streams.records.Dish;
-import net.jmp.demo.streams.records.DishType;
+import net.jmp.demo.streams.records.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +53,7 @@ import org.slf4j.LoggerFactory;
  * Demonstrations:
  *   builder(*)
  *   dropWhile(*)
+ *   flatMap(*)
  *   generate(*)
  *   iterate(*)
  *   takeWhile(*)
@@ -82,6 +85,7 @@ public final class AdvancedDemo implements Demo {
             this.iterateNumbers().forEach(e -> this.logger.info("{}", e));
             this.iterateNumbersWithPredicate().forEach(e -> this.logger.info("{}", e));
             this.buildDishes().forEach(e -> this.logger.info("{}", e));
+            this.flatMap().forEach(e -> this.logger.info("{}", e));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -230,5 +234,71 @@ public final class AdvancedDemo implements Demo {
         }
 
         return stream;
+    }
+
+    /**
+     * Demonstrate flat map.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.String&gt;
+     */
+    private Stream<String> flatMap() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        /*
+         * Remember flat mapping involves data structures involving
+         *  a collection of collections and that its output is
+         *  a stream
+         */
+
+        final Stream<String> stream = this.getAllDishes().stream()
+                .flatMap(dishes -> dishes.listOfDishes().stream()
+                        .map(Dish::name)
+                );
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
+    }
+
+    /**
+     * Get all the dishes.
+     *
+     * @return  java.util.List&lt;net.jmp.demo.streams.records.Dishes&gt;
+     */
+    private List<Dishes> getAllDishes() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Dishes favoriteDishes = new Dishes("Protein",
+                List.of(
+                        new Dish("pork", false, 800, DishType.MEAT),
+                        new Dish("beef", false, 700, DishType.MEAT),
+                        new Dish("chicken", false, 400, DishType.MEAT),
+                        new Dish("prawns", false, 300, DishType.FISH),
+                        new Dish("salmon", false, 450, DishType.FISH)
+                )
+        );
+
+        final Dishes regularDishes = new Dishes("Other",
+                List.of(
+                        new Dish("french fries", true, 530, DishType.OTHER),
+                        new Dish("pizza", true, 550, DishType.OTHER),
+                        new Dish("rice", true, 350, DishType.OTHER),
+                        new Dish("seasonal fruit", true, 120, DishType.OTHER)
+                )
+        );
+
+        final List<Dishes> allDishes = List.of(favoriteDishes, regularDishes);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(allDishes));
+        }
+
+        return allDishes;
     }
 }

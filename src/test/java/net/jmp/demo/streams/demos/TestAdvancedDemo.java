@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestAdvancedDemo.java 0.5.0   09/04/2024
  * (#)TestAdvancedDemo.java 0.3.0   08/29/2024
  *
  * @author   Jonathan Parker
- * @version  0.3.0
+ * @version  0.5.0
  * @since    0.3.0
  *
  * MIT License
@@ -162,5 +163,29 @@ public class TestAdvancedDemo {
         assertEquals("pizza", results.get(6).name());
         assertEquals("prawns", results.get(7).name());
         assertEquals("salmon", results.get(8).name());
+    }
+
+    @Test
+    public void testFlatMap() throws Exception {
+        final var demo = new AdvancedDemo();
+        final var method = AdvancedDemo.class.getDeclaredMethod("flatMap");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<String> results = streamToTypedList(stream, String.class);
+
+        assertNotNull(results);
+        assertEquals(9, results.size());
+        assertTrue(results.contains("pork"));
+        assertTrue(results.contains("beef"));
+        assertTrue(results.contains("chicken"));
+        assertTrue(results.contains("french fries"));
+        assertTrue(results.contains("rice"));
+        assertTrue(results.contains("seasonal fruit"));
+        assertTrue(results.contains("pizza"));
+        assertTrue(results.contains("prawns"));
+        assertTrue(results.contains("salmon"));
     }
 }
