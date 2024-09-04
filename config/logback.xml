@@ -52,7 +52,7 @@
     <logger name="net.jmp.demo.streams.demos.CollectorsDemo" additivity="false" level="info">
         <appender-ref ref="MAIN" />
     </logger>
-    <logger name="net.jmp.demo.streams.demos.MultiMapDemo" additivity="false" level="info">
+    <logger name="net.jmp.demo.streams.demos.MapMultiDemo" additivity="false" level="info">
         <appender-ref ref="MAIN" />
     </logger>
     <root level="info">

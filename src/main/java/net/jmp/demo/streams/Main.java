@@ -99,7 +99,7 @@ final class Main implements Runnable {
                 new BasicsDemo(),
                 new AdvancedDemo(),
                 new CollectorsDemo(),
-                new MultiMapDemo()
+                new MapMultiDemo()
         );
 
         demos.forEach(Demo::demo);
