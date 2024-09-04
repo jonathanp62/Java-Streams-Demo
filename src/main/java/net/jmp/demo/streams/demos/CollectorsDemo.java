@@ -184,6 +184,7 @@ public final class CollectorsDemo implements Demo {
             this.limiting().forEach(i -> this.logger.info("Limiting: {}", i));
             this.skipping().forEach(i -> this.logger.info("Skipping: {}", i));
             this.toDeque().forEach(i -> this.logger.info("Deque: {}", i));
+            this.distinctifying().forEach(i -> this.logger.info("Distinct: {}", i));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -1016,6 +1017,26 @@ public final class CollectorsDemo implements Demo {
         }
 
         return names;
+    }
+
+    /**
+     * Demonstrate the distinctifying custom collector.
+     *
+     * @return  java.util.Set&lt;java.lang.Integer&gt;
+     */
+    private Set<Integer> distinctifying() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
+        final Set<Integer> list = integers.collect(DistinctifyingCollector.distinctifying());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(list));
+        }
+
+        return list;
     }
 
     /**

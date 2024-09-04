@@ -738,4 +738,23 @@ public final class TestCollectorsDemo {
         assertTrue(dishNames.contains("Prawns"));
         assertTrue(dishNames.contains("Salmon"));
     }
+
+    @Test
+    public void testDistinctifying() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("distinctifying");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final HashSet<?> set = castToType(HashSet.class, o);
+        final Set<Integer> results = setToTypedSet(set, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(4, results.size());
+        assertTrue(results.contains(Integer.valueOf(1)));
+        assertTrue(results.contains(Integer.valueOf(2)));
+        assertTrue(results.contains(Integer.valueOf(3)));
+        assertTrue(results.contains(Integer.valueOf(4)));
+    }
 }
