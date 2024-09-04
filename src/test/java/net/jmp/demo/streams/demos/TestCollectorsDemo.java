@@ -653,4 +653,23 @@ public final class TestCollectorsDemo {
         assertEquals(Integer.valueOf(3), results.get(4));
         assertEquals(Integer.valueOf(4), results.get(5));
     }
+
+    @Test
+    public void testTakingWhile() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("takingWhile");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final ArrayList<?> list = castToType(ArrayList.class, o);
+        final List<Integer> results = listToTypedList(list, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(4, results.size());
+        assertEquals(Integer.valueOf(1), results.get(0));
+        assertEquals(Integer.valueOf(1), results.get(1));
+        assertEquals(Integer.valueOf(1), results.get(2));
+        assertEquals(Integer.valueOf(1), results.get(3));
+    }
 }

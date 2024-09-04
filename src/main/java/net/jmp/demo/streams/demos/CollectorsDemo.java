@@ -41,7 +41,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import net.jmp.demo.streams.collectors.DroppingWhileCollector;
+import net.jmp.demo.streams.collectors.*;
 
 import net.jmp.demo.streams.records.Dish;
 import net.jmp.demo.streams.records.DishType;
@@ -179,7 +179,7 @@ public final class CollectorsDemo implements Demo {
 
         if (this.logger.isInfoEnabled()) {
             this.droppingWhile().forEach(i -> this.logger.info("Dropping: {}", i));
-
+            this.takingWhile().forEach(i -> this.logger.info("Taking: {}", i));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -921,8 +921,30 @@ public final class CollectorsDemo implements Demo {
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
 
-        final Predicate<Integer> p = i -> i ==  1;
+        final Predicate<Integer> p = i -> i == 1;
         final List<Integer> list = integers.collect(DroppingWhileCollector.droppingWhile(p));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(list));
+        }
+
+        return list;
+    }
+
+    /**
+     * Demonstrate the takingWhile custom collector.
+     *
+     * @return  java.util.List&lt;java.lang.Integer&gt;
+     */
+    private List<Integer> takingWhile() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
+
+        final Predicate<Integer> p = i -> i == 1;
+        final List<Integer> list = integers.collect(TakingWhileCollector.takingWhile(p));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(list));

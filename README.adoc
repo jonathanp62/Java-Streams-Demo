@@ -61,6 +61,9 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - toList
   - toMap
   - toSet
+* Custom Collectors
+  - droppingWhile
+  - takingWhile
 * Gatherers
 
 == Additional Features
