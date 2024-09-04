@@ -99,6 +99,28 @@ public final class TestUtils {
     }
 
     /**
+     * Create a deque of elements of type T from
+     * a Deque of wildcard-typed objects.
+     *
+     * @param   <T>         The type of element in the deque
+     * @param   deque       java.util.Deque&lt;?&gt;
+     * @param   clazz       The class of type T
+     * @return              java.util.Deque&lt;T&gt;
+     */
+    public static <T> Deque<T> dequeToTypedDeque(final Deque<?> deque, final Class<T> clazz) {
+        Objects.requireNonNull(deque, () -> "Deque<?> deque is null");
+        Objects.requireNonNull(clazz, () -> "Class<T> clazz");
+
+        final Deque<T> typedDeque = new ArrayDeque<>();
+
+        for (final Object item : deque) {
+            typedDeque.add(clazz.cast(item));
+        }
+
+        return typedDeque;
+    }
+
+    /**
      * Create a map of elements of types K and V
      * from a Map of wildcard-typed objects.
      *

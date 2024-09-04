@@ -714,4 +714,28 @@ public final class TestCollectorsDemo {
         assertEquals(Integer.valueOf(3), results.get(4));
         assertEquals(Integer.valueOf(4), results.get(5));
     }
+
+    @Test
+    public void testToDeque() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("toDeque");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final ArrayDeque<?> arrayDeque = castToType(ArrayDeque.class, o);
+        final Deque<String> dishNames = dequeToTypedDeque(arrayDeque, String.class);
+
+        assertNotNull(dishNames);
+        assertEquals(9, dishNames.size());
+        assertTrue(dishNames.contains("Pork"));
+        assertTrue(dishNames.contains("Beef"));
+        assertTrue(dishNames.contains("Chicken"));
+        assertTrue(dishNames.contains("French fries"));
+        assertTrue(dishNames.contains("Rice"));
+        assertTrue(dishNames.contains("Seasonal fruit"));
+        assertTrue(dishNames.contains("Pizza"));
+        assertTrue(dishNames.contains("Prawns"));
+        assertTrue(dishNames.contains("Salmon"));
+    }
 }

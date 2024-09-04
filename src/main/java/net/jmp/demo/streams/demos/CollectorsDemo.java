@@ -183,6 +183,7 @@ public final class CollectorsDemo implements Demo {
             this.takingWhile().forEach(i -> this.logger.info("Taking: {}", i));
             this.limiting().forEach(i -> this.logger.info("Limiting: {}", i));
             this.skipping().forEach(i -> this.logger.info("Skipping: {}", i));
+            this.toDeque().forEach(i -> this.logger.info("Deque: {}", i));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -992,6 +993,29 @@ public final class CollectorsDemo implements Demo {
         }
 
         return list;
+    }
+
+    /**
+     * Demonstrate a collector that
+     * collects strings into a deque.
+     *
+     * @return  java.util.Deque&lt;java.lang.String&gt;
+     */
+    private Deque<String> toDeque() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Deque<String> names = streamOfDishes()
+                .map(Dish::name)
+                .map(this.capitalizer)
+                .collect(ToDequeCollector.toDeque());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(names));
+        }
+
+        return names;
     }
 
     /**
