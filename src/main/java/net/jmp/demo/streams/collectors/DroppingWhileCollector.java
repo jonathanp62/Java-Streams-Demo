@@ -50,7 +50,9 @@ public final class DroppingWhileCollector<T> implements Collector<T, List<T>, Li
     private boolean doneDropping;
 
     /**
-     * The default constructor.
+     * The constructor.
+     *
+     * @param   predicate   java.util.function.Predicate&lt;? super T&gt;
      */
     public DroppingWhileCollector(final Predicate<? super T> predicate) {
         super();

@@ -672,4 +672,26 @@ public final class TestCollectorsDemo {
         assertEquals(Integer.valueOf(1), results.get(2));
         assertEquals(Integer.valueOf(1), results.get(3));
     }
+
+    @Test
+    public void testLimiting() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("limiting");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final ArrayList<?> list = castToType(ArrayList.class, o);
+        final List<Integer> results = listToTypedList(list, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(7, results.size());
+        assertEquals(Integer.valueOf(1), results.get(0));
+        assertEquals(Integer.valueOf(1), results.get(1));
+        assertEquals(Integer.valueOf(1), results.get(2));
+        assertEquals(Integer.valueOf(1), results.get(3));
+        assertEquals(Integer.valueOf(2), results.get(4));
+        assertEquals(Integer.valueOf(2), results.get(5));
+        assertEquals(Integer.valueOf(2), results.get(6));
+    }
 }

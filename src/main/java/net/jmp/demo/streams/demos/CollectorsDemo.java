@@ -77,7 +77,7 @@ import org.slf4j.LoggerFactory;
  *     toList(*)
  *     toMap(*)
  *     toSet(*)
- *  Stream.collect() using a custom created collector
+ *  Stream.collect(*) using custom created collectors
  */
 public final class CollectorsDemo implements Demo {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -180,6 +180,7 @@ public final class CollectorsDemo implements Demo {
         if (this.logger.isInfoEnabled()) {
             this.droppingWhile().forEach(i -> this.logger.info("Dropping: {}", i));
             this.takingWhile().forEach(i -> this.logger.info("Taking: {}", i));
+            this.limiting().forEach(i -> this.logger.info("Limiting: {}", i));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -920,7 +921,6 @@ public final class CollectorsDemo implements Demo {
         }
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
-
         final Predicate<Integer> p = i -> i == 1;
         final List<Integer> list = integers.collect(DroppingWhileCollector.droppingWhile(p));
 
@@ -942,9 +942,28 @@ public final class CollectorsDemo implements Demo {
         }
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
-
         final Predicate<Integer> p = i -> i == 1;
         final List<Integer> list = integers.collect(TakingWhileCollector.takingWhile(p));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(list));
+        }
+
+        return list;
+    }
+
+    /**
+     * Demonstrate the limiting custom collector.
+     *
+     * @return  java.util.List&lt;java.lang.Integer&gt;
+     */
+    private List<Integer> limiting() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
+        final List<Integer> list = integers.collect(LimitingCollector.takingWhile(7));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(list));

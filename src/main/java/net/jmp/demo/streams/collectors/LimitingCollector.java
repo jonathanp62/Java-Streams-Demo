@@ -1,7 +1,7 @@
 package net.jmp.demo.streams.collectors;
 
 /*
- * (#)TakingWhileCollector.java 0.4.0   09/04/2024
+ * (#)LimitingCollector.java    0.4.0   09/04/2024
  *
  * @author   Jonathan Parker
  * @version  0.4.0
@@ -38,34 +38,34 @@ import java.util.stream.Collector;
 
 /**
  * An implementation of the stream
- * taking-while as a collector.
+ * limit as a collector.
  *
  * @param   <T> The type being collected
  */
-public class TakingWhileCollector<T> implements Collector<T, List<T>, List<T>> {
-    /** The predicate function. */
-    private final Predicate<? super T> predicate;
+public class LimitingCollector<T> implements Collector<T, List<T>, List<T>> {
+    /** The limit. */
+    private final long limit;
 
     /**
      * The constructor.
      *
-     * @param   predicate   java.util.function.Predicate&lt;? super T&gt;
+     * @param   limit   long
      */
-    public TakingWhileCollector(final Predicate<? super T> predicate) {
+    public LimitingCollector(final long limit) {
         super();
 
-        this.predicate = predicate;
+        this.limit = limit;
     }
 
     /**
-     * Return an instance of the taking-while collector.
+     * Return an instance of the limiting collector.
      *
-     * @param   <T>         The type being collected
-     * @param   predicate   java.util.function.Predicate&lt;T&gt;
-     * @return              net.jmp.demo.streams.collectors.TakingWhileCollector
+     * @param   <T>     The type being collected
+     * @param   limit   long
+     * @return          net.jmp.demo.streams.collectors.LimitingCollector
      */
-    public static <T> TakingWhileCollector<T> takingWhile(final Predicate<? super T> predicate) {
-        return new TakingWhileCollector<>(predicate);
+    public static <T> LimitingCollector<T> takingWhile(final long limit) {
+        return new LimitingCollector<>(limit);
     }
 
     /**
@@ -86,7 +86,7 @@ public class TakingWhileCollector<T> implements Collector<T, List<T>, List<T>> {
     @Override
     public BiConsumer<List<T>, T> accumulator() {
         return (list, element) -> {
-            if (this.predicate.test(element)) {
+            if (list.size() < this.limit) {
                 list.add(element);
             }
         };
