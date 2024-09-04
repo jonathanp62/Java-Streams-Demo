@@ -1,7 +1,7 @@
 package net.jmp.demo.streams.collectors;
 
 /*
- * (#)TakingWhileCollector.java 0.4.0   09/04/2024
+ * (#)SkippingCollector.java    0.4.0   09/04/2024
  *
  * @author   Jonathan Parker
  * @version  0.4.0
@@ -38,34 +38,38 @@ import java.util.stream.Collector;
 
 /**
  * An implementation of the stream
- * taking-while as a collector.
+ * skip as a collector.
  *
  * @param   <T> The type being collected
  */
-public final class TakingWhileCollector<T> implements Collector<T, List<T>, List<T>> {
-    /** The predicate function. */
-    private final Predicate<? super T> predicate;
+public final class SkippingCollector<T> implements Collector<T, List<T>, List<T>> {
+    /** The skip amount. */
+    private final long skip;
+
+    /** The number of elements processed by the accumulator. */
+    private long count;
 
     /**
      * The constructor.
      *
-     * @param   predicate   java.util.function.Predicate&lt;? super T&gt;
+     * @param   skip    long
      */
-    public TakingWhileCollector(final Predicate<? super T> predicate) {
+    public SkippingCollector(final long skip) {
         super();
 
-        this.predicate = predicate;
+        this.skip = skip;
+        this.count = 0;
     }
 
     /**
-     * Return an instance of the taking-while collector.
+     * Return an instance of the skipping collector.
      *
-     * @param   <T>         The type being collected
-     * @param   predicate   java.util.function.Predicate&lt;T&gt;
-     * @return              net.jmp.demo.streams.collectors.TakingWhileCollector
+     * @param   <T>     The type being collected
+     * @param   skip    long
+     * @return          net.jmp.demo.streams.collectors.SkippingCollector
      */
-    public static <T> TakingWhileCollector<T> takingWhile(final Predicate<? super T> predicate) {
-        return new TakingWhileCollector<>(predicate);
+    public static <T> SkippingCollector<T> skipping(final long skip) {
+        return new SkippingCollector<>(skip);
     }
 
     /**
@@ -86,8 +90,10 @@ public final class TakingWhileCollector<T> implements Collector<T, List<T>, List
     @Override
     public BiConsumer<List<T>, T> accumulator() {
         return (list, element) -> {
-            if (this.predicate.test(element)) {
+            if (this.count >= this.skip) {
                 list.add(element);
+            } else {
+                ++this.count;
             }
         };
     }

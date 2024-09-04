@@ -56,6 +56,7 @@ import org.slf4j.LoggerFactory;
  *   takeWhile(*)
  */
 public final class AdvancedDemo implements Demo {
+    /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /**

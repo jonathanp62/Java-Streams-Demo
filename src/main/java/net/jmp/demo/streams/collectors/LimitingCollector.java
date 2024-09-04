@@ -42,7 +42,7 @@ import java.util.stream.Collector;
  *
  * @param   <T> The type being collected
  */
-public class LimitingCollector<T> implements Collector<T, List<T>, List<T>> {
+public final class LimitingCollector<T> implements Collector<T, List<T>, List<T>> {
     /** The limit. */
     private final long limit;
 
@@ -64,7 +64,7 @@ public class LimitingCollector<T> implements Collector<T, List<T>, List<T>> {
      * @param   limit   long
      * @return          net.jmp.demo.streams.collectors.LimitingCollector
      */
-    public static <T> LimitingCollector<T> takingWhile(final long limit) {
+    public static <T> LimitingCollector<T> limiting(final long limit) {
         return new LimitingCollector<>(limit);
     }
 

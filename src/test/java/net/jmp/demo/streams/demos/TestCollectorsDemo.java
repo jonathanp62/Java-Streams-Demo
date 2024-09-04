@@ -31,7 +31,6 @@ package net.jmp.demo.streams.demos;
  */
 
 import java.util.*;
-import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.Dish;
 import net.jmp.demo.streams.records.DishType;
@@ -693,5 +692,26 @@ public final class TestCollectorsDemo {
         assertEquals(Integer.valueOf(2), results.get(4));
         assertEquals(Integer.valueOf(2), results.get(5));
         assertEquals(Integer.valueOf(2), results.get(6));
+    }
+
+    @Test
+    public void testSkipping() throws Exception {
+        final var demo = new CollectorsDemo();
+        final var method = CollectorsDemo.class.getDeclaredMethod("skipping");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final ArrayList<?> list = castToType(ArrayList.class, o);
+        final List<Integer> results = listToTypedList(list, Integer.class);
+
+        assertNotNull(results);
+        assertEquals(6, results.size());
+        assertEquals(Integer.valueOf(2), results.get(0));
+        assertEquals(Integer.valueOf(2), results.get(1));
+        assertEquals(Integer.valueOf(2), results.get(2));
+        assertEquals(Integer.valueOf(3), results.get(3));
+        assertEquals(Integer.valueOf(3), results.get(4));
+        assertEquals(Integer.valueOf(4), results.get(5));
     }
 }

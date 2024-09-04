@@ -82,6 +82,7 @@ import org.slf4j.LoggerFactory;
  *   toList(*)
  */
 public final class BasicsDemo implements Demo {
+    /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /**

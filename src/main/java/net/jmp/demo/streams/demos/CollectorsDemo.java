@@ -80,6 +80,7 @@ import org.slf4j.LoggerFactory;
  *  Stream.collect(*) using custom created collectors
  */
 public final class CollectorsDemo implements Demo {
+    /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** A capitalizer function. A UnaryOperator<T> is preferred to Function<T, T>. */
@@ -181,6 +182,7 @@ public final class CollectorsDemo implements Demo {
             this.droppingWhile().forEach(i -> this.logger.info("Dropping: {}", i));
             this.takingWhile().forEach(i -> this.logger.info("Taking: {}", i));
             this.limiting().forEach(i -> this.logger.info("Limiting: {}", i));
+            this.skipping().forEach(i -> this.logger.info("Skipping: {}", i));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -963,7 +965,27 @@ public final class CollectorsDemo implements Demo {
         }
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
-        final List<Integer> list = integers.collect(LimitingCollector.takingWhile(7));
+        final List<Integer> list = integers.collect(LimitingCollector.limiting(7));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(list));
+        }
+
+        return list;
+    }
+
+    /**
+     * Demonstrate the skipping custom collector.
+     *
+     * @return  java.util.List&lt;java.lang.Integer&gt;
+     */
+    private List<Integer> skipping() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
+        final List<Integer> list = integers.collect(SkippingCollector.skipping(4));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(list));
