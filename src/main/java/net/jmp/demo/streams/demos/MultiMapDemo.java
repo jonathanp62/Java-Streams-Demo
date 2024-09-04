@@ -1,14 +1,11 @@
-package net.jmp.demo.streams;
+package net.jmp.demo.streams.demos;
 
 /*
- * (#)Main.java 0.6.0   09/04/2024
- * (#)Main.java 0.4.0   08/30/2024
- * (#)Main.java 0.3.0   08/29/2024
- * (#)Main.java 0.1.0   08/24/2024
+ * (#)MultiMapDemo.java 0.6.0   09/04/2024
  *
  * @author   Jonathan Parker
  * @version  0.6.0
- * @since    0.1.0
+ * @since    0.6.0
  *
  * MIT License
  *
@@ -33,76 +30,34 @@ package net.jmp.demo.streams;
  * SOFTWARE.
  */
 
-import java.util.Objects;
-
-import java.util.stream.Stream;
-
-import net.jmp.demo.streams.demos.*;
-
-import static net.jmp.demo.streams.util.LoggerUtils.*;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static net.jmp.demo.streams.util.LoggerUtils.entry;
+import static net.jmp.demo.streams.util.LoggerUtils.exit;
+
 /**
- * The main class.
+ * A class the demonstrates multi-map.
  */
-final class Main implements Runnable {
+public final class MultiMapDemo implements Demo {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The command line arguments. */
-    private final String[] arguments;
-
     /**
-     * A constructor that takes the
-     * command line arguments from
-     * the bootstrap class.
+     * The default constructor.
      */
-    Main(final String[] args) {
+    public MultiMapDemo() {
         super();
-
-        this.arguments = Objects.requireNonNull(args);
     }
 
     /**
-     * The run method.
+     * The demo method.
      */
     @Override
-    public void run() {
+    public void demo() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
-
-        if (this.logger.isInfoEnabled() || this.logger.isWarnEnabled() || this.logger.isErrorEnabled()) {
-            System.out.format("%s %s%n", Name.NAME_STRING, Version.VERSION_STRING);
-        } else {
-            this.logger.debug("{} {}", Name.NAME_STRING, Version.VERSION_STRING);
-        }
-
-        this.runDemos();
-
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
-        }
-    }
-
-    /**
-     * Method that runs the demo classes.
-     */
-    private void runDemos() {
-        if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
-        }
-
-        Stream<Demo> demos = Stream.of(
-                new BasicsDemo(),
-                new AdvancedDemo(),
-                new CollectorsDemo(),
-                new MultiMapDemo()
-        );
-
-        demos.forEach(Demo::demo);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
