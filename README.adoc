@@ -70,6 +70,10 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - takingWhile
   - toDeque
 * Gatherers
+* MapMulti
+  - Filter and Map vs. MapMulti
+  - FlatMap vs. MapMulti
+  - Creating a method in a record that takes a consumer and is the input to MapMulti
 
 == Additional Features
 
@@ -84,5 +88,5 @@ Gradle JavaExec Tasks
 |execute                |No arguments
 |=======================
 
-Current version: 0.6.0.
+Current version: 0.7.0.
 ~~~~~~~~~~~~~~~~~~~~~~~
