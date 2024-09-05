@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
+ (#)logback.xml 0.7.0   09/05/2024
  (#)logback.xml 0.6.0   09/04/2024
  (#)logback.xml 0.4.0   08/30/2024
  (#)logback.xml 0.3.0   08/29/2024
  (#)logback.xml 0.1.0   08/24/2024
 
  @author   Jonathan Parker
- @version  0.6.0
+ @version  0.7.0
  @since    0.1.0
 
  MIT License
@@ -50,6 +51,9 @@
         <appender-ref ref="MAIN" />
     </logger>
     <logger name="net.jmp.demo.streams.demos.CollectorsDemo" additivity="false" level="info">
+        <appender-ref ref="MAIN" />
+    </logger>
+    <logger name="net.jmp.demo.streams.demos.GatherersDemo" additivity="false" level="info">
         <appender-ref ref="MAIN" />
     </logger>
     <logger name="net.jmp.demo.streams.demos.MapMultiDemo" additivity="false" level="info">

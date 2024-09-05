@@ -1,13 +1,14 @@
 package net.jmp.demo.streams;
 
 /*
+ * (#)Main.java 0.7.0   09/05/2024
  * (#)Main.java 0.6.0   09/04/2024
  * (#)Main.java 0.4.0   08/30/2024
  * (#)Main.java 0.3.0   08/29/2024
  * (#)Main.java 0.1.0   08/24/2024
  *
  * @author   Jonathan Parker
- * @version  0.6.0
+ * @version  0.7.0
  * @since    0.1.0
  *
  * MIT License
@@ -99,7 +100,8 @@ final class Main implements Runnable {
                 new BasicsDemo(),
                 new AdvancedDemo(),
                 new CollectorsDemo(),
-                new MapMultiDemo()
+                new MapMultiDemo(),
+                new GatherersDemo()
         );
 
         demos.forEach(Demo::demo);
