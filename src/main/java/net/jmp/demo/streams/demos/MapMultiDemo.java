@@ -1,7 +1,7 @@
 package net.jmp.demo.streams.demos;
 
 /*
- * (#)MultiMapDemo.java 0.6.0   09/04/2024
+ * (#)MapMultiDemo.java 0.6.0   09/04/2024
  *
  * @author   Jonathan Parker
  * @version  0.6.0
@@ -35,7 +35,13 @@ import java.util.List;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
+import net.jmp.demo.streams.records.Album;
+import net.jmp.demo.streams.records.Artist;
+
 import static net.jmp.demo.streams.util.LoggerUtils.*;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +73,8 @@ public final class MapMultiDemo implements Demo {
             this.filterAndMap().forEach(integer -> this.logger.info("filterAndMap: {}", integer));
             this.mapMulti().forEach(integer -> this.logger.info("mapMulti: {}", integer));
             this.mapMultiToDouble().forEach(integer -> this.logger.info("mapMulti2Dbl: {}", integer));
+            this.flatMapArtistAlbumPairs().forEach(pair -> this.logger.info("flatMap: {}", pair));
+            this.mapMultiArtistAlbumPairs().forEach(pair -> this.logger.info("mapMulti: {}", pair));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -77,7 +85,7 @@ public final class MapMultiDemo implements Demo {
     /**
      * An example that uses filter and
      * map and will be re-implemented
-     * using multiMap.
+     * using mapMulti.
      *
      * @return  java.util.stream.Stream&lt;java.lang.Double&gt;
      */
@@ -101,7 +109,7 @@ public final class MapMultiDemo implements Demo {
     }
 
     /**
-     * An example that uses multiMap
+     * An example that uses mapMulti
      * instead of filter and map as
      * above. MapMulti is more direct,
      * requiring fewer intermediate
@@ -132,7 +140,7 @@ public final class MapMultiDemo implements Demo {
     }
 
     /**
-     * An example that uses multiMap
+     * An example that uses mapMmulti
      * and returns a double stream.
      *
      * @return  java.util.stream.DoubleStream
@@ -155,5 +163,141 @@ public final class MapMultiDemo implements Demo {
         }
 
         return doubles;
+    }
+
+    /**
+     * Return a stream of pairs of artist/album
+     * names using flat map. It will be re-implemented
+     * using mapMulti.
+     *
+     * @return  java.util.stream.Stream&lt;org.apache.commons.lang3.tuple.Pair&lt;java.lang.String, java.lang.String&gt;&gt;
+     */
+    private Stream<Pair<String, String>> flatMapArtistAlbumPairs() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final int upperCost = 20;
+
+        final Stream<Pair<String, String>> artistAlbumPairs = this.getAlbums()
+                .flatMap(album -> album.artists()
+                        .stream()
+                        .filter(artist -> upperCost > album.albumCost())
+                        .map(artist -> new ImmutablePair<String, String>(artist.name(), album.albumName())));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(artistAlbumPairs));
+        }
+
+        return artistAlbumPairs;
+    }
+
+    /**
+     * Return a stream of pairs of artist/album
+     * names using mapMulti.
+     *
+     * @return  java.util.stream.Stream&lt;org.apache.commons.lang3.tuple.Pair&lt;java.lang.String, java.lang.String&gt;&gt;
+     */
+    private Stream<Pair<String, String>> mapMultiArtistAlbumPairs() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Pair<String, String>> artistAlbumPairs = this.getAlbums()
+                .mapMulti((album, consumer) -> album.artists().stream()
+                        .forEach(artist -> consumer.accept(new ImmutablePair<>(artist.name(), album.albumName()))));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(artistAlbumPairs));
+        }
+
+        return artistAlbumPairs;
+    }
+
+    /**
+     * Return a stream of albums.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.streams.records.Album&gt;
+     */
+    private Stream<Album> getAlbums() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Album album1 = new Album(
+                "Dvorak Symphonies",
+                15,
+                List.of(
+                        new Artist(
+                                "Colin Davis",
+                                true,
+                                List.of(
+                                        "LSO",
+                                        "Phillips"
+                                )
+                        ),
+                        new Artist(
+                                "London Symphony Orchestra",
+                                true,
+                                List.of(
+                                        "LSO",
+                                        "Warner"
+                                )
+                        )
+                )
+        );
+
+        final Album album2 = new Album(
+                "Baroque Journey",
+                18,
+                List.of(
+                        new Artist(
+                                "Lucie Horsch",
+                                true,
+                                List.of(
+                                        "Alpha",
+                                        "Decca"
+                                )
+                        ),
+                        new Artist(
+                                "Hanover Band",
+                                true,
+                                List.of(
+                                        "Alpha",
+                                        "Erato"
+                                )
+                        )
+                )
+        );
+
+        final Album album3 = new Album(
+                "New Year's Eve",
+                10,
+                List.of(
+                        new Artist(
+                                "Herbert von Karajan",
+                                true,
+                                List.of(
+                                        "DG"
+                                )
+                        ),
+                        new Artist(
+                                "Evgeny Kissin",
+                                true,
+                                List.of(
+                                        "DG",
+                                        "RCA"
+                                )
+                        )
+                )
+        );
+
+        final Stream<Album> albums = Stream.of(album1, album2, album3);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(albums));
+        }
+
+        return albums;
     }
 }
