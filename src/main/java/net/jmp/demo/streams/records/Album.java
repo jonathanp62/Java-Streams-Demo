@@ -32,6 +32,13 @@ package net.jmp.demo.streams.records;
 
 import java.util.List;
 
+import java.util.function.Consumer;
+
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 /**
  * The album record.
  */
@@ -40,4 +47,21 @@ public record Album(
         int albumCost,
         List<Artist> artists
 ) {
+    /**
+     * Method that passes all the artist-album pairs with
+     * their associated major labels to a consumer. Used
+     * in the MapMultiDemo class.
+     *
+     * @param   consumer    java.util.function.Consumer&lt;org.apache.commons.lang3.tuple.Pair&lt;java.lang.String, java.lang.String&gt;&gt;
+     */
+    public void artistAlbumPairsToMajorLabels(final Consumer<Pair<String, String>> consumer) {
+        artists.stream()
+                .filter(Artist::associatedWithMajorLabels)
+                .forEach(artist -> {
+                    final String labels = artist.majorLabels().stream()
+                            .collect(Collectors.joining(", "));
+
+                    consumer.accept(new ImmutablePair<>(artist.name() + ": " + this.albumName, labels));
+                });
+    }
 }

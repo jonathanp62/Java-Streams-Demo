@@ -145,4 +145,26 @@ public class TestMapMultiDemo {
         assertEquals(Pair.of("Herbert von Karajan", "New Year's Eve"), list.get(4));
         assertEquals(Pair.of("Evgeny Kissin", "New Year's Eve"), list.get(5));
     }
+
+    @Test
+    public void testMapMultiCopyrightedArtistAlbum() throws Exception {
+        final var demo = new MapMultiDemo();
+        final var method = MapMultiDemo.class.getDeclaredMethod("mapMultiCopyrightedArtistAlbum");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final Stream<Pair<String, String>> pairs = (Stream<Pair<String, String>>) method.invoke(demo);
+
+        final List<Pair<String, String>> list = pairs.toList();
+
+        assertNotNull(list);
+        assertEquals(6, list.size());
+        assertEquals(Pair.of("Colin Davis: Dvorak Symphonies", "LSO, Phillips"), list.get(0));
+        assertEquals(Pair.of("London Symphony Orchestra: Dvorak Symphonies", "LSO, Warner"), list.get(1));
+        assertEquals(Pair.of("Lucie Horsch: Baroque Journey", "Alpha, Decca"), list.get(2));
+        assertEquals(Pair.of("Hanover Band: Baroque Journey", "Alpha, Erato"), list.get(3));
+        assertEquals(Pair.of("Herbert von Karajan: New Year's Eve", "DG"), list.get(4));
+        assertEquals(Pair.of("Evgeny Kissin: New Year's Eve", "DG, RCA"), list.get(5));
+    }
 }

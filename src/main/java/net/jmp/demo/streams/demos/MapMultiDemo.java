@@ -75,6 +75,7 @@ public final class MapMultiDemo implements Demo {
             this.mapMultiToDouble().forEach(integer -> this.logger.info("mapMulti2Dbl: {}", integer));
             this.flatMapArtistAlbumPairs().forEach(pair -> this.logger.info("flatMap: {}", pair));
             this.mapMultiArtistAlbumPairs().forEach(pair -> this.logger.info("mapMulti: {}", pair));
+            this.mapMultiCopyrightedArtistAlbum().forEach(pair -> this.logger.info("copyright: {}", pair));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -212,6 +213,28 @@ public final class MapMultiDemo implements Demo {
         }
 
         return artistAlbumPairs;
+    }
+
+    /**
+     * Return a stream of pairs of copyrighted
+     * artist names with their album names and
+     * major labels using mapMulti.
+     *
+     * @return  java.util.stream.Stream&lt;org.apache.commons.lang3.tuple.Pair&lt;java.lang.String, java.lang.String&gt;&gt;
+     */
+    private Stream<Pair<String, String>> mapMultiCopyrightedArtistAlbum() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Pair<String, String>> copyrightedArtistAlbums = this.getAlbums()
+                .mapMulti(Album::artistAlbumPairsToMajorLabels);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(copyrightedArtistAlbums));
+        }
+
+        return copyrightedArtistAlbums;
     }
 
     /**
