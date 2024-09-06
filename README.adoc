@@ -70,6 +70,22 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - takingWhile
   - toDeque
 * Gatherers
+** Custom
+- distinctBy
+- findFirst
+- findLast
+- gatherAndThen
+- mapNotNull
+- maxBy
+- minBy
+- reducingBy
+** Standard
+- fold
+- fixedWindow
+- mapConcurrent
+- scan
+- slidingWindow
+
 * MapMulti
   - Filter and Map vs. MapMulti
   - FlatMap vs. MapMulti

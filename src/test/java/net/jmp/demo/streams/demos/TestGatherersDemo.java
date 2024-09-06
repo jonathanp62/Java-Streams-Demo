@@ -30,7 +30,13 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.math.BigDecimal;
+
+import java.util.Currency;
 import java.util.List;
+import java.util.stream.Stream;
+
+import net.jmp.demo.streams.records.Money;
 
 import static net.jmp.demo.streams.testutil.TestUtils.*;
 
@@ -137,19 +143,104 @@ public final class TestGatherersDemo {
 
         final Object o = method.invoke(demo);
         final List<?> list = castToType(List.class, o);
-        final List<String> scans = listToTypedList(list, String.class);
+        final List<String> results = listToTypedList(list, String.class);
 
-        assertNotNull(scans);
-        assertEquals(9, scans.size());
+        assertNotNull(results);
+        assertEquals(9, results.size());
 
-        assertEquals("1", scans.get(0));
-        assertEquals("2", scans.get(1));
-        assertEquals("3", scans.get(2));
-        assertEquals("4", scans.get(3));
-        assertEquals("5", scans.get(4));
-        assertEquals("6", scans.get(5));
-        assertEquals("7", scans.get(6));
-        assertEquals("8", scans.get(7));
-        assertEquals("9", scans.get(8));
+        assertEquals("1", results.get(0));
+        assertEquals("2", results.get(1));
+        assertEquals("3", results.get(2));
+        assertEquals("4", results.get(3));
+        assertEquals("5", results.get(4));
+        assertEquals("6", results.get(5));
+        assertEquals("7", results.get(6));
+        assertEquals("8", results.get(7));
+        assertEquals("9", results.get(8));
+    }
+
+    @Test
+    public void testDistinctBy() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customDistinctByGatherer", Stream.class);
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo, this.getMoney());
+        final List<?> list = castToType(List.class, o);
+        final List<String> results = listToTypedList(list, String.class);
+
+        assertNotNull(results);
+        assertEquals(2, results.size());
+        assertEquals("PLN", results.get(0));
+        assertEquals("EUR", results.get(1));
+    }
+
+    @Test
+    public void testReduceBy() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customReduceByGatherer", Stream.class);
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo, this.getMoney());
+        final List<?> list = castToType(List.class, o);
+        final List<String> results = listToTypedList(list, String.class);
+
+        assertNotNull(results);
+        assertEquals(2, results.size());
+
+        final Money expected0 = new Money(new BigDecimal(11), Currency.getInstance("EUR"));
+        final Money expected1 = new Money(new BigDecimal(27), Currency.getInstance("PLN"));
+
+        assertTrue(results.contains(expected0.toString()));
+        assertTrue(results.contains(expected1.toString()));
+    }
+
+    @Test
+    public void testMaxBy() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customMaxByGatherer", Stream.class);
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo, this.getMoney());
+        final String string = castToType(String.class, o);
+
+        assertNotNull(string);
+
+        final Money expected = new Money(new BigDecimal(15), Currency.getInstance("PLN"));
+
+        assertEquals(expected.toString(), string);
+    }
+
+    @Test
+    public void testMinBy() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customMinByGatherer", Stream.class);
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo, this.getMoney());
+        final String string = castToType(String.class, o);
+
+        assertNotNull(string);
+
+        final Money expected = new Money(new BigDecimal(11), Currency.getInstance("EUR"));
+
+        assertEquals(expected.toString(), string);
+    }
+
+    /**
+     * Return a stream of money.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     */
+    private Stream<Money> getMoney() {
+        return Stream.of(
+                new Money(BigDecimal.valueOf(12), Currency.getInstance("PLN")),
+                new Money(BigDecimal.valueOf(11), Currency.getInstance("EUR")),
+                new Money(BigDecimal.valueOf(15), Currency.getInstance("PLN"))
+        );
     }
 }
