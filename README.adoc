@@ -74,6 +74,7 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - Filter and Map vs. MapMulti
   - FlatMap vs. MapMulti
   - Creating a method in a record that takes a consumer and is the input to MapMulti
+  - Using MapMulti to map one input element to more than one output elements
 
 == Additional Features
 
