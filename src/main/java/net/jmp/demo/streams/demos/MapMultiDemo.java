@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)MapMultiDemo.java 0.7.0   09/06/2024
  * (#)MapMultiDemo.java 0.6.0   09/04/2024
  *
  * @author   Jonathan Parker
- * @version  0.6.0
+ * @version  0.7.0
  * @since    0.6.0
  *
  * MIT License
@@ -76,6 +77,7 @@ public final class MapMultiDemo implements Demo {
             this.flatMapArtistAlbumPairs().forEach(pair -> this.logger.info("flatMap: {}", pair));
             this.mapMultiArtistAlbumPairs().forEach(pair -> this.logger.info("mapMulti: {}", pair));
             this.mapMultiCopyrightedArtistAlbum().forEach(pair -> this.logger.info("copyright: {}", pair));
+            this.mapToMultipleElements().forEach(integer -> this.logger.info("Multi: {}", integer));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -235,6 +237,32 @@ public final class MapMultiDemo implements Demo {
         }
 
         return copyrightedArtistAlbums;
+    }
+
+    /**
+     * Demonstrate producing multiple elements from
+     * a single input element. The key is to call
+     * the consumer.accept() method more than once.
+     *
+     * @return  java.util.stream.Stream&lt;java.lang.String&gt;
+     */
+    private Stream<String> mapToMultipleElements() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<String> input = List.of("a", "b", "c");
+        final Stream<String> output = input.stream()
+                .mapMulti((string, consumer) -> {
+                    consumer.accept(string + "1");
+                    consumer.accept(string + "2");
+                });
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(output));
+        }
+
+        return output;
     }
 
     /**

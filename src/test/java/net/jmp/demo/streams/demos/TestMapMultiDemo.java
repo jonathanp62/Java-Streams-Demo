@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestMapMultiDemo.java 0.7.0   09/06/2024
  * (#)TestMapMultiDemo.java 0.6.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.6.0
+ * @version  0.7.0
  * @since    0.6.0
  *
  * MIT License
@@ -166,5 +167,26 @@ public class TestMapMultiDemo {
         assertEquals(Pair.of("Hanover Band: Baroque Journey", "Alpha, Erato"), list.get(3));
         assertEquals(Pair.of("Herbert von Karajan: New Year's Eve", "DG"), list.get(4));
         assertEquals(Pair.of("Evgeny Kissin: New Year's Eve", "DG, RCA"), list.get(5));
+    }
+
+    @Test
+    public void testMapToMultipleElements() throws Exception {
+        final var demo = new MapMultiDemo();
+        final var method = MapMultiDemo.class.getDeclaredMethod("mapToMultipleElements");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Stream<?> stream = castToType(Stream.class, o);
+        final List<String> strings = streamToTypedList(stream, String.class);
+
+        assertNotNull(strings);
+        assertEquals(6, strings.size());
+        assertEquals("a1", strings.get(0));
+        assertEquals("a2", strings.get(1));
+        assertEquals("b1", strings.get(2));
+        assertEquals("b2", strings.get(3));
+        assertEquals("c1", strings.get(4));
+        assertEquals("c2", strings.get(5));
     }
 }
