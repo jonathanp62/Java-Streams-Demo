@@ -51,7 +51,7 @@ public final class GatherersFactory {
      * A distinct-by gatherer.
      *
      * @param   selector    java.util.function.Function&lt;T, A&gt;
-     * @return              net.jmp.demo.java22.gatherers.DistinctByGatherer&lt;T, A&gt;
+     * @return              net.jmp.demo.streams.gatherers.DistinctByGatherer&lt;T, A&gt;
      * @param   <T>         The type of input elements to the gathering operation
      * @param   <A>         The potentially mutable state type of the gathering operation
      */
@@ -64,7 +64,7 @@ public final class GatherersFactory {
      *
      * @param   selector    java.util.function.Function&lt;T, A&gt;
      * @param   reducer     java.util.function.BiFunction&lt;T, T, T&gt;
-     * @return              net.jmp.demo.java22.gatherers.ReduceByGatherer&lt;T, A&gt;
+     * @return              net.jmp.demo.streams.gatherers.ReduceByGatherer&lt;T, A&gt;
      * @param   <T>         The type of input elements to the gathering operation
      * @param   <A>         The potentially mutable state type of the gathering operation
      */
@@ -77,7 +77,7 @@ public final class GatherersFactory {
      * A max-by gatherer.
      *
      * @param   selector    java.util.function.Function&lt;T, C&gt;
-     * @return              net.jmp.demo.java22.gatherers.MaxByGatherer&lt;T, C&gt;
+     * @return              net.jmp.demo.streams.gatherers.MaxByGatherer&lt;T, C&gt;
      * @param   <T>         The type of input elements to the gathering operation
      * @param   <C>         A type that extends Comparable; T must extend Comparable
      */
@@ -89,7 +89,7 @@ public final class GatherersFactory {
      * A min-by gatherer.
      *
      * @param   selector    java.util.function.Function&lt;T, C&gt;
-     * @return              net.jmp.demo.java22.gatherers.MinByGatherer&lt;T, C&gt;
+     * @return              net.jmp.demo.streams.gatherers.MinByGatherer&lt;T, C&gt;
      * @param   <T>         The type of input elements to the gathering operation
      * @param   <C>         A type that extends Comparable; T must extend Comparable
      */
@@ -101,7 +101,7 @@ public final class GatherersFactory {
      * A map not null gatherer.
      *
      * @param   mapper  java.util.function.Function&lt;T, R&gt;
-     * @return          net.jmp.demo.java22.gatherers.MapNotNullGatherer&lt;T, R&gt;
+     * @return          net.jmp.demo.streams.gatherers.MapNotNullGatherer&lt;T, R&gt;
      * @param   <T>     The type of input elements to the gathering operation
      * @param   <R>     The type of output elements from the gatherer operation
      */
@@ -113,7 +113,7 @@ public final class GatherersFactory {
      * A find first gatherer.
      *
      * @param   predicate   java.util.function.Predicate&lt;T&gt;
-     * @return              net.jmp.demo.java22.gatherers.FindFirstGatherer&lt;T&gt;
+     * @return              net.jmp.demo.streams.gatherers.FindFirstGatherer&lt;T&gt;
      * @param   <T>         The type of input elements to the gathering operation
      */
     public static <T> FindFirstGatherer<T> findFirst(final Predicate<T> predicate) {
@@ -124,7 +124,7 @@ public final class GatherersFactory {
      * A find last gatherer.
      *
      * @param   predicate   java.util.function.Predicate&lt;T&gt;
-     * @return              net.jmp.demo.java22.gatherers.FindFirstGatherer&lt;T&gt;
+     * @return              net.jmp.demo.streams.gatherers.FindFirstGatherer&lt;T&gt;
      * @param   <T>         The type of input elements to the gathering operation
      */
     public static <T> FindLastGatherer<T> findLast(final Predicate<T> predicate) {

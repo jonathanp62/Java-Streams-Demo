@@ -30,12 +30,20 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.math.BigDecimal;
+
+import java.util.Arrays;
+import java.util.Currency;
 import java.util.List;
 
 import java.util.function.Function;
 
 import java.util.stream.Gatherers;
 import java.util.stream.Stream;
+
+import net.jmp.demo.streams.gatherers.*;
+
+import net.jmp.demo.streams.records.Money;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
@@ -104,6 +112,21 @@ public final class GatherersDemo implements Demo {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
+
+        final Stream<Money> money = Stream.of(
+                new Money(BigDecimal.valueOf(12), Currency.getInstance("PLN")),
+                new Money(BigDecimal.valueOf(11), Currency.getInstance("EUR")),
+                new Money(BigDecimal.valueOf(15), Currency.getInstance("PLN"))
+        );
+
+        this.customDistinctBy(money);
+        this.customReduceByGatherer(money);
+        this.customMaxByGatherer(money);
+        this.customMinByGatherer(money);
+        this.customMapNotNullGatherer();
+        this.customFindFirstGatherer(money);
+        this.customFindLastGatherer(money);
+        this.customGatherAndThen();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -241,5 +264,209 @@ public final class GatherersDemo implements Demo {
         }
 
         return strings;
+    }
+
+    /**
+     * A custom distinct-by gatherer.
+     *
+     * @param   money   java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     */
+    private void customDistinctBy(final Stream<Money> money) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(money));
+        }
+
+        assert money != null;
+
+//        money.stream()
+//                .gather(GatherersFactory.distinctBy(Money::currency))
+//                .forEach(e -> this.logger.info(e.toString()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * A custom reduce-by gatherer.
+     *
+     * @param   money   java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     */
+    private void customReduceByGatherer(final Stream<Money> money) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(money));
+        }
+
+        assert money != null;
+
+//        money.stream()
+//                .gather(GatherersFactory.reduceBy(Money::currency, Money::add))
+//                .forEach(e -> this.logger.info(e.toString()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * A custom max-by gatherer.
+     *
+     * @param   money   java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     */
+    private void customMaxByGatherer(final Stream<Money> money) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(money));
+        }
+
+        assert money != null;
+
+//        money.stream()
+//                .parallel()
+//                .gather(GatherersFactory.maxBy(Money::amount))
+//                .forEach(e -> this.logger.info(e.toString()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * A custom min-by gatherer.
+     *
+     * @param   money   java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     */
+    private void customMinByGatherer(final Stream<Money> money) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(money));
+        }
+
+        assert money != null;
+
+//        money.stream()
+//                .parallel()
+//                .gather(GatherersFactory.minBy(Money::amount))
+//                .forEach(e -> this.logger.info(e.toString()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * A custom map not-null gatherer.
+     */
+    private void customMapNotNullGatherer() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Money> money = this.getMoneyWithNulls();
+
+//        money.stream()
+//                .gather(GatherersFactory.mapNotNull(m -> m.multiply(BigDecimal.TWO)))
+//                .forEach(e -> this.logger.info(e.toString()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * A custom find-first gatherer.
+     *
+     * @param   money   java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     */
+    private void customFindFirstGatherer(final Stream<Money> money) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(money));
+        }
+
+        assert money != null;
+
+//        money.stream()
+//                .gather(GatherersFactory.findFirst(m -> m.currency().equals(Currency.getInstance("PLN"))))
+//                .forEach(e -> this.logger.info(e.toString()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * A custom find-last gatherer.
+     *
+     * @param   money   java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     */
+    private void customFindLastGatherer(final Stream<Money> money) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(money));
+        }
+
+        assert money != null;
+
+//        money.stream()
+//                .gather(GatherersFactory.findLast(m -> m.currency().equals(Currency.getInstance("PLN"))))
+//                .forEach(e -> this.logger.info(e.toString()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Try two gatherers using andThen.
+     */
+    private void customGatherAndThen() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Money> money = this.getMoneyWithNulls();
+
+//        // Combine two gatherers using andThen()
+//
+//        final MapNotNullGatherer<Money, Money> mapNotNullGatherer = new MapNotNullGatherer<>(m -> m.multiply(BigDecimal.TWO));
+//        final ReduceByGatherer<Money, Currency> reducerGatherer = new ReduceByGatherer<>(Money::currency, Money::add);
+//
+//        final Gatherer<Money, ?, ? super Money> gatherers = mapNotNullGatherer.andThen(reducerGatherer);
+//
+//        money.stream()
+//                .gather(gatherers)
+//                .forEach(e -> this.logger.info(e.toString()));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Return a stream of money with nulls interspersed.
+     *
+     * @return  java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     */
+    private Stream<Money> getMoneyWithNulls() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        // Cannot add nulls in List.of()
+
+        final List<Money> money = Arrays.asList(
+                null,
+                new Money(BigDecimal.valueOf(12), Currency.getInstance("PLN")),
+                null,
+                new Money(BigDecimal.valueOf(11), Currency.getInstance("EUR")),
+                null,
+                new Money(BigDecimal.valueOf(15), Currency.getInstance("PLN")),
+                null
+        );
+
+        final Stream<Money> stream = money.stream();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(stream));
+        }
+
+        return stream;
     }
 }
