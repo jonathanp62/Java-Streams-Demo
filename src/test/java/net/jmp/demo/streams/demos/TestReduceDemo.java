@@ -30,21 +30,55 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-import static org.junit.Assert.assertTrue;
+import static net.jmp.demo.streams.testutil.TestUtils.castToType;
+
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 public class TestReduceDemo {
     @Test
-    public void testJoin() {
-        assertTrue(true);
+    public void testJoin() throws Exception {
+        final var demo = new ReduceDemo();
+        final var method = ReduceDemo.class.getDeclaredMethod("join");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final String string = castToType(String.class, o);
+
+        assertNotNull(string);
+
+        assertEquals("Hello, world!", string);
     }
 
-    public void testSum() {
-        assertTrue(true);
+    @Test
+    public void testSum() throws Exception {
+        final var demo = new ReduceDemo();
+        final var method = ReduceDemo.class.getDeclaredMethod("sum");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer integer = castToType(Integer.class, o);
+
+        assertNotNull(integer);
+
+        assertEquals(87, (long) integer);
     }
 
-    public void testProduct() {
-        assertTrue(true);
+    @Test
+    public void testProduct() throws Exception {
+        final var demo = new ReduceDemo();
+        final var method = ReduceDemo.class.getDeclaredMethod("product");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer integer = castToType(Integer.class, o);
+
+        assertNotNull(integer);
+
+        assertEquals(2227680, (long) integer);
     }
 }
