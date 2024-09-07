@@ -81,4 +81,34 @@ public class TestReduceDemo {
 
         assertEquals(2227680, (long) integer);
     }
+
+    @Test
+    public void testSumWithIdentity() throws Exception {
+        final var demo = new ReduceDemo();
+        final var method = ReduceDemo.class.getDeclaredMethod("sumWithIdentity");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer integer = castToType(Integer.class, o);
+
+        assertNotNull(integer);
+
+        assertEquals(97, (long) integer);
+    }
+
+    @Test
+    public void testProductWithIdentity() throws Exception {
+        final var demo = new ReduceDemo();
+        final var method = ReduceDemo.class.getDeclaredMethod("productWithIdentity");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer integer = castToType(Integer.class, o);
+
+        assertNotNull(integer);
+
+        assertEquals(6683040, (long) integer);
+    }
 }

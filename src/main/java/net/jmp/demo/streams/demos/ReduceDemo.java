@@ -63,9 +63,15 @@ public final class ReduceDemo implements Demo {
         }
 
         if (this.logger.isInfoEnabled()) {
+            final var sum = "Sum: {}";
+            final var product = "Product: {}";
+
             this.logger.info("Join: {}", this.join());
-            this.logger.info("Sum: {}", this.sum());
-            this.logger.info("Product: {}", this.product());
+            this.logger.info(sum, this.sum());
+            this.logger.info(product, this.product());
+
+            this.logger.info(sum, this.sumWithIdentity());
+            this.logger.info(product, this.productWithIdentity());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -143,6 +149,53 @@ public final class ReduceDemo implements Demo {
     }
 
     /**
+     * Sum a stream of integers using
+     * reduce with an identity and
+     * return the result. This example
+     * uses both an identity and a binary
+     * operator.
+     *
+     * @return  java.lang.Integer
+     */
+    private Integer sumWithIdentity() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 2, 3, 5, 8, 13, 21, 34);
+        final Integer result = this.reduceIntegersWithIdentity(integers, 10, Integer::sum);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Multiply a stream of integers using
+     * reduce with an identity and return
+     * the result.This example uses both an
+     * identity and a binary operator.
+     *
+     * @return  java.lang.Integer
+     */
+    private Integer productWithIdentity() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 2, 3, 5, 8, 13, 21, 34);
+        final Integer result = this.reduceIntegersWithIdentity(integers, 3, (int1, int2) -> int1 * int2);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
      * Reduce the stream of integers using
      * the binary operator function.
      *
@@ -163,4 +216,30 @@ public final class ReduceDemo implements Demo {
 
         return result;
     }
+
+    /**
+     * Reduce the stream of integers using
+     * the binary operator function.
+     *
+     * @param   integers    java.util.stream.Stream&lt;java.lang.Integer&gt;
+     * @param   identity    java.lang.Integer
+     * @param   accumulator java.util.function.BinaryOperator&lt;java.lang.Integer&gt;
+     * @return              java.lang.Integer
+     */
+    private Integer reduceIntegersWithIdentity(final Stream<Integer> integers,
+                                               final Integer identity,
+                                               final BinaryOperator<Integer> accumulator) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(integers, identity, accumulator));
+        }
+
+        final Integer result = integers.reduce(identity, accumulator);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
 }
