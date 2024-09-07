@@ -1,13 +1,14 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)package-info.java 0.7.0   09/07/2024
  * (#)package-info.java 0.6.0   09/04/2024
  * (#)package-info.java 0.5.0   09/04/2024
  * (#)package-info.java 0.3.0   08/29/2024
  * (#)package-info.java 0.2.0   08/25/2024
  *
  * @author   Jonathan Parker
- * @version  0.6.0
+ * @version  0.7.0
  * @since    0.2.0
  *
  * MIT License
@@ -39,7 +40,7 @@ package net.jmp.demo.streams.demos;
  *   collect(*)
  *   dropWhile(*)
  *   flatMap(*)
- *   gather()
+ *   gather(*)
  *   generate(*)
  *   iterate(*)
  *   mapMulti(*)
