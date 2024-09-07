@@ -38,6 +38,7 @@ import java.util.List;
 
 import java.util.function.Function;
 
+import java.util.stream.Collectors;
 import java.util.stream.Gatherers;
 import java.util.stream.Stream;
 
@@ -121,9 +122,11 @@ public final class GatherersDemo implements Demo {
             this.logger.info("MinBy: {}", this.customMinByGatherer(this.getMoney()));
 
             this.customMinByGatherer(this.getMoney());
-            this.customMapNotNullGatherer();
-            this.customFindFirstGatherer(this.getMoney());
-            this.customFindLastGatherer(this.getMoney());
+            this.customMapNotNullGatherer().forEach(e -> this.logger.info("NotNull: {}", e));
+
+            this.logger.info("First: {}", this.customFindFirstGatherer(this.getMoney()));
+            this.logger.info("Last: {}", this.customFindLastGatherer(this.getMoney()));
+
             this.customGatherAndThen();
         }
 
@@ -327,18 +330,16 @@ public final class GatherersDemo implements Demo {
 
         assert money != null;
 
-        final var result = money
+        final String result = money
                 .gather(GatherersFactory.maxBy(Money::amount))
                 .map(Record::toString)
-                .findAny();
-
-        assert result.isPresent();
+                .collect(Collectors.collectingAndThen(Collectors.toList(), this.getFirstElementFromList()));
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result.get()));
+            this.logger.trace(exitWith(result));
         }
 
-        return result.get();
+        return result;
     }
 
     /**
@@ -354,79 +355,89 @@ public final class GatherersDemo implements Demo {
 
         assert money != null;
 
-        final var result = money
+        final String result = money
                 .gather(GatherersFactory.minBy(Money::amount))
                 .map(Record::toString)
-                .findAny();
-
-        assert result.isPresent();
+                .collect(Collectors.collectingAndThen(Collectors.toList(), this.getFirstElementFromList()));
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(result.get()));
+            this.logger.trace(exitWith(result));
         }
 
-        return result.get();
+        return result;
     }
 
     /**
      * A custom map not-null gatherer.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
      */
-    private void customMapNotNullGatherer() {
+    private List<String> customMapNotNullGatherer() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
         final Stream<Money> money = this.getMoneyWithNulls();
 
-//        money.stream()
-//                .gather(GatherersFactory.mapNotNull(m -> m.multiply(BigDecimal.TWO)))
-//                .forEach(e -> this.logger.info(e.toString()));
+        final List<String> results = money.gather(GatherersFactory.mapNotNull(m -> m.multiply(BigDecimal.TWO)))
+                .map(Record::toString)
+                .toList();
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(results));
         }
+
+        return results;
     }
 
     /**
      * A custom find-first gatherer.
      *
      * @param   money   java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     * @return          java.lang.String
      */
-    private void customFindFirstGatherer(final Stream<Money> money) {
+    private String customFindFirstGatherer(final Stream<Money> money) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entryWith(money));
         }
 
         assert money != null;
 
-//        money.stream()
-//                .gather(GatherersFactory.findFirst(m -> m.currency().equals(Currency.getInstance("PLN"))))
-//                .forEach(e -> this.logger.info(e.toString()));
+        final String result = money.gather(GatherersFactory.findFirst(m -> m.currency().equals(Currency.getInstance("PLN"))))
+                .map(Record::toString)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), this.getFirstElementFromList()));
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(result));
         }
+
+        return result;
     }
 
     /**
      * A custom find-last gatherer.
      *
      * @param   money   java.util.stream.Stream&lt;net.jmp.demo.streams.records.Money&gt;
+     * @return          java.lang.String
      */
-    private void customFindLastGatherer(final Stream<Money> money) {
+    private String customFindLastGatherer(final Stream<Money> money) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entryWith(money));
         }
 
         assert money != null;
 
-//        money.stream()
-//                .gather(GatherersFactory.findLast(m -> m.currency().equals(Currency.getInstance("PLN"))))
-//                .forEach(e -> this.logger.info(e.toString()));
+        final Function<List<String>, String> getElement = List::getFirst;
+
+        final String result = money.gather(GatherersFactory.findLast(m -> m.currency().equals(Currency.getInstance("PLN"))))
+                .map(Record::toString)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), this.getFirstElementFromList()));
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(result));
         }
+
+        return result;
     }
 
     /**
@@ -507,5 +518,17 @@ public final class GatherersDemo implements Demo {
         }
 
         return stream;
+    }
+
+    /**
+     * Return a function to get the
+     * first and only element from a
+     * list.
+     *
+     * @param   <T> The type of element
+     * @return      java.util.function.Function&lt;java.util.List&lt;T&gt;&gt;
+     */
+    private <T> Function<List<T>, T> getFirstElementFromList() {
+        return List::getFirst;
     }
 }

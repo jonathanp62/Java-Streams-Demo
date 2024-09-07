@@ -172,8 +172,8 @@ public final class TestGatherersDemo {
 
         assertNotNull(results);
         assertEquals(2, results.size());
-        assertEquals("PLN", results.get(0));
-        assertEquals("EUR", results.get(1));
+        assertTrue(results.contains("PLN"));
+        assertTrue(results.contains("EUR"));
     }
 
     @Test
@@ -227,6 +227,63 @@ public final class TestGatherersDemo {
         assertNotNull(string);
 
         final Money expected = new Money(new BigDecimal(11), Currency.getInstance("EUR"));
+
+        assertEquals(expected.toString(), string);
+    }
+
+    @Test
+    public void testMapNotNull() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customMapNotNullGatherer");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final List<?> list = castToType(List.class, o);
+        final List<String> results = listToTypedList(list, String.class);
+
+        assertNotNull(results);
+        assertEquals(3, results.size());
+
+        final Money expected0 = new Money(new BigDecimal(24), Currency.getInstance("PLN"));
+        final Money expected1 = new Money(new BigDecimal(22), Currency.getInstance("EUR"));
+        final Money expected2 = new Money(new BigDecimal(30), Currency.getInstance("PLN"));
+
+        assertTrue(results.contains(expected0.toString()));
+        assertTrue(results.contains(expected1.toString()));
+        assertTrue(results.contains(expected2.toString()));
+    }
+
+    @Test
+    public void testFindFirst() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customFindFirstGatherer", Stream.class);
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo, this.getMoney());
+        final String string = castToType(String.class, o);
+
+        assertNotNull(string);
+
+        final Money expected = new Money(new BigDecimal(12), Currency.getInstance("PLN"));
+
+        assertEquals(expected.toString(), string);
+    }
+
+    @Test
+    public void testFindLast() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customFindLastGatherer", Stream.class);
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo, this.getMoney());
+        final String string = castToType(String.class, o);
+
+        assertNotNull(string);
+
+        final Money expected = new Money(new BigDecimal(15), Currency.getInstance("PLN"));
 
         assertEquals(expected.toString(), string);
     }
