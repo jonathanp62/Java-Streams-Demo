@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)CollectorsDemo.java   0.7.0   09/07/2024
  * (#)CollectorsDemo.java   0.5.0   09/05/2024
  * (#)CollectorsDemo.java   0.4.0   08/30/2024
  *
  * @author   Jonathan Parker
- * @version  0.5.0
+ * @version  0.7.0
  * @since    0.4.0
  *
  * MIT License
@@ -45,6 +46,8 @@ import java.util.stream.Stream;
 import net.jmp.demo.streams.collectors.*;
 
 import net.jmp.demo.streams.records.*;
+
+import net.jmp.demo.streams.util.CollectorsFactory;
 
 import static net.jmp.demo.streams.util.DemoUtils.*;
 import static net.jmp.demo.streams.util.LoggerUtils.*;
@@ -949,7 +952,7 @@ public final class CollectorsDemo implements Demo {
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
         final Predicate<Integer> p = i -> i == 1;
-        final List<Integer> list = integers.collect(DroppingWhileCollector.droppingWhile(p));
+        final List<Integer> list = integers.collect(CollectorsFactory.droppingWhile(p));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(list));
@@ -970,7 +973,7 @@ public final class CollectorsDemo implements Demo {
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
         final Predicate<Integer> p = i -> i == 1;
-        final List<Integer> list = integers.collect(TakingWhileCollector.takingWhile(p));
+        final List<Integer> list = integers.collect(CollectorsFactory.takingWhile(p));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(list));
@@ -990,7 +993,7 @@ public final class CollectorsDemo implements Demo {
         }
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
-        final List<Integer> list = integers.collect(LimitingCollector.limiting(7));
+        final List<Integer> list = integers.collect(CollectorsFactory.limiting(7));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(list));
@@ -1010,7 +1013,7 @@ public final class CollectorsDemo implements Demo {
         }
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
-        final List<Integer> list = integers.collect(SkippingCollector.skipping(4));
+        final List<Integer> list = integers.collect(CollectorsFactory.skipping(4));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(list));
@@ -1033,7 +1036,7 @@ public final class CollectorsDemo implements Demo {
         final Deque<String> names = streamOfDishes()
                 .map(Dish::name)
                 .map(this.capitalizer)
-                .collect(ToDequeCollector.toDeque());
+                .collect(CollectorsFactory.toDeque());
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(names));
@@ -1053,7 +1056,7 @@ public final class CollectorsDemo implements Demo {
         }
 
         final Stream<Integer> integers = Stream.of(1, 1, 1, 1, 2, 2, 2, 3, 3, 4);
-        final Set<Integer> list = integers.collect(DistinctifyingCollector.distinctifying());
+        final Set<Integer> list = integers.collect(CollectorsFactory.distinctifying());
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(list));

@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.collectors;
 
 /*
+ * (#)ToDequeCollector.java 0.7.0   09/07/2024
  * (#)ToDequeCollector.java 0.4.0   09/04/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.7.0
  * @since    0.4.0
  *
  * MIT License
@@ -47,16 +48,6 @@ public final class ToDequeCollector<T> implements Collector<T, List<T>, Deque<T>
      */
     public ToDequeCollector() {
         super();
-    }
-
-    /**
-     * Return an instance of the toDequeu collector.
-     *
-     * @param   <T>     The type being collected
-     * @return          net.jmp.demo.streams.collectors.ToDequeCollector
-     */
-    public static <T> ToDequeCollector<T> toDeque() {
-        return new ToDequeCollector<>();
     }
 
     /**

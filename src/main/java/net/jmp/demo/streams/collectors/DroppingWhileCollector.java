@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.collectors;
 
 /*
+ * (#)DroppingWhileCollector.java   0.7.0   09/07/2024
  * (#)DroppingWhileCollector.java   0.4.0   09/03/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.7.0
  * @since    0.4.0
  *
  * MIT License
@@ -59,17 +60,6 @@ public final class DroppingWhileCollector<T> implements Collector<T, List<T>, Li
 
         this.predicate = predicate;
         this.doneDropping = false;
-    }
-
-    /**
-     * Return an instance of the dropping-while collector.
-     *
-     * @param   <T>         The type being collected
-     * @param   predicate   java.util.function.Predicate&lt;T&gt;
-     * @return              net.jmp.demo.streams.collectors.DroppingWhileCollector
-     */
-    public static <T> DroppingWhileCollector<T> droppingWhile(final Predicate<? super T> predicate) {
-        return new DroppingWhileCollector<>(predicate);
     }
 
     /**

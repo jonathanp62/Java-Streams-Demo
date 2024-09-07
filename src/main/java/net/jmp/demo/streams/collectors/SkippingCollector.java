@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.collectors;
 
 /*
+ * (#)SkippingCollector.java    0.7.0   09/07/2024
  * (#)SkippingCollector.java    0.4.0   09/04/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.7.0
  * @since    0.4.0
  *
  * MIT License
@@ -59,17 +60,6 @@ public final class SkippingCollector<T> implements Collector<T, List<T>, List<T>
 
         this.skip = skip;
         this.count = 0;
-    }
-
-    /**
-     * Return an instance of the skipping collector.
-     *
-     * @param   <T>     The type being collected
-     * @param   skip    long
-     * @return          net.jmp.demo.streams.collectors.SkippingCollector
-     */
-    public static <T> SkippingCollector<T> skipping(final long skip) {
-        return new SkippingCollector<>(skip);
     }
 
     /**

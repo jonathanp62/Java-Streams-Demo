@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.collectors;
 
 /*
+ * (#)LimitingCollector.java    0.7.0   09/07/2024
  * (#)LimitingCollector.java    0.4.0   09/04/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.7.0
  * @since    0.4.0
  *
  * MIT License
@@ -55,17 +56,6 @@ public final class LimitingCollector<T> implements Collector<T, List<T>, List<T>
         super();
 
         this.limit = limit;
-    }
-
-    /**
-     * Return an instance of the limiting collector.
-     *
-     * @param   <T>     The type being collected
-     * @param   limit   long
-     * @return          net.jmp.demo.streams.collectors.LimitingCollector
-     */
-    public static <T> LimitingCollector<T> limiting(final long limit) {
-        return new LimitingCollector<>(limit);
     }
 
     /**

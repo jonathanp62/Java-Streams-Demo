@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.collectors;
 
 /*
+ * (#)TakingWhileCollector.java 0.7.0   09/07/2024
  * (#)TakingWhileCollector.java 0.4.0   09/04/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.7.0
  * @since    0.4.0
  *
  * MIT License
@@ -55,17 +56,6 @@ public final class TakingWhileCollector<T> implements Collector<T, List<T>, List
         super();
 
         this.predicate = predicate;
-    }
-
-    /**
-     * Return an instance of the taking-while collector.
-     *
-     * @param   <T>         The type being collected
-     * @param   predicate   java.util.function.Predicate&lt;T&gt;
-     * @return              net.jmp.demo.streams.collectors.TakingWhileCollector
-     */
-    public static <T> TakingWhileCollector<T> takingWhile(final Predicate<? super T> predicate) {
-        return new TakingWhileCollector<>(predicate);
     }
 
     /**

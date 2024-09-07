@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.collectors;
 
 /*
+ * (#)DistinctifyingCollector.java  0.7.0   09/07/2024
  * (#)DistinctifyingCollector.java  0.4.0   09/04/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.7.0
  * @since    0.4.0
  *
  * MIT License
@@ -48,16 +49,6 @@ public final class DistinctifyingCollector<T> implements Collector<T, Set<T>, Se
      */
     public DistinctifyingCollector() {
         super();
-    }
-
-    /**
-     * Return an instance of the distinctifying collector.
-     *
-     * @param   <T>     The type being collected
-     * @return          net.jmp.demo.streams.collectors.DistinctifyingCollector
-     */
-    public static <T> DistinctifyingCollector<T> distinctifying() {
-        return new DistinctifyingCollector<>();
     }
 
     /**
