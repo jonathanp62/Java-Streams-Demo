@@ -36,7 +36,15 @@ import org.junit.Test;
 
 public class TestReduceDemo {
     @Test
-    public void testReduce() {
+    public void testJoin() {
+        assertTrue(true);
+    }
+
+    public void testSum() {
+        assertTrue(true);
+    }
+
+    public void testProduct() {
         assertTrue(true);
     }
 }
