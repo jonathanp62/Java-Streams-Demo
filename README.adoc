@@ -92,6 +92,11 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - Creating a method in a record that takes a consumer and is the input to MapMulti
   - Using MapMulti to map one input element to more than one output elements
 
+* Reducing
+  - Using only a binary operator
+  - Using an identity and a binary operator
+  - Using an identity, a bi-function, and a binary operator combiner
+
 == Additional Features
 
 * SLF4J extension features without org.slf4j.ext

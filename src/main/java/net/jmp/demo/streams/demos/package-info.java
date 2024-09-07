@@ -44,6 +44,6 @@ package net.jmp.demo.streams.demos;
  *   generate(*)
  *   iterate(*)
  *   mapMulti(*)
- *   reduce()
+ *   reduce(*)
  *   takeWhile(*)
  */

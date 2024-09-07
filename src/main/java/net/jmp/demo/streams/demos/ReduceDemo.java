@@ -34,6 +34,8 @@ import java.util.function.BinaryOperator;
 
 import java.util.stream.Stream;
 
+import net.jmp.demo.streams.util.DemoUtils;
+
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -72,6 +74,8 @@ public final class ReduceDemo implements Demo {
 
             this.logger.info(sum, this.sumWithIdentity());
             this.logger.info(product, this.productWithIdentity());
+
+            this.logger.info("Calories: {}", this.sumWithBiFunction());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -196,6 +200,31 @@ public final class ReduceDemo implements Demo {
     }
 
     /**
+     * Sum the calories from a stream of
+     * dishes using reduce with an identity,
+     * a BiFunction, and a combiner, and
+     * return the result. This example
+     * uses an identity, a BiFunction, and
+     * a binary operator combiner.
+     *
+     * @return  java.lang.Integer
+     */
+    private Integer sumWithBiFunction() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Integer result = DemoUtils.streamOfDishes()
+                .reduce(0, (partialSum, dish) -> partialSum + dish.calories(), Integer::sum);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
      * Reduce the stream of integers using
      * the binary operator function.
      *
@@ -241,5 +270,4 @@ public final class ReduceDemo implements Demo {
 
         return result;
     }
-
 }

@@ -111,4 +111,19 @@ public class TestReduceDemo {
 
         assertEquals(6683040, (long) integer);
     }
+
+    @Test
+    public void testSumWithBiFunction() throws Exception {
+        final var demo = new ReduceDemo();
+        final var method = ReduceDemo.class.getDeclaredMethod("sumWithBiFunction");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer integer = castToType(Integer.class, o);
+
+        assertNotNull(integer);
+
+        assertEquals(4200, (long) integer);
+    }
 }
