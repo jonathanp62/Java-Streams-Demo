@@ -30,8 +30,11 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-import static net.jmp.demo.streams.util.LoggerUtils.entry;
-import static net.jmp.demo.streams.util.LoggerUtils.exit;
+import java.util.function.BinaryOperator;
+
+import java.util.stream.Stream;
+
+import static net.jmp.demo.streams.util.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,11 +63,104 @@ public final class ReduceDemo implements Demo {
         }
 
         if (this.logger.isInfoEnabled()) {
-
+            this.logger.info("Join: {}", this.join());
+            this.logger.info("Sum: {}", this.sum());
+            this.logger.info("Product: {}", this.product());
         }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
         }
+    }
+
+    /**
+     * Join two strings using reduce
+     * and return the result. This
+     * example uses only a binary
+     * operator.
+     *
+     * @return  java.lang.String
+     */
+    private String join() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<String> words = Stream.of("Hello", ", ", "world!");
+        final String result = words.reduce((word1, word2) -> word1 + word2).orElse("");
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Sum a stream of integers using
+     * reduce and return the result.
+     * This example uses only a binary
+     * operator.
+     *
+     * @return  java.lang.Integer
+     */
+    private Integer sum() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 2, 3, 5, 8, 13, 21, 34);
+        final Integer result = this.reduceIntegers(integers, Integer::sum);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Multiply a stream of integers using
+     * reduce and return the result.
+     * This example uses only a binary
+     * operator.
+     *
+     * @return  java.lang.Integer
+     */
+    private Integer product() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Stream<Integer> integers = Stream.of(1, 2, 3, 5, 8, 13, 21, 34);
+        final Integer result = this.reduceIntegers(integers, (int1, int2) -> int1 * int2);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Reduce the stream of integers using
+     * the binary operator function.
+     *
+     * @param   integers    java.util.stream.Stream&lt;java.lang.Integer&gt;
+     * @param   accumulator java.util.function.BinaryOperator&lt;java.lang.Integer&gt;
+     * @return              java.lang.Integer
+     */
+    private Integer reduceIntegers(final Stream<Integer> integers, final BinaryOperator<Integer> accumulator) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(integers, accumulator));
+        }
+
+        final Integer result = integers.reduce(accumulator).orElse(0);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
     }
 }
