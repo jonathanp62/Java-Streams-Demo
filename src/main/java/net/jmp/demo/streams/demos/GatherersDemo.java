@@ -39,8 +39,12 @@ import java.util.List;
 import java.util.function.Function;
 
 import java.util.stream.Collectors;
+import java.util.stream.Gatherer;
 import java.util.stream.Gatherers;
 import java.util.stream.Stream;
+
+import net.jmp.demo.streams.gatherers.MapNotNullGatherer;
+import net.jmp.demo.streams.gatherers.ReduceByGatherer;
 
 import net.jmp.demo.streams.records.Money;
 
@@ -127,7 +131,7 @@ public final class GatherersDemo implements Demo {
             this.logger.info("First: {}", this.customFindFirstGatherer(this.getMoney()));
             this.logger.info("Last: {}", this.customFindLastGatherer(this.getMoney()));
 
-            this.customGatherAndThen();
+            this.customGatherAndThen().forEach(e -> this.logger.info("AndThen: {}", e));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -442,28 +446,32 @@ public final class GatherersDemo implements Demo {
 
     /**
      * Try two gatherers using andThen.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
      */
-    private void customGatherAndThen() {
+    private List<String> customGatherAndThen() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
         final Stream<Money> money = this.getMoneyWithNulls();
 
-//        // Combine two gatherers using andThen()
-//
-//        final MapNotNullGatherer<Money, Money> mapNotNullGatherer = new MapNotNullGatherer<>(m -> m.multiply(BigDecimal.TWO));
-//        final ReduceByGatherer<Money, Currency> reducerGatherer = new ReduceByGatherer<>(Money::currency, Money::add);
-//
-//        final Gatherer<Money, ?, ? super Money> gatherers = mapNotNullGatherer.andThen(reducerGatherer);
-//
-//        money.stream()
-//                .gather(gatherers)
-//                .forEach(e -> this.logger.info(e.toString()));
+        // Combine two gatherers using andThen()
+
+        final MapNotNullGatherer<Money, Money> mapNotNullGatherer = new MapNotNullGatherer<>(m -> m.multiply(BigDecimal.TWO));
+        final ReduceByGatherer<Money, Currency> reducerGatherer = new ReduceByGatherer<>(Money::currency, Money::add);
+
+        final Gatherer<Money, ?, Money> gatherers = mapNotNullGatherer.andThen(reducerGatherer);
+
+        final List<String> results = money.gather(gatherers)
+                .map(Record::toString)
+                .toList();
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(results));
         }
+
+        return results;
     }
 
     /**

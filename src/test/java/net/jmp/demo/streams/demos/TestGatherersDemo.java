@@ -288,6 +288,27 @@ public final class TestGatherersDemo {
         assertEquals(expected.toString(), string);
     }
 
+    @Test
+    public void testGatherAndThen() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customGatherAndThen");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final List<?> list = castToType(List.class, o);
+        final List<String> results = listToTypedList(list, String.class);
+
+        assertNotNull(results);
+        assertEquals(2, results.size());
+
+        final Money expected0 = new Money(new BigDecimal(54), Currency.getInstance("PLN"));
+        final Money expected1 = new Money(new BigDecimal(22), Currency.getInstance("EUR"));
+
+        assertTrue(results.contains(expected0.toString()));
+        assertTrue(results.contains(expected1.toString()));
+    }
+
     /**
      * Return a stream of money.
      *
