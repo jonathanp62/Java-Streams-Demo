@@ -30,6 +30,13 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.util.List;
+
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import net.jmp.demo.streams.beans.Article;
+
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -59,11 +66,56 @@ public final class SpliteratorsDemo implements Demo {
         }
 
         if (this.logger.isInfoEnabled()) {
-
+            this.tryAdvance().stream()
+                    .limit(1)
+                    .forEach(article -> this.logger.info("Article: {}", article.getTitle()));
         }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
         }
+    }
+
+    /**
+     * Demonstrate the main method for stepping through a sequence.
+     *
+     * @return  java.util.List&lt;net.jmp.demo.streams.beans.Article&gt;
+     */
+    private List<Article> tryAdvance() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Article> articles = this.getListOfArticles();
+
+        articles.spliterator()
+                .tryAdvance(article -> article.setTitle("By Jonathan"));
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(articles));
+        }
+
+        return articles;
+    }
+
+    /**
+     * Return a generated list of articles.
+     *
+     * @return  java.util.List&lt;net.jmp.demo.streams.beans.Article&gt;
+     */
+    private List<Article> getListOfArticles() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Article> articles = Stream.generate(Article::new)
+                .limit(35_000)
+                .collect(Collectors.toList());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(articles));
+        }
+
+        return articles;
     }
 }
