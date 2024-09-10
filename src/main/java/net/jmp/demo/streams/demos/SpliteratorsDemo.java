@@ -78,8 +78,8 @@ public final class SpliteratorsDemo implements Demo {
                     .limit(1)
                     .forEach(article -> this.logger.info(article.getTitle())));
 
-            this.logger.info("Split1/2 estimated size: " + this.estimateSize());
-            this.logger.info("Split1/2 characteristics: " + this.characteristics());
+            this.logger.info("Split1/2 estimated size: {}", this.estimateSize());
+            this.logger.info("Split1/2 characteristics: {}", this.characteristics());
 
             this.logCharacteristics(this.characteristics());
         }
