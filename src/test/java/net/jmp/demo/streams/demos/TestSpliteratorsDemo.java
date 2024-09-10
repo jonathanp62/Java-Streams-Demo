@@ -30,13 +30,32 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-import static org.junit.Assert.assertTrue;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.jmp.demo.streams.beans.Article;
+
+import static net.jmp.demo.streams.testutil.TestUtils.*;
+
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 public final class TestSpliteratorsDemo {
     @Test
-    public void test() {
-        assertTrue(true);
+    public void testTryAdvance() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("tryAdvance");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final ArrayList<?> list = castToType(ArrayList.class, o);
+        final List<Article> results = listToTypedList(list, Article.class);
+
+        assertNotNull(results);
+        assertEquals(35_000, results.size());
+
+        assertEquals("By Jonathan", results.getFirst().getTitle());
     }
 }
