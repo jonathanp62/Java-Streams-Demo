@@ -81,4 +81,32 @@ public final class TestSpliteratorsDemo {
         assertEquals("Split1 by Jonathan", list1.getFirst().getTitle());
         assertEquals("Split2 by Jonathan", list2.getFirst().getTitle());
     }
+
+    @Test
+    public void testEstimateSize() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("estimateSize");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Long estimateSize = castToType(Long.class, o);
+
+        assertNotNull(estimateSize);
+        assertEquals(17_500, (long) estimateSize);
+    }
+
+    @Test
+    public void testCharacteristics() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("characteristics");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer estimateSize = castToType(Integer.class, o);
+
+        assertNotNull(estimateSize);
+        assertEquals(16_464, (long) estimateSize);
+    }
 }

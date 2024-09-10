@@ -77,6 +77,11 @@ public final class SpliteratorsDemo implements Demo {
             lists.forEach(list -> list.stream()
                     .limit(1)
                     .forEach(article -> this.logger.info(article.getTitle())));
+
+            this.logger.info("Split1/2 estimated size: " + this.estimateSize());
+            this.logger.info("Split1/2 characteristics: " + this.characteristics());
+
+            this.logCharacteristics(this.characteristics());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -141,6 +146,97 @@ public final class SpliteratorsDemo implements Demo {
         }
 
         return results;
+    }
+
+    /**
+     * Return the estimate size of the two splits.
+     *
+     * @return  long
+     */
+    private long estimateSize() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Spliterator<Article> split1 = this.getListOfArticles().spliterator();
+        final Spliterator<Article> split2 = split1.trySplit();
+
+        assert split1.estimateSize() == split2.estimateSize();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(split2.estimateSize()));
+        }
+
+        return split2.estimateSize();
+    }
+
+    /**
+     * Return the characteristics of the two splits.
+     *
+     * @return  int
+     */
+    private int characteristics() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Spliterator<Article> split1 = this.getListOfArticles().spliterator();
+        final Spliterator<Article> split2 = split1.trySplit();
+
+        assert split1.characteristics() == split2.characteristics();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(split2.characteristics()));
+        }
+
+        return split2.characteristics();
+    }
+
+    /**
+     * Log the individual spliterator characteristics.
+     *
+     * @param   characteristics int
+     */
+    private void logCharacteristics(final int characteristics) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(characteristics));
+        }
+
+        if ((characteristics & Spliterator.CONCURRENT) > 0) {
+            this.logger.info("Spliterator is concurrent");
+        }
+
+        if ((characteristics & Spliterator.DISTINCT) > 0) {
+            this.logger.info("Spliterator is distinct");
+        }
+
+        if ((characteristics & Spliterator.IMMUTABLE) > 0) {
+            this.logger.info("Spliterator is immutable");
+        }
+
+        if ((characteristics & Spliterator.NONNULL) > 0) {
+            this.logger.info("Spliterator is non-null");
+        }
+
+        if ((characteristics & Spliterator.ORDERED) > 0) {
+            this.logger.info("Spliterator is ordered");
+        }
+
+        if ((characteristics & Spliterator.SIZED) > 0) {
+            this.logger.info("Spliterator is sized");
+        }
+
+        if ((characteristics & Spliterator.SORTED) > 0) {
+            this.logger.info("Spliterator is sorted");
+        }
+
+        if ((characteristics & Spliterator.SUBSIZED) > 0) {
+            this.logger.info("Spliterator is sub-sized");
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
     }
 
     /**

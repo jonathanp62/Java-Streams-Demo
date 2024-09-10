@@ -98,6 +98,8 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - Using an identity, a bi-function, and a binary operator combiner
 
 * Spliterators
+  - characteristics
+  - estimateSize
   - tryAdvance
   - trySplit
 
