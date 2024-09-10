@@ -32,6 +32,7 @@ package net.jmp.demo.streams.demos;
 
 import java.util.List;
 
+import java.util.Spliterator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -96,6 +97,23 @@ public final class SpliteratorsDemo implements Demo {
         }
 
         return articles;
+    }
+
+    private void trySplit() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Article> articles = this.getListOfArticles();
+
+        final Spliterator<Article> split1 = articles.spliterator();
+        final Spliterator<Article> split2 = split1.trySplit();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(articles));
+        }
+
+//        return articles;
     }
 
     /**
