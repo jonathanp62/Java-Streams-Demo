@@ -56,6 +56,29 @@ public final class TestSpliteratorsDemo {
         assertNotNull(results);
         assertEquals(35_000, results.size());
 
-        assertEquals("By Jonathan", results.getFirst().getTitle());
+        assertEquals("Advanced by Jonathan", results.getFirst().getTitle());
+    }
+
+    @Test
+    public void testTrySplit() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("trySplit");
+
+        method.setAccessible(true);
+
+        @SuppressWarnings("unchecked")
+        final List<List<Article>> results = (List<List<Article>>) method.invoke(demo);
+
+        assertNotNull(results);
+        assertEquals(2, results.size());
+
+        final List<Article> list1 = results.get(0);
+        final List<Article> list2 = results.get(1);
+
+        assertEquals(17_500, list1.size());
+        assertEquals(17_500, list2.size());
+
+        assertEquals("Split1 by Jonathan", list1.getFirst().getTitle());
+        assertEquals("Split2 by Jonathan", list2.getFirst().getTitle());
     }
 }

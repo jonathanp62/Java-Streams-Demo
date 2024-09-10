@@ -97,6 +97,10 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - Using an identity and a binary operator
   - Using an identity, a bi-function, and a binary operator combiner
 
+* Spliterators
+  - tryAdvance
+  - trySplit
+
 == Additional Features
 
 * SLF4J extension features without org.slf4j.ext

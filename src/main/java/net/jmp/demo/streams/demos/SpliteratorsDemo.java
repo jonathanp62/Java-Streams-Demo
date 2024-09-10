@@ -30,6 +30,7 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Spliterator;
@@ -69,7 +70,13 @@ public final class SpliteratorsDemo implements Demo {
         if (this.logger.isInfoEnabled()) {
             this.tryAdvance().stream()
                     .limit(1)
-                    .forEach(article -> this.logger.info("Article: {}", article.getTitle()));
+                    .forEach(article -> this.logger.info(article.getTitle()));
+
+            final List<List<Article>> lists = this.trySplit();
+
+            lists.forEach(list -> list.stream()
+                    .limit(1)
+                    .forEach(article -> this.logger.info(article.getTitle())));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -78,7 +85,7 @@ public final class SpliteratorsDemo implements Demo {
     }
 
     /**
-     * Demonstrate the main method for stepping through a sequence.
+     * Demonstrate the main method tryAdvance() for stepping through a sequence.
      *
      * @return  java.util.List&lt;net.jmp.demo.streams.beans.Article&gt;
      */
@@ -90,7 +97,7 @@ public final class SpliteratorsDemo implements Demo {
         final List<Article> articles = this.getListOfArticles();
 
         articles.spliterator()
-                .tryAdvance(article -> article.setTitle("By Jonathan"));
+                .tryAdvance(article -> article.setTitle("Advanced by Jonathan"));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(articles));
@@ -99,21 +106,41 @@ public final class SpliteratorsDemo implements Demo {
         return articles;
     }
 
-    private void trySplit() {
+    /**
+     * Demonstrate the method trySplit() for partitioning.
+     *
+     * @return  java.util.List&lt;java.util.List&lt;net.jmp.demo.streams.beans.Article&gt;&gt;
+     */
+    private List<List<Article>> trySplit() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        final List<Article> articles = this.getListOfArticles();
-
-        final Spliterator<Article> split1 = articles.spliterator();
+        final Spliterator<Article> split1 = this.getListOfArticles().spliterator();
         final Spliterator<Article> split2 = split1.trySplit();
 
+        final List<Article> list1 = new ArrayList<>(17_500);
+        final List<Article> list2 = new ArrayList<>(17_500);
+
+        // Consume the articles in the spliterators
+
+        split1.forEachRemaining(e -> {
+            e.setTitle("Split1 by Jonathan");
+            list1.add(e);
+        });
+
+        split2.forEachRemaining(e -> {
+            e.setTitle("Split2 by Jonathan");
+            list2.add(e);
+        });
+
+        final List<List<Article>> results = List.of(list1, list2);
+
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(articles));
+            this.logger.trace(exitWith(results));
         }
 
-//        return articles;
+        return results;
     }
 
     /**
