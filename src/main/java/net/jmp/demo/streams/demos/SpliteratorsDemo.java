@@ -39,6 +39,8 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.beans.Article;
 
+import net.jmp.demo.streams.spliterators.*;
+
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
 import org.slf4j.Logger;
@@ -67,6 +69,23 @@ public final class SpliteratorsDemo implements Demo {
             this.logger.trace(entry());
         }
 
+        this.standardMethods();
+        this.customSpliterators();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Demonstrate the standard methods
+     * of the spliterator.
+     */
+    private void standardMethods() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
         if (this.logger.isInfoEnabled()) {
             this.tryAdvance().stream()
                     .limit(1)
@@ -83,6 +102,21 @@ public final class SpliteratorsDemo implements Demo {
 
             this.logCharacteristics(this.characteristics());
         }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Demonstrate custom spliterators.
+     */
+    private void customSpliterators() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final ListSpliterator<Integer> listSpliterator = new ListSpliterator<>(List.of());
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
