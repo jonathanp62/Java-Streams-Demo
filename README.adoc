@@ -70,7 +70,13 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - takingWhile
   - toDeque
 * Gatherers
-** Custom
+- fold
+- fixedWindow
+- mapConcurrent
+- scan
+- slidingWindow
+
+* Custom Gatherers
 - distinctBy
 - findFirst
 - findLast
@@ -79,12 +85,6 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
 - maxBy
 - minBy
 - reducingBy
-** Standard
-- fold
-- fixedWindow
-- mapConcurrent
-- scan
-- slidingWindow
 
 * MapMulti
   - Filter and Map vs. MapMulti
@@ -102,6 +102,9 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
   - estimateSize
   - tryAdvance
   - trySplit
+
+* Custom Spliterators
+  - ListSpliterator
 
 == Additional Features
 
