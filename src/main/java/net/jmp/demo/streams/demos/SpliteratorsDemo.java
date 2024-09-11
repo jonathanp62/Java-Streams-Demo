@@ -121,8 +121,10 @@ public final class SpliteratorsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        this.customListSpliterator();
-        this.customListSpliteratorInParallel();
+        if (this.logger.isInfoEnabled()) {
+            this.logger.info("Sum: {}", this.customListSpliterator());
+            this.logger.info("Sum: {}", this.customListSpliteratorInParallel());
+        }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -131,8 +133,11 @@ public final class SpliteratorsDemo implements Demo {
 
     /**
      * Demonstrate the custom list spliterator synchronously.
+     * Return the accumulated sum of the integers from 1-100.
+     *
+     * @return int
      */
-    private void customListSpliterator() {
+    private int customListSpliterator() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
@@ -146,17 +151,20 @@ public final class SpliteratorsDemo implements Demo {
 
         listSpliterator.forEachRemaining(sum::addAndGet);   // Non-parallel; never issues trySplit()
 
-        this.logger.info("sum: {}", sum.get());
-
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(sum.get()));
         }
+
+        return sum.get();
     }
 
     /**
      * Demonstrate the custom list spliterator in parallel.
+     * Return the accumulated sum of the integers from 1-100.
+     *
+     * @return int
      */
-    private void customListSpliteratorInParallel() {
+    private int customListSpliteratorInParallel() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
@@ -180,17 +188,17 @@ public final class SpliteratorsDemo implements Demo {
                 final var task2 = forkJoinPool.submit(() -> split2.forEachRemaining(sum::addAndGet));
                 final var task3 = forkJoinPool.submit(() -> split3.forEachRemaining(sum::addAndGet));
 
-                task1.join();
+                task3.join();   // Each task processes smaller and smaller amounts of data
                 task2.join();
-                task3.join();
+                task1.join();
             } else {
                 this.logger.warn("split3 is null");
 
                 final var task1 = forkJoinPool.submit(() -> listSpliterator.forEachRemaining(sum::addAndGet));
                 final var task2 = forkJoinPool.submit(() -> split2.forEachRemaining(sum::addAndGet));
 
+                task2.join();   // Each task processes smaller and smaller amounts of data
                 task1.join();
-                task2.join();
             }
         } else {
             this.logger.warn("split2 is null");
@@ -198,13 +206,14 @@ public final class SpliteratorsDemo implements Demo {
             forkJoinPool.submit(() -> listSpliterator.forEachRemaining(sum::addAndGet)).join();
         }
 
+        forkJoinPool.shutdown();
         forkJoinPool.close();
 
-        this.logger.info("sum: {}", sum.get());
-
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(sum.get()));
         }
+
+        return sum.get();
     }
 
     /**

@@ -79,7 +79,7 @@ public final class ListSpliterator<T> implements Spliterator<T> {
             this.logger.trace(entry());
         }
 
-        final var threadName = "[" + Thread.currentThread().getName() + "]";
+        final String threadName = this.getThreadName();
 
         boolean result = false;
 
@@ -122,8 +122,7 @@ public final class ListSpliterator<T> implements Spliterator<T> {
             this.logger.trace(entry());
         }
 
-        final var threadName = "[" + Thread.currentThread().getName() + "]";
-
+        final String threadName = this.getThreadName();
         final int currentSize = this.list.size() - this.currentIndex;
 
         this.logger.debug("{} currentSize: {}", threadName, currentSize);
@@ -136,7 +135,7 @@ public final class ListSpliterator<T> implements Spliterator<T> {
             return null;
         }
 
-        this.logger.debug("{} currentIndex: {}", threadName, currentIndex);
+        this.logger.debug("{} currentIndex: {}", threadName, this.currentIndex);
 
         final int splitIndex = this.currentIndex + currentSize / 2;
 
@@ -146,7 +145,7 @@ public final class ListSpliterator<T> implements Spliterator<T> {
 
         this.currentIndex = splitIndex;
 
-        this.logger.debug("{} currentIndex: {}", threadName, currentIndex);
+        this.logger.debug("{} currentIndex: {}", threadName, this.currentIndex);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(spliterator));
@@ -175,5 +174,14 @@ public final class ListSpliterator<T> implements Spliterator<T> {
     @Override
     public int characteristics() {
         return ORDERED | SIZED | SUBSIZED | NONNULL;
+    }
+
+    /**
+     * Return a bracketed thread name.
+     *
+     * @return  java.lang.String
+     */
+    private String getThreadName() {
+        return String.format("[%s]",Thread.currentThread().getName());
     }
 }

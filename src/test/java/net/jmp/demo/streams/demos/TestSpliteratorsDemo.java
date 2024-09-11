@@ -109,4 +109,32 @@ public final class TestSpliteratorsDemo {
         assertNotNull(estimateSize);
         assertEquals(16_464, (long) estimateSize);
     }
+
+    @Test
+    public void testCustomListSpliterator() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("customListSpliterator");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer estimateSize = castToType(Integer.class, o);
+
+        assertNotNull(estimateSize);
+        assertEquals(5_050, (long) estimateSize);
+    }
+
+    @Test
+    public void testCustomListSpliteratorInParallel() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("customListSpliteratorInParallel");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer estimateSize = castToType(Integer.class, o);
+
+        assertNotNull(estimateSize);
+        assertEquals(5_050, (long) estimateSize);
+    }
 }
