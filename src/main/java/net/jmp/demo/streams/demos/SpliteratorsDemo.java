@@ -32,9 +32,14 @@ package net.jmp.demo.streams.demos;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.Spliterator;
+
+import java.util.concurrent.ForkJoinPool;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import net.jmp.demo.streams.beans.Article;
@@ -116,7 +121,86 @@ public final class SpliteratorsDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final ListSpliterator<Integer> listSpliterator = new ListSpliterator<>(List.of());
+        this.customListSpliterator();
+        this.customListSpliteratorInParallel();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Demonstrate the custom list spliterator synchronously.
+     */
+    private void customListSpliterator() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Integer> integers = IntStream.rangeClosed(1, 100)
+                .boxed()
+                .toList();
+
+        final ListSpliterator<Integer> listSpliterator = new ListSpliterator<>(integers);
+        final AtomicInteger sum = new AtomicInteger(0);
+
+        listSpliterator.forEachRemaining(sum::addAndGet);   // Non-parallel; never issues trySplit()
+
+        this.logger.info("sum: {}", sum.get());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Demonstrate the custom list spliterator in parallel.
+     */
+    private void customListSpliteratorInParallel() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Integer> integers = IntStream.rangeClosed(1, 100)
+                .boxed()
+                .toList();
+
+        final ListSpliterator<Integer> listSpliterator = new ListSpliterator<>(integers);
+        final ListSpliterator<Integer> split2 = listSpliterator.trySplit();
+
+        final AtomicInteger sum = new AtomicInteger(0);
+
+        final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
+
+        if (split2 != null) {
+            final ListSpliterator<Integer> split3 = split2.trySplit();
+
+            if (split3 != null) {
+                final var task1 = forkJoinPool.submit(() -> listSpliterator.forEachRemaining(sum::addAndGet));
+                final var task2 = forkJoinPool.submit(() -> split2.forEachRemaining(sum::addAndGet));
+                final var task3 = forkJoinPool.submit(() -> split3.forEachRemaining(sum::addAndGet));
+
+                task1.join();
+                task2.join();
+                task3.join();
+            } else {
+                this.logger.warn("split3 is null");
+
+                final var task1 = forkJoinPool.submit(() -> listSpliterator.forEachRemaining(sum::addAndGet));
+                final var task2 = forkJoinPool.submit(() -> split2.forEachRemaining(sum::addAndGet));
+
+                task1.join();
+                task2.join();
+            }
+        } else {
+            this.logger.warn("split2 is null");
+
+            forkJoinPool.submit(() -> listSpliterator.forEachRemaining(sum::addAndGet)).join();
+        }
+
+        forkJoinPool.close();
+
+        this.logger.info("sum: {}", sum.get());
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());

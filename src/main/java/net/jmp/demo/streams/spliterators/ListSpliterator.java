@@ -36,12 +36,20 @@ import java.util.Spliterator;
 
 import java.util.function.Consumer;
 
+import static net.jmp.demo.streams.util.LoggerUtils.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A list spliterator.
  *
  * @param   <T> The type of element
  */
 public final class ListSpliterator<T> implements Spliterator<T> {
+    /** The logger. */
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
     /** The list of elements. */
     private final List<T> list;
 
@@ -67,7 +75,38 @@ public final class ListSpliterator<T> implements Spliterator<T> {
      */
     @Override
     public boolean tryAdvance(final Consumer<? super T> action) {
-        return false;
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final var threadName = "[" + Thread.currentThread().getName() + "]";
+
+        boolean result = false;
+
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("{} currentIndex: {}", threadName, currentIndex);
+            this.logger.debug("{} listSize: {}", threadName, this.list.size());
+        }
+
+        if (this.currentIndex < this.list.size()) {
+            final T item = this.list.get(this.currentIndex);
+
+            this.logger.debug("{} value: {}", threadName, item);
+
+            action.accept(item);
+
+            ++this.currentIndex;
+
+            this.logger.debug("{} currentIndex: {}", threadName, currentIndex);
+
+            result = true;
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
     }
 
     /**
@@ -78,8 +117,42 @@ public final class ListSpliterator<T> implements Spliterator<T> {
      * @return  java.util.Spliterator&lt;T&gt;
      */
     @Override
-    public Spliterator<T> trySplit() {
-        return null;
+    public ListSpliterator<T> trySplit() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final var threadName = "[" + Thread.currentThread().getName() + "]";
+
+        final int currentSize = this.list.size() - this.currentIndex;
+
+        this.logger.debug("{} currentSize: {}", threadName, currentSize);
+
+        if (currentSize < 2) {
+            if (this.logger.isTraceEnabled()) {
+                this.logger.trace(exitWith(null));
+            }
+
+            return null;
+        }
+
+        this.logger.debug("{} currentIndex: {}", threadName, currentIndex);
+
+        final int splitIndex = this.currentIndex + currentSize / 2;
+
+        this.logger.debug("{} splitIndex: {}", threadName, splitIndex);
+
+        final ListSpliterator<T> spliterator = new ListSpliterator<>(this.list.subList(this.currentIndex, splitIndex));
+
+        this.currentIndex = splitIndex;
+
+        this.logger.debug("{} currentIndex: {}", threadName, currentIndex);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(spliterator));
+        }
+
+        return spliterator;
     }
 
     /**
@@ -91,7 +164,7 @@ public final class ListSpliterator<T> implements Spliterator<T> {
      */
     @Override
     public long estimateSize() {
-        return 0;
+        return (this.list.size() - this.currentIndex);
     }
 
     /**
@@ -101,6 +174,6 @@ public final class ListSpliterator<T> implements Spliterator<T> {
      */
     @Override
     public int characteristics() {
-        return 0;
+        return ORDERED | SIZED | SUBSIZED | NONNULL;
     }
 }
