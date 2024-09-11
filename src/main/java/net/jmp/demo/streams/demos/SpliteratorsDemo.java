@@ -41,6 +41,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import net.jmp.demo.streams.beans.Article;
 
@@ -124,6 +125,8 @@ public final class SpliteratorsDemo implements Demo {
         if (this.logger.isInfoEnabled()) {
             this.logger.info("Sum: {}", this.customListSpliterator());
             this.logger.info("Sum: {}", this.customListSpliteratorInParallel());
+
+            this.customWordSpliterator();
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -214,6 +217,71 @@ public final class SpliteratorsDemo implements Demo {
         }
 
         return sum.get();
+    }
+
+    /**
+     * Demonstrate the custom word spliterator.
+     */
+    private void customWordSpliterator() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        // A short string, 19 words
+
+        final String sentence = " Nel   mezzo del cammin  di nostra  vita " +
+                "mi  ritrovai in una  selva oscura" +
+                " ché la  dritta via era   smarrita ";
+
+        Stream<Character> stream = IntStream.range(0, sentence.length())
+                .mapToObj(sentence::charAt);
+
+        this.logger.info("Found {} words without the custom spliterator", this.countWords(stream));
+
+        final WordSpliterator spliterator = new WordSpliterator(sentence);
+
+        stream = StreamSupport.stream(spliterator, true);
+
+        this.logger.info("Found {} words using the custom spliterator", this.countWords(stream));
+
+        // A new string
+
+        final String loremUpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing " +
+                "elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+                "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut " +
+                "aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
+                "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint " +
+                "occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim " +
+                "id est laborum.";
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Method to count the characters
+     * in the stream.
+     *
+     * @param   stream  java.util.stream.Stream<java.lang.Character>
+     * @return          int
+     */
+    private int countWords(final Stream<Character> stream) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(stream));
+        }
+
+        final WordCounter wordCounter = stream.reduce(new WordCounter(0, true),
+                WordCounter::accumulate,
+                WordCounter::combine);
+
+        final int result = wordCounter.getCounter();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
     }
 
     /**
@@ -385,5 +453,60 @@ public final class SpliteratorsDemo implements Demo {
         }
 
         return articles;
+    }
+
+    /**
+     * A word counter class.
+     */
+    static class WordCounter {
+        private final int counter;
+        private final boolean lastSpace;
+
+        /**
+         * The constructor.
+         *
+         * @param   counter     int
+         * @param   lastSpace   boolean
+         */
+        WordCounter(final int counter, final boolean lastSpace) {
+            super();
+
+            this.counter = counter;
+            this.lastSpace = lastSpace;
+        }
+
+        /**
+         * The accumulate method.
+         *
+         * @param   c   java.lang.Character
+         * @return      net.jmp.demo.streams.spliterators.WordSpliterator.WordCounter
+         */
+        WordCounter accumulate(final Character c) {
+            if (Character.isWhitespace(c)) {
+                return this.lastSpace ? this : new WordCounter(this.counter, true);
+            } else {
+                return this.lastSpace ? new WordCounter(this.counter + 1, false) : this;
+            }
+        }
+
+        /**
+         * Method to combine two word-counters
+         * by summing their counters.
+         *
+         * @param   wordCounter net.jmp.demo.streams.spliterators.WordSpliterator.WordCounter
+         * @return              net.jmp.demo.streams.spliterators.WordSpliterator.WordCounter
+         */
+        WordCounter combine(final WordCounter wordCounter) {
+            return new WordCounter(this.counter + wordCounter.counter, wordCounter.lastSpace);
+        }
+
+        /**
+         * Method to return the counter.
+         *
+         * @return int
+         */
+        int getCounter() {
+            return this.counter;
+        }
     }
 }

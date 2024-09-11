@@ -1,7 +1,7 @@
 package net.jmp.demo.streams.spliterators;
 
 /*
- * (#)ListSpliterator.java  0.9.0   09/11/2024
+ * (#)WordSpliterator.java  0.9.0   09/11/2024
  *
  * @author   Jonathan Parker
  * @version  0.9.0
@@ -30,7 +30,6 @@ package net.jmp.demo.streams.spliterators;
  * SOFTWARE.
  */
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Spliterator;
 
@@ -42,30 +41,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A list spliterator.
- *
- * @param   <T> The type of element
+ * A word spliterator.
  */
-public final class ListSpliterator<T> implements Spliterator<T> {
+public final class WordSpliterator implements Spliterator<Character> {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The list of elements. */
-    private final List<T> list;
+    /** The string of words. */
+    private final String string;
 
-    /** The current index. */
-    private int currentIndex;
+    /** The position of the current character in the string. */
+    private int currentPosition;
 
     /**
      * The constructor.
      *
-     * @param   list    java.util.List&lt;T&gt;
+     * @param   string  java.lang.String
      */
-    public ListSpliterator(final List<T> list) {
+    public WordSpliterator(final String string) {
         super();
 
-        this.list = Objects.requireNonNull(list);
-        this.currentIndex = 0;
+        this.string = Objects.requireNonNull(string);
+        this.currentPosition = 0;
     }
 
     /**
@@ -76,33 +73,23 @@ public final class ListSpliterator<T> implements Spliterator<T> {
      * @return          boolean
      */
     @Override
-    public boolean tryAdvance(final Consumer<? super T> action) {
+    public boolean tryAdvance(final Consumer<? super Character> action) {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entryWith(action));
         }
 
         final String threadName = this.getThreadName();
 
-        boolean result = false;
-
         if (this.logger.isDebugEnabled()) {
-            this.logger.debug("{} currentIndex: {}", threadName, this.currentIndex);
-            this.logger.debug("{} listSize: {}", threadName, this.list.size());
+            this.logger.debug("{} currentPosition: {}", threadName, this.currentPosition);
+            this.logger.debug("{} stringLength: {}", threadName, this.string.length());
         }
 
-        if (this.currentIndex < this.list.size()) {
-            final T item = this.list.get(this.currentIndex);
+        action.accept(this.string.charAt(this.currentPosition++));  // Consume the current character
 
-            this.logger.debug("{} value: {}", threadName, item);
+        this.logger.debug("{} currentPosition: {}", threadName, this.currentPosition);
 
-            action.accept(item);
-
-            ++this.currentIndex;
-
-            this.logger.debug("{} currentIndex: {}", threadName, this.currentIndex);
-
-            result = true;
-        }
+        final boolean result = this.currentPosition < this.string.length(); // Return true if there are more characters to consume
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
@@ -116,44 +103,52 @@ public final class ListSpliterator<T> implements Spliterator<T> {
      * covering elements, that will, upon return from this method,
      * not be covered by this Spliterator.
      *
-     * @return  net.jmp.demo.streams.spliterators.ListSpliterator&lt;T&gt;
+     * @return  net.jmp.demo.streams.spliterators.WordSpliterator
      */
     @Override
-    public ListSpliterator<T> trySplit() {
+    public WordSpliterator trySplit() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
+        WordSpliterator spliterator = null;
+
         final String threadName = this.getThreadName();
-        final int currentSize = this.list.size() - this.currentIndex;
+        final int currentSize = this.string.length() - this.currentPosition;
 
         this.logger.debug("{} currentSize: {}", threadName, currentSize);
 
-        if (currentSize < 2) {
+        if (currentSize < 3) {
             if (this.logger.isTraceEnabled()) {
                 this.logger.trace(exitWith(null));
             }
 
-            return null;
+            return null;    // Return null to signal that the string is too small and should be processed sequentially
         }
 
-        this.logger.debug("{} currentIndex: {}", threadName, this.currentIndex);
+        for (int splitPos = (currentSize / 2) + this.currentPosition; splitPos < this.string.length(); splitPos++) {
+            // White space is a word boundary
 
-        final int splitIndex = this.currentIndex + currentSize / 2;
+            if (Character.isWhitespace(this.string.charAt(splitPos))) {
+                spliterator = new WordSpliterator(this.string.substring(this.currentPosition, splitPos));
 
-        this.logger.debug("{} splitIndex: {}", threadName, splitIndex);
+                this.currentPosition = splitPos;
 
-        final ListSpliterator<T> spliterator = new ListSpliterator<>(this.list.subList(this.currentIndex, splitIndex));
+                this.logger.debug("{} currentPosition: {}", threadName, this.currentPosition);
 
-        this.currentIndex = splitIndex;
+                if (this.logger.isTraceEnabled()) {
+                    this.logger.trace(exitWith(spliterator));
+                }
 
-        this.logger.debug("{} currentIndex: {}", threadName, this.currentIndex);
+                return spliterator;
+            }
+        }
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exitWith(spliterator));
+            this.logger.trace(exitWith(null));
         }
 
-        return spliterator;
+        return null;
     }
 
     /**
@@ -165,7 +160,7 @@ public final class ListSpliterator<T> implements Spliterator<T> {
      */
     @Override
     public long estimateSize() {
-        return (this.list.size() - this.currentIndex);
+        return this.string.length() - this.currentPosition;
     }
 
     /**
@@ -175,7 +170,7 @@ public final class ListSpliterator<T> implements Spliterator<T> {
      */
     @Override
     public int characteristics() {
-        return ORDERED | SIZED | SUBSIZED | NONNULL;
+        return ORDERED + SIZED + SUBSIZED + NONNULL + IMMUTABLE;
     }
 
     /**
