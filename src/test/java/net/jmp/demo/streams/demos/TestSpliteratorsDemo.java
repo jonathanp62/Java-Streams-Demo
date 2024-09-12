@@ -137,4 +137,18 @@ public final class TestSpliteratorsDemo {
         assertNotNull(estimateSize);
         assertEquals(5_050, (long) estimateSize);
     }
+
+    @Test
+    public void testCustomWordSpliterator() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("customWordSpliterator");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer estimateSize = castToType(Integer.class, o);
+
+        assertNotNull(estimateSize);
+        assertEquals(69, (long) estimateSize);
+    }
 }

@@ -126,7 +126,9 @@ public final class SpliteratorsDemo implements Demo {
             this.logger.info("Sum: {}", this.customListSpliterator());
             this.logger.info("Sum: {}", this.customListSpliteratorInParallel());
 
-            this.customWordSpliterator();
+            this.logger.info("Words: {}", this.customWordSpliterator());
+
+            this.customSpliteratorUsingForkJoinPool();
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -220,39 +222,89 @@ public final class SpliteratorsDemo implements Demo {
     }
 
     /**
-     * Demonstrate the custom word spliterator.
+     * Demonstrate the custom word spliterator using
+     * StreamSupport. Return the number of words found
+     * in the sentence.
+     *
+     * @return  int
      */
-    private void customWordSpliterator() {
+    private int customWordSpliterator() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
 
-        // A short string, 19 words
-
-        final String sentence = " Nel   mezzo del cammin  di nostra  vita " +
-                "mi  ritrovai in una  selva oscura" +
-                " ché la  dritta via era   smarrita ";
-
-        Stream<Character> stream = IntStream.range(0, sentence.length())
-                .mapToObj(sentence::charAt);
-
-        this.logger.info("Found {} words without the custom spliterator", this.countWords(stream));
-
-        final WordSpliterator spliterator = new WordSpliterator(sentence);
-
-        stream = StreamSupport.stream(spliterator, true);
-
-        this.logger.info("Found {} words using the custom spliterator", this.countWords(stream));
-
-        // A new string
-
-        final String loremUpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing " +
+        final String sentences = "Lorem ipsum dolor sit amet, consectetur adipiscing " +
                 "elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
                 "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut " +
                 "aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in " +
                 "voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint " +
                 "occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim " +
                 "id est laborum.";
+
+        final WordSpliterator spliterator = new WordSpliterator(sentences);
+        final Stream<Character> stream = StreamSupport.stream(spliterator, true);
+
+        final int result = this.countWords(stream);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Demonstrate recursive splitting using the fork join pool.
+     */
+    private void customSpliteratorUsingForkJoinPool() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Integer> integers = IntStream.rangeClosed(1, 1_000)
+                .boxed()
+                .toList();
+
+        try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
+            final AtomicInteger sum = new AtomicInteger(0);
+            final ListSpliterator<Integer> spliterator = new ListSpliterator<>(integers);
+            final long batchSize = spliterator.estimateSize() / (ForkJoinPool.getCommonPoolParallelism() * 8L);
+
+            this.logger.debug("batchSize: {}", batchSize);
+            this.logger.debug("Begin splitting and consuming");
+            this.splitAndConsume(spliterator, batchSize);
+            this.logger.debug("End splitting and consuming");
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Recursively split the iterator consuming
+     * elements on the stream that are remaining.
+     *
+     * @param   spliterator net.jmp.demo.streams.spliterators.ListSpliterator&lt;java.lang.Integer&gt;
+     * @param   batchSize   long
+     */
+    private void splitAndConsume(final ListSpliterator<Integer> spliterator, final long batchSize) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(spliterator, batchSize));
+        }
+
+        ListSpliterator<Integer> newSplit;
+
+        this.logger.debug("estimateSize: {}", spliterator.estimateSize());
+
+        while (true) {
+            if (spliterator.estimateSize() > batchSize &&
+                    (newSplit = spliterator.trySplit()) != null) {
+                splitAndConsume(newSplit, batchSize);
+            }
+
+            break;
+        }
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -263,7 +315,7 @@ public final class SpliteratorsDemo implements Demo {
      * Method to count the characters
      * in the stream.
      *
-     * @param   stream  java.util.stream.Stream<java.lang.Character>
+     * @param   stream  java.util.stream.Stream&lt;java.lang.Character&gt;
      * @return          int
      */
     private int countWords(final Stream<Character> stream) {
