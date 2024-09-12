@@ -38,6 +38,8 @@ import java.util.concurrent.ForkJoinPool;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import java.util.function.Consumer;
+
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -128,7 +130,7 @@ public final class SpliteratorsDemo implements Demo {
 
             this.logger.info("Words: {}", this.customWordSpliterator());
 
-            this.customSpliteratorUsingForkJoinPool();
+            this.logger.info("Sum: {}", this.customListSpliteratorUsingForkJoinPool());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -254,12 +256,17 @@ public final class SpliteratorsDemo implements Demo {
     }
 
     /**
-     * Demonstrate recursive splitting using the fork join pool.
+     * Demonstrate recursive splitting of the list
+     * spliterator using the fork join pool.
+     *
+     * @return  int
      */
-    private void customSpliteratorUsingForkJoinPool() {
+    private int customListSpliteratorUsingForkJoinPool() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
+
+        int result;
 
         final List<Integer> integers = IntStream.rangeClosed(1, 1_000)
                 .boxed()
@@ -272,25 +279,34 @@ public final class SpliteratorsDemo implements Demo {
 
             this.logger.debug("batchSize: {}", batchSize);
             this.logger.debug("Begin splitting and consuming");
-            this.splitAndConsume(spliterator, batchSize);
+            this.splitAndConsume(spliterator, batchSize, forkJoinPool, sum::addAndGet);
             this.logger.debug("End splitting and consuming");
+
+            result = sum.get();
         }
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(result));
         }
+
+        return result;
     }
 
     /**
      * Recursively split the iterator consuming
      * elements on the stream that are remaining.
      *
-     * @param   spliterator net.jmp.demo.streams.spliterators.ListSpliterator&lt;java.lang.Integer&gt;
-     * @param   batchSize   long
+     * @param   spliterator     net.jmp.demo.streams.spliterators.ListSpliterator&lt;java.lang.Integer&gt;
+     * @param   batchSize       long
+     * @param   forkJoinPool    java.util.concurrent.ForkJoinPool
+     * @param   action          java.util.function.Consumer&lt;java.lang.Integer&gt;
      */
-    private void splitAndConsume(final ListSpliterator<Integer> spliterator, final long batchSize) {
+    private void splitAndConsume(final ListSpliterator<Integer> spliterator,
+                                 final long batchSize,
+                                 final ForkJoinPool forkJoinPool,
+                                 final Consumer<Integer> action) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(spliterator, batchSize));
+            this.logger.trace(entryWith(spliterator, batchSize, forkJoinPool, action));
         }
 
         ListSpliterator<Integer> newSplit;
@@ -302,11 +318,13 @@ public final class SpliteratorsDemo implements Demo {
         while (true) {
             if (spliterator.estimateSize() > batchSize &&
                     (newSplit = spliterator.trySplit()) != null) {
-                this.splitAndConsume(newSplit, batchSize);
+                this.splitAndConsume(newSplit, batchSize, forkJoinPool, action);
             }
 
             break;
         }
+
+        forkJoinPool.submit(() -> spliterator.forEachRemaining(action)).join();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
