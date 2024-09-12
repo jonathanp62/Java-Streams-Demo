@@ -46,6 +46,9 @@ import org.slf4j.LoggerFactory;
  *
  * @param   <T> The type of element
  */
+
+// @todo This class should extends CustomSpliterator
+
 public final class ListSpliterator<T> implements Spliterator<T> {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -55,6 +58,9 @@ public final class ListSpliterator<T> implements Spliterator<T> {
 
     /** The current index. */
     private int currentIndex;
+
+    /** The count. */
+    private int count;
 
     /**
      * The constructor.
@@ -66,6 +72,8 @@ public final class ListSpliterator<T> implements Spliterator<T> {
 
         this.list = Objects.requireNonNull(list);
         this.currentIndex = 0;
+
+        this.logger.debug("Initial list size: {}", list.size());
     }
 
     /**
@@ -97,6 +105,7 @@ public final class ListSpliterator<T> implements Spliterator<T> {
 
             action.accept(item);
 
+            ++this.count;
             ++this.currentIndex;
 
             this.logger.debug("{} currentIndex: {}", threadName, this.currentIndex);
@@ -176,6 +185,15 @@ public final class ListSpliterator<T> implements Spliterator<T> {
     @Override
     public int characteristics() {
         return ORDERED | SIZED | SUBSIZED | NONNULL;
+    }
+
+    /**
+     * Return the count.
+     *
+     * @return  int
+     */
+    public int getCount() {
+        return this.count;
     }
 
     /**

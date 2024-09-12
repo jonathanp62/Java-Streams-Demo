@@ -274,7 +274,8 @@ public final class SpliteratorsDemo implements Demo {
         final ListSpliterator<Integer> spliterator = new ListSpliterator<>(integers);
         final SpliteratorUtils<Integer> utils = new SpliteratorUtils<>(spliterator, sum::addAndGet);
 
-        utils.splitAndConsume();
+//        utils.splitAndConsumeUnevenly();
+        utils.splitAndConsumeEvenly();
 
         final int result = sum.get();
 
