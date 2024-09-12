@@ -31,8 +31,10 @@ package net.jmp.demo.streams.util;
  */
 
 import java.util.Spliterator;
+import java.util.Stack;
 
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 import java.util.function.Consumer;
 
@@ -58,6 +60,9 @@ public final class SpliteratorUtils<T> {
 
     /** The batch size. */
     private final long batchSize;
+
+    /** A stack of tasks to wait on once all splitting has completed. */
+    private final Stack<ForkJoinTask<?>> tasks = new Stack<>();
 
     /**
      * The constructor.
@@ -94,6 +99,13 @@ public final class SpliteratorUtils<T> {
         }
 
         this.logger.debug("End splitting and consuming");
+        this.logger.debug("Begin waiting for tasks to finish");
+
+        while (!this.tasks.empty()) {
+            this.tasks.pop().join();
+        }
+
+        this.logger.debug("End waiting for tasks to finish");
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -127,7 +139,9 @@ public final class SpliteratorUtils<T> {
             break;
         }
 
-        forkJoinPool.submit(() -> spliterator.forEachRemaining(this.action)).join();
+        // Save the task to wait on later
+
+        this.tasks.push(forkJoinPool.submit(() -> spliterator.forEachRemaining(this.action)));
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
