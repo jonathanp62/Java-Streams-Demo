@@ -151,4 +151,18 @@ public final class TestSpliteratorsDemo {
         assertNotNull(estimateSize);
         assertEquals(69, (long) estimateSize);
     }
+
+    @Test
+    public void testCustomListSpliteratorUsingForkJoinPool() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("customListSpliteratorUsingForkJoinPool");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer estimateSize = castToType(Integer.class, o);
+
+        assertNotNull(estimateSize);
+        assertEquals(500_500, (long) estimateSize);
+    }
 }
