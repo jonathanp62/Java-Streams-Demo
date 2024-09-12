@@ -118,7 +118,7 @@ public final class WordSpliterator implements Spliterator<Character> {
 
         this.logger.debug("{} currentSize: {}", threadName, currentSize);
 
-        if (currentSize < 3) {
+        if (currentSize < 2) {
             if (this.logger.isTraceEnabled()) {
                 this.logger.trace(exitWith(null));
             }
