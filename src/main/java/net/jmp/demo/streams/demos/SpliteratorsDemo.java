@@ -295,12 +295,14 @@ public final class SpliteratorsDemo implements Demo {
 
         ListSpliterator<Integer> newSplit;
 
-        this.logger.debug("estimateSize: {}", spliterator.estimateSize());
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("estimateSize: {}", spliterator.estimateSize());
+        }
 
         while (true) {
             if (spliterator.estimateSize() > batchSize &&
                     (newSplit = spliterator.trySplit()) != null) {
-                splitAndConsume(newSplit, batchSize);
+                this.splitAndConsume(newSplit, batchSize);
             }
 
             break;
