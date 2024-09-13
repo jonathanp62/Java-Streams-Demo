@@ -35,11 +35,12 @@ import java.util.Deque;
 import java.util.Spliterator;
 
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.util.function.Consumer;
+
+import net.jmp.demo.streams.records.TaskAndSpliterator;
 
 import net.jmp.demo.streams.spliterators.AdvanceCounter;
 
@@ -256,9 +257,9 @@ final class SplitAndConsumeUtils<T> {
         while (!this.tasksAndSpliterators.isEmpty()) {
             final TaskAndSpliterator<T> taskAndSpliterator = this.tasksAndSpliterators.pop();
 
-            taskAndSpliterator.task.join();
+            taskAndSpliterator.task().join();
 
-            final long count = ((AdvanceCounter) taskAndSpliterator.spliterator).getCount();
+            final long count = ((AdvanceCounter) taskAndSpliterator.spliterator()).getCount();
 
             this.logger.debug("Task advance count: {}", count);
         }
@@ -268,19 +269,5 @@ final class SplitAndConsumeUtils<T> {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
         }
-    }
-
-    /**
-     * A record containing the submitted fork-join task
-     * and its corresponding spliterator.
-     *
-     * @param   <T>
-     * @param   task        java.util.concurrent.ForkJoinTask&lt;?&gt;
-     * @param   spliterator java.util.Spliterator&lt;T&gt;
-     */
-    record TaskAndSpliterator<T>(
-            ForkJoinTask<?> task,
-            Spliterator<T> spliterator
-    ) {
     }
 }
