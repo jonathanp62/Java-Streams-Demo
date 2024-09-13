@@ -95,12 +95,8 @@ final class SplitAndConsumeUtils<T> {
             this.logger.trace(entry());
         }
 
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("estimateSize: {}", this.spliterator.estimateSize());
-            this.logger.debug("parallelism: {}", ForkJoinPool.getCommonPoolParallelism());
-            this.logger.debug("batchSize: {}", this.batchSize);
-            this.logger.debug("Begin splitting and consuming");
-        }
+        this.logClassDebugInfo();
+        this.logger.debug("Begin splitting and consuming");
 
         try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
             final Deque<Spliterator<T>> spliterators = new ArrayDeque<>();
@@ -115,42 +111,21 @@ final class SplitAndConsumeUtils<T> {
 
                 while (currentSpliterator.estimateSize() > this.batchSize &&
                         (newSpliterator = currentSpliterator.trySplit()) != null) {
-
                     spliterators.push(currentSpliterator);
                     currentSpliterator = newSpliterator;
                 }
 
                 totalSplits++;
 
-                // Save the task (and spliterator) to wait on later
-
-                final var finalSpliterator = currentSpliterator;
-
-                final TaskAndSpliterator<T> taskAndSpliterator = new TaskAndSpliterator<>(
-                        forkJoinPool.submit(() -> finalSpliterator.forEachRemaining(this.action)),
-                        finalSpliterator
-                );
-
-                this.tasksAndSpliterators.push(taskAndSpliterator);
+                this.submitAndSaveTask(forkJoinPool, currentSpliterator);
             }
 
             this.logger.debug("Total splits: {}", totalSplits);
         }
 
         this.logger.debug("End splitting and consuming");
-        this.logger.debug("Begin waiting for tasks to finish");
 
-        while (!this.tasksAndSpliterators.isEmpty()) {
-            final TaskAndSpliterator<T> taskAndSpliterator = this.tasksAndSpliterators.pop();
-
-            taskAndSpliterator.task.join();
-
-            final long count = ((AdvanceCounter) taskAndSpliterator.spliterator).getCount();
-
-            this.logger.debug("Count: {}", count);
-        }
-
-        this.logger.debug("End waiting for tasks to finish");
+        this.waitForTasks();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -168,37 +143,17 @@ final class SplitAndConsumeUtils<T> {
 
         final AtomicInteger totalSplits = new AtomicInteger(0);
 
-        if (this.logger.isDebugEnabled()) {
-            this.logger.debug("estimateSize: {}", this.spliterator.estimateSize());
-            this.logger.debug("parallelism: {}", ForkJoinPool.getCommonPoolParallelism());
-            this.logger.debug("batchSize: {}", this.batchSize);
-            this.logger.debug("Begin splitting and consuming");
-        }
+        this.logClassDebugInfo();
+        this.logger.debug("Begin splitting and consuming");
 
         try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
             this.recursivelySplitAndConsumeUnevenly(this.spliterator, forkJoinPool, totalSplits);
         }
 
         this.logger.debug("Total splits: {}", totalSplits.get());
-
         this.logger.debug("End splitting and consuming");
-        this.logger.debug("Begin waiting for tasks to finish");
 
-        // @todo Refactor into its own method - same code is in the even method
-
-        while (!this.tasksAndSpliterators.isEmpty()) {
-            final TaskAndSpliterator<T> taskAndSpliterator = this.tasksAndSpliterators.pop();
-
-            taskAndSpliterator.task.join();
-
-            final long count = ((AdvanceCounter) taskAndSpliterator.spliterator).getCount();
-
-            this.logger.debug("Count: {}", count);
-        }
-
-        // End
-        
-        this.logger.debug("End waiting for tasks to finish");
+        this.waitForTasks();
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
@@ -209,26 +164,26 @@ final class SplitAndConsumeUtils<T> {
      * Recursively split the iterator consuming
      * elements on the stream that are remaining.
      *
-     * @param   spliterator     java.util.Spliterator&lt;T&gt;
-     * @param   forkJoinPool    java.util.concurrent.ForkJoinPool
-     * @param   totalSplits     java.util.concurrent.atomic.AtomicInteger
+     * @param   currentSpliterator  java.util.Spliterator&lt;T&gt;
+     * @param   forkJoinPool        java.util.concurrent.ForkJoinPool
+     * @param   totalSplits         java.util.concurrent.atomic.AtomicInteger
      */
-    private void recursivelySplitAndConsumeUnevenly(final Spliterator<T> spliterator,
+    private void recursivelySplitAndConsumeUnevenly(final Spliterator<T> currentSpliterator,
                                                     final ForkJoinPool forkJoinPool,
                                                     final AtomicInteger totalSplits) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(spliterator, forkJoinPool, totalSplits));
+            this.logger.trace(entryWith(currentSpliterator, forkJoinPool, totalSplits));
         }
 
         Spliterator<T> newSpliterator;
 
         if (this.logger.isDebugEnabled()) {
-            this.logger.debug("estimateSize: {}", spliterator.estimateSize());
+            this.logger.debug("estimateSize: {}", currentSpliterator.estimateSize());
         }
 
         while (true) {
-            if (spliterator.estimateSize() > this.batchSize &&
-                    (newSpliterator = spliterator.trySplit()) != null) {
+            if (currentSpliterator.estimateSize() > this.batchSize &&
+                    (newSpliterator = currentSpliterator.trySplit()) != null) {
                 this.recursivelySplitAndConsumeUnevenly(newSpliterator, forkJoinPool, totalSplits);
             }
 
@@ -237,14 +192,78 @@ final class SplitAndConsumeUtils<T> {
 
         totalSplits.incrementAndGet();
 
-        // Save the task (and spliterator) to wait on later
+        this.submitAndSaveTask(forkJoinPool, currentSpliterator);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Log debugging information for this class instance.
+     */
+    private void logClassDebugInfo() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        if (this.logger.isDebugEnabled()) {
+            this.logger.debug("estimateSize: {}", this.spliterator.estimateSize());
+            this.logger.debug("parallelism: {}", ForkJoinPool.getCommonPoolParallelism());
+            this.logger.debug("batchSize: {}", this.batchSize);
+        }
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Submit a task for the spliterator and save
+     * it so that it can be waited on later.
+     *
+     * @param   forkJoinPool        java.util.concurrent.ForkJoinPool
+     * @param   currentSpliterator  java.util.Spliterator&lt;T&gt;
+     */
+    private void submitAndSaveTask(final ForkJoinPool forkJoinPool,
+                                   final Spliterator<T> currentSpliterator) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(forkJoinPool, currentSpliterator));
+        }
 
         final TaskAndSpliterator<T> taskAndSpliterator = new TaskAndSpliterator<>(
-                forkJoinPool.submit(() -> spliterator.forEachRemaining(this.action)),
+                forkJoinPool.submit(() -> currentSpliterator.forEachRemaining(this.action)),
                 spliterator
         );
 
         this.tasksAndSpliterators.push(taskAndSpliterator);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Wait for the fork-join tasks to complete.
+     */
+    private void waitForTasks() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        this.logger.debug("Begin waiting for tasks to finish");
+
+        while (!this.tasksAndSpliterators.isEmpty()) {
+            final TaskAndSpliterator<T> taskAndSpliterator = this.tasksAndSpliterators.pop();
+
+            taskAndSpliterator.task.join();
+
+            final long count = ((AdvanceCounter) taskAndSpliterator.spliterator).getCount();
+
+            this.logger.debug("Task advance count: {}", count);
+        }
+
+        this.logger.debug("End waiting for tasks to finish");
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exit());
