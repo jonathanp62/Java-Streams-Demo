@@ -184,6 +184,8 @@ final class SplitAndConsumeUtils<T> {
         this.logger.debug("End splitting and consuming");
         this.logger.debug("Begin waiting for tasks to finish");
 
+        // @todo Refactor into its own method - same code is in the even method
+
         while (!this.tasksAndSpliterators.isEmpty()) {
             final TaskAndSpliterator<T> taskAndSpliterator = this.tasksAndSpliterators.pop();
 
@@ -194,6 +196,8 @@ final class SplitAndConsumeUtils<T> {
             this.logger.debug("Count: {}", count);
         }
 
+        // End
+        
         this.logger.debug("End waiting for tasks to finish");
 
         if (this.logger.isTraceEnabled()) {
