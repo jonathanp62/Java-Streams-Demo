@@ -39,6 +39,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.jmp.demo.streams.records.TaskAndSpliterator;
 
@@ -91,9 +92,9 @@ final class SplitAndConsumeUtils<T> {
      * Split and consume. This technique evenly
      * distributes the work across the threads.
      */
-    void splitAndConsumeEvenly() {
+    T splitAndConsumeEvenly(final Supplier<? extends T> supplier) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entry());
+            this.logger.trace(entryWith(supplier));
         }
 
         this.logClassDebugInfo();
@@ -128,9 +129,13 @@ final class SplitAndConsumeUtils<T> {
 
         this.waitForTasks();
 
+        final T result = supplier.get();
+
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(result));
         }
+
+        return result;
     }
 
     /**

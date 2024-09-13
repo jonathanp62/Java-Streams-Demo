@@ -33,6 +33,7 @@ package net.jmp.demo.streams.util;
 import java.util.Spliterator;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A utility class for spliterators.
@@ -51,11 +52,15 @@ public final class SpliteratorUtils {
      * @param   <T>         The type of element in the spliterator
      * @param   spliterator java.util.Spliterator&lt;T&gt;
      * @param   action      java.util.function.Consumer&lt;? super T&gt;
+     * @param   supplier    java.util.function.Supplier&lt;? extends T&gt;
+     * @return              T
      */
-    public static <T> void splitAndConsumeEvenly(final Spliterator<T> spliterator, final Consumer<? super T> action) {
+    public static <T> T splitAndConsumeEvenly(final Spliterator<T> spliterator,
+                                                 final Consumer<? super T> action,
+                                                 final Supplier<? extends T> supplier) {
         final SplitAndConsumeUtils<T> splitAndConsume = new SplitAndConsumeUtils<>(spliterator, action);
 
-        splitAndConsume.splitAndConsumeEvenly();
+        return splitAndConsume.splitAndConsumeEvenly(supplier);
     }
 
     /**

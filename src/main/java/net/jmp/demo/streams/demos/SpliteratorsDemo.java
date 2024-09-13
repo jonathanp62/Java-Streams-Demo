@@ -302,9 +302,7 @@ public final class SpliteratorsDemo implements Demo {
         final AtomicInteger sum = new AtomicInteger(0);
         final ListSpliterator<Integer> spliterator = new ListSpliterator<>(integers);
 
-        splitAndConsumeEvenly(spliterator, sum::addAndGet);
-
-        final int result = sum.get();
+        final int result = splitAndConsumeEvenly(spliterator, sum::addAndGet, sum::get);
 
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(exitWith(result));
