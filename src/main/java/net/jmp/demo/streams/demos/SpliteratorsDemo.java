@@ -48,8 +48,7 @@ import net.jmp.demo.streams.beans.Article;
 import net.jmp.demo.streams.spliterators.*;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
-
-import net.jmp.demo.streams.util.SpliteratorUtils;
+import static net.jmp.demo.streams.util.SpliteratorUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -272,10 +271,9 @@ public final class SpliteratorsDemo implements Demo {
 
         final AtomicInteger sum = new AtomicInteger(0);
         final ListSpliterator<Integer> spliterator = new ListSpliterator<>(integers);
-        final SpliteratorUtils<Integer> utils = new SpliteratorUtils<>(spliterator, sum::addAndGet);
 
-//        utils.splitAndConsumeUnevenly();
-        utils.splitAndConsumeEvenly();
+//        splitAndConsumeUnevenly(spliterator, sum::addAndGet);
+        splitAndConsumeEvenly(spliterator, sum::addAndGet);
 
         final int result = sum.get();
 
