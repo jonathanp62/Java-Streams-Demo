@@ -37,9 +37,11 @@ import java.util.Spliterator;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import java.util.function.Consumer;
 
-import net.jmp.demo.streams.spliterators.ListSpliterator;
+import net.jmp.demo.streams.spliterators.AdvanceCounter;
 
 import static net.jmp.demo.streams.util.LoggerUtils.*;
 
@@ -139,10 +141,7 @@ public final class SpliteratorUtils<T> {
 
             taskAndSpliterator.task.join();
 
-            // @todo Create a super class, CustomSpliterator, that defines the count
-            // and provides the getCount() method.
-
-            final int count = ((ListSpliterator<T>) taskAndSpliterator.spliterator).getCount();
+            final long count = ((AdvanceCounter) taskAndSpliterator.spliterator).getCount();
 
             this.logger.debug("Count: {}", count);
         }
@@ -163,7 +162,7 @@ public final class SpliteratorUtils<T> {
             this.logger.trace(entry());
         }
 
-        // @todo Add totalSplits
+        final AtomicInteger totalSplits = new AtomicInteger(0);
 
         if (this.logger.isDebugEnabled()) {
             this.logger.debug("estimateSize: {}", this.spliterator.estimateSize());
@@ -173,8 +172,10 @@ public final class SpliteratorUtils<T> {
         }
 
         try (final ForkJoinPool forkJoinPool = ForkJoinPool.commonPool()) {
-            this.recursivelySplitAndConsumeUnevenly(this.spliterator, forkJoinPool);
+            this.recursivelySplitAndConsumeUnevenly(this.spliterator, forkJoinPool, totalSplits);
         }
+
+        this.logger.debug("Total splits: {}", totalSplits.get());
 
         this.logger.debug("End splitting and consuming");
         this.logger.debug("Begin waiting for tasks to finish");
@@ -184,10 +185,7 @@ public final class SpliteratorUtils<T> {
 
             taskAndSpliterator.task.join();
 
-            // @todo Create a super class, CustomSpliterator, that defines the count
-            // and provides the getCount() method.
-
-            final int count = ((ListSpliterator<T>) taskAndSpliterator.spliterator).getCount();
+            final long count = ((AdvanceCounter) taskAndSpliterator.spliterator).getCount();
 
             this.logger.debug("Count: {}", count);
         }
@@ -205,11 +203,13 @@ public final class SpliteratorUtils<T> {
      *
      * @param   spliterator     java.util.Spliterator&lt;T&gt;
      * @param   forkJoinPool    java.util.concurrent.ForkJoinPool
+     * @param   totalSplits     java.util.concurrent.atomic.AtomicInteger
      */
     private void recursivelySplitAndConsumeUnevenly(final Spliterator<T> spliterator,
-                                                    final ForkJoinPool forkJoinPool) {
+                                                    final ForkJoinPool forkJoinPool,
+                                                    final AtomicInteger totalSplits) {
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(entryWith(spliterator, forkJoinPool));
+            this.logger.trace(entryWith(spliterator, forkJoinPool, totalSplits));
         }
 
         Spliterator<T> newSpliterator;
@@ -221,11 +221,13 @@ public final class SpliteratorUtils<T> {
         while (true) {
             if (spliterator.estimateSize() > this.batchSize &&
                     (newSpliterator = spliterator.trySplit()) != null) {
-                this.recursivelySplitAndConsumeUnevenly(newSpliterator, forkJoinPool);
+                this.recursivelySplitAndConsumeUnevenly(newSpliterator, forkJoinPool, totalSplits);
             }
 
             break;
         }
+
+        totalSplits.incrementAndGet();
 
         // Save the task to wait on later
 
