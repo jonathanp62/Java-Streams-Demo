@@ -129,7 +129,8 @@ public final class SpliteratorsDemo implements Demo {
 
             this.logger.info("Words: {}", this.customWordSpliterator());
 
-            this.logger.info("Sum: {}", this.customListSpliteratorUsingForkJoinPool());
+            this.logger.info("Uneven sum: {}", this.customListSpliteratorUsingForkJoinPoolUnevenly());
+            this.logger.info("Even sum: {}", this.customListSpliteratorUsingForkJoinPoolEvenly());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -255,12 +256,12 @@ public final class SpliteratorsDemo implements Demo {
     }
 
     /**
-     * Demonstrate recursive splitting of the list
-     * spliterator using the fork join pool.
+     * Demonstrate recursive uneven splitting of the
+     * list spliterator using the fork join pool.
      *
      * @return  int
      */
-    private int customListSpliteratorUsingForkJoinPool() {
+    private int customListSpliteratorUsingForkJoinPoolUnevenly() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
@@ -272,7 +273,35 @@ public final class SpliteratorsDemo implements Demo {
         final AtomicInteger sum = new AtomicInteger(0);
         final ListSpliterator<Integer> spliterator = new ListSpliterator<>(integers);
 
-//        splitAndConsumeUnevenly(spliterator, sum::addAndGet);
+        splitAndConsumeUnevenly(spliterator, sum::addAndGet);
+
+        final int result = sum.get();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * Demonstrate recursive even splitting of the
+     * list spliterator using the fork join pool.
+     *
+     * @return  int
+     */
+    private int customListSpliteratorUsingForkJoinPoolEvenly() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<Integer> integers = IntStream.rangeClosed(1, 1_000)
+                .boxed()
+                .toList();
+
+        final AtomicInteger sum = new AtomicInteger(0);
+        final ListSpliterator<Integer> spliterator = new ListSpliterator<>(integers);
+
         splitAndConsumeEvenly(spliterator, sum::addAndGet);
 
         final int result = sum.get();

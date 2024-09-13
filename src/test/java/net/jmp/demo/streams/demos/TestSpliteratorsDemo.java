@@ -153,9 +153,23 @@ public final class TestSpliteratorsDemo {
     }
 
     @Test
-    public void testCustomListSpliteratorUsingForkJoinPool() throws Exception {
+    public void testCustomListSpliteratorUsingForkJoinPoolUnevenly() throws Exception {
         final var demo = new SpliteratorsDemo();
-        final var method = SpliteratorsDemo.class.getDeclaredMethod("customListSpliteratorUsingForkJoinPool");
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("customListSpliteratorUsingForkJoinPoolUnevenly");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer estimateSize = castToType(Integer.class, o);
+
+        assertNotNull(estimateSize);
+        assertEquals(500_500, (long) estimateSize);
+    }
+
+    @Test
+    public void testCustomListSpliteratorUsingForkJoinPoolEvenly() throws Exception {
+        final var demo = new SpliteratorsDemo();
+        final var method = SpliteratorsDemo.class.getDeclaredMethod("customListSpliteratorUsingForkJoinPoolEvenly");
 
         method.setAccessible(true);
 
