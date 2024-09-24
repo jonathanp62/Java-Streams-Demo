@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestGatherersDemo.java    0.10.0  09/24/2024
  * (#)TestGatherersDemo.java    0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.7.0
+ * @version  0.10.0
  * @since    0.7.0
  *
  * MIT License
@@ -38,7 +39,7 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.Money;
 
-import static net.jmp.demo.streams.testutil.TestUtils.*;
+import static net.jmp.util.testing.testutil.TestUtils.*;
 
 import static org.junit.Assert.*;
 

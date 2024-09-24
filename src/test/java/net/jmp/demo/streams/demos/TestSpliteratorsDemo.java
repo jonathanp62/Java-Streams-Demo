@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestSpliteratorsDemo.java 0.10.0  09/24/2024
  * (#)TestSpliteratorsDemo.java 0.9.0   09/09/2024
  *
  * @author   Jonathan Parker
- * @version  0.9.0
+ * @version  0.10.0
  * @since    0.9.0
  *
  * MIT License
@@ -35,7 +36,7 @@ import java.util.List;
 
 import net.jmp.demo.streams.beans.Article;
 
-import static net.jmp.demo.streams.testutil.TestUtils.*;
+import static net.jmp.util.testing.testutil.TestUtils.*;
 
 import static org.junit.Assert.*;
 

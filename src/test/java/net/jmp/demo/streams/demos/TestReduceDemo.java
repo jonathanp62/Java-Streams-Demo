@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestReduceDemo.java   0.10.0  09/24/2024
  * (#)TestReduceDemo.java   0.8.0   09/07/2024
  *
  * @author   Jonathan Parker
- * @version  0.8.0
+ * @version  0.10.0
  * @since    0.8.0
  *
  * MIT License
@@ -30,7 +31,7 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-import static net.jmp.demo.streams.testutil.TestUtils.castToType;
+import static net.jmp.util.testing.testutil.TestUtils.castToType;
 
 import static org.junit.Assert.*;
 

@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestCollectorsDemo.java   0.10.0  09/24/2024
  * (#)TestCollectorsDemo.java   0.4.0   08/30/2024
  *
  * @author   Jonathan Parker
- * @version  0.4.0
+ * @version  0.10.0
  * @since    0.4.0
  *
  * MIT License
@@ -35,7 +36,7 @@ import java.util.*;
 import net.jmp.demo.streams.records.Dish;
 import net.jmp.demo.streams.records.DishType;
 
-import static net.jmp.demo.streams.testutil.TestUtils.*;
+import static net.jmp.util.testing.testutil.TestUtils.*;
 
 import static org.junit.Assert.*;
 

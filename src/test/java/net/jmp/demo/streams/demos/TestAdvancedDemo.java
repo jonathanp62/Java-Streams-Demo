@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestAdvancedDemo.java 0.10.0  09/24/2024
  * (#)TestAdvancedDemo.java 0.5.0   09/04/2024
  * (#)TestAdvancedDemo.java 0.3.0   08/29/2024
  *
  * @author   Jonathan Parker
- * @version  0.5.0
+ * @version  0.10.0
  * @since    0.3.0
  *
  * MIT License
@@ -37,8 +38,8 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.Dish;
 
-import static net.jmp.demo.streams.testutil.TestUtils.castToType;
-import static net.jmp.demo.streams.testutil.TestUtils.streamToTypedList;
+import static net.jmp.util.testing.testutil.TestUtils.castToType;
+import static net.jmp.util.testing.testutil.TestUtils.streamToTypedList;
 
 import static org.junit.Assert.*;
 

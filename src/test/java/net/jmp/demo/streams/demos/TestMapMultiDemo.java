@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestMapMultiDemo.java 0.10.0  09/24/2024
  * (#)TestMapMultiDemo.java 0.7.0   09/06/2024
  * (#)TestMapMultiDemo.java 0.6.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.7.0
+ * @version  0.10.0
  * @since    0.6.0
  *
  * MIT License
@@ -36,8 +37,8 @@ import java.util.List;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
-import static net.jmp.demo.streams.testutil.TestUtils.castToType;
-import static net.jmp.demo.streams.testutil.TestUtils.streamToTypedList;
+import static net.jmp.util.testing.testutil.TestUtils.castToType;
+import static net.jmp.util.testing.testutil.TestUtils.streamToTypedList;
 
 import org.apache.commons.lang3.tuple.Pair;
 

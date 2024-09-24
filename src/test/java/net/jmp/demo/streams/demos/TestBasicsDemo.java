@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestBasicsDemo.java   0.10.0  09/24/2024
  * (#)TestBasicsDemo.java   0.3.0   08/29/2024
  * (#)TestBasicsDemo.java   0.2.0   08/25/2024
  *
  * @author   Jonathan Parker
- * @version  0.3.0
+ * @version  0.10.0
  * @since    0.2.0
  *
  * MIT License
@@ -39,7 +40,7 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.Dish;
 
-import static net.jmp.demo.streams.testutil.TestUtils.*;
+import static net.jmp.util.testing.testutil.TestUtils.*;
 
 import org.junit.Test;
 
