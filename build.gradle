@@ -86,6 +86,7 @@ repositories {
 dependencies {
     runtimeOnly         libs.ch.qos.logback.logback.classic
     runtimeOnly         libs.ch.qos.logback.logback.core
+    implementation      libs.net.jmp.util.logging.logging.utilities
     implementation      libs.org.apache.commons.commons.lang3
     implementation      libs.org.slf4j.slf4j.api
     testImplementation  libs.junit.junit

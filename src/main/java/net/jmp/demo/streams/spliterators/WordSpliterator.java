@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.spliterators;
 
 /*
+ * (#)WordSpliterator.java  0.10.0  09/24/2024
  * (#)WordSpliterator.java  0.9.0   09/11/2024
  *
  * @author   Jonathan Parker
- * @version  0.9.0
+ * @version  0.10.0
  * @since    0.9.0
  *
  * MIT License
@@ -35,7 +36,7 @@ import java.util.Spliterator;
 
 import java.util.function.Consumer;
 
-import static net.jmp.demo.streams.util.LoggerUtils.*;
+import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

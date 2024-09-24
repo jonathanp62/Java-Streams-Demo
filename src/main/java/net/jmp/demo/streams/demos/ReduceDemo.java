@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)ReduceDemo.java   0.10.0  09/24/2024
  * (#)ReduceDemo.java   0.8.0   09/07/2024
  *
  * @author   Jonathan Parker
- * @version  0.8.0
+ * @version  0.10.0
  * @since    0.8.0
  *
  * MIT License
@@ -36,7 +37,7 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.util.DemoUtils;
 
-import static net.jmp.demo.streams.util.LoggerUtils.*;
+import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

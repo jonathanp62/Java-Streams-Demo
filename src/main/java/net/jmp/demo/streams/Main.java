@@ -1,6 +1,7 @@
 package net.jmp.demo.streams;
 
 /*
+ * (#)Main.java 0.10.0  09/24/2024
  * (#)Main.java 0.9.0   09/09/2024
  * (#)Main.java 0.8.0   09/07/2024
  * (#)Main.java 0.7.0   09/05/2024
@@ -10,7 +11,7 @@ package net.jmp.demo.streams;
  * (#)Main.java 0.1.0   08/24/2024
  *
  * @author   Jonathan Parker
- * @version  0.9.0
+ * @version  0.10.0
  * @since    0.1.0
  *
  * MIT License
@@ -42,7 +43,7 @@ import java.util.stream.Stream;
 
 import net.jmp.demo.streams.demos.*;
 
-import static net.jmp.demo.streams.util.LoggerUtils.*;
+import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

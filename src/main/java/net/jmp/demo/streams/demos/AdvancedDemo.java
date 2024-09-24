@@ -1,12 +1,13 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)AdvancedDemo.java 0.10.0  09/24/2024
  * (#)AdvancedDemo.java 0.5.0   09/04/2024
  * (#)AdvancedDemo.java 0.4.0   08/30/2024
  * (#)AdvancedDemo.java 0.3.0   08/29/2024
  *
  * @author   Jonathan Parker
- * @version  0.5.0
+ * @version  0.10.0
  * @since    0.3.0
  *
  * MIT License
@@ -40,9 +41,9 @@ import java.util.function.UnaryOperator;
 
 import java.util.stream.Stream;
 
-import static net.jmp.demo.streams.util.LoggerUtils.*;
-
 import net.jmp.demo.streams.records.*;
+
+import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

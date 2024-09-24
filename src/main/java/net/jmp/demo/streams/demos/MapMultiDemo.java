@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)MapMultiDemo.java 0.10.0  09/24/2024
  * (#)MapMultiDemo.java 0.7.0   09/06/2024
  * (#)MapMultiDemo.java 0.6.0   09/04/2024
  *
  * @author   Jonathan Parker
- * @version  0.7.0
+ * @version  0.10.0
  * @since    0.6.0
  *
  * MIT License
@@ -39,7 +40,7 @@ import java.util.stream.Stream;
 import net.jmp.demo.streams.records.Album;
 import net.jmp.demo.streams.records.Artist;
 
-import static net.jmp.demo.streams.util.LoggerUtils.*;
+import static net.jmp.util.logging.LoggerUtils.*;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
