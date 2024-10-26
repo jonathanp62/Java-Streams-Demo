@@ -32,6 +32,12 @@ package net.jmp.demo.streams.beans;
 
 import java.util.Objects;
 
+/**
+ * An article.
+ *
+ * @version 0.9.0
+ * @since   0.9.0
+ */
 public final class Article {
     /** The title. */
     private String title;

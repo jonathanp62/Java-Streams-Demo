@@ -162,7 +162,7 @@ public final class ListSpliterator<T> extends AdvanceCounter implements Splitera
 
     /**
      * Returns an estimate of the number of elements that would be encountered
-     * by a forEachRemaining(java.util.function.Consumer<? super T>) traversal,
+     * by a forEachRemaining(java.util.function.Consumer&lt;? super T&gt;) traversal,
      * or returns Long.MAX_VALUE if infinite, unknown, or too expensive to compute.
      *
      * @return  long

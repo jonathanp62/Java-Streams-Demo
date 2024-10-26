@@ -1,5 +1,3 @@
-package net.jmp.demo.streams.records;
-
 /*
  * (#)package-info.java 0.2.0   08/25/2024
  *
@@ -29,3 +27,11 @@ package net.jmp.demo.streams.records;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/**
+ * The package containing records.
+ *
+ * @version 0.2.0
+ * @since   0.2.0
+ */
+package net.jmp.demo.streams.records;

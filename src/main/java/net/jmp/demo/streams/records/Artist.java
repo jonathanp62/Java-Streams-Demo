@@ -34,6 +34,10 @@ import java.util.List;
 
 /**
  * The artist record.
+ *
+ * @param name                      java.lang.String
+ * @param associatedWithMajorLabels boolean
+ * @param majorLabels               java.util.List&lt;java.lang.String&gt;
  */
 public record Artist(
         String name,

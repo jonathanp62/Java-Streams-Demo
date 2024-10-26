@@ -92,6 +92,9 @@ final class SplitAndConsumeUtils<T> {
     /**
      * Split and consume. This technique evenly
      * distributes the work across the threads.
+     *
+     * @param   supplier    java.util.function.Supplier&lt;? extends T&gt;
+     * @return              T
      */
     T splitAndConsumeEvenly(final Supplier<? extends T> supplier) {
         if (this.logger.isTraceEnabled()) {

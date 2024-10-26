@@ -86,7 +86,7 @@ public final class CollectorsDemo implements Demo {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** A capitalizer function. A UnaryOperator<T> is preferred to Function<T, T>. */
+    /** A capitalizer function. A UnaryOperator&lt;T&gt; is preferred to Function&lt;T, T&gt;. */
     private final UnaryOperator<String> capitalizer = string -> {
         final String firstLetter = string.substring(0, 1).toUpperCase();
 
@@ -706,6 +706,11 @@ public final class CollectorsDemo implements Demo {
         return names;
     }
 
+    /**
+     * Apply a flat-mapping function to the dishes.
+     *
+     * @return  java.util.Map&lt;java.lang.String, java.util.List&lt;java.lang.String&gt;&gt;
+     */
     private Map<String, List<String>> flatMapping() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());

@@ -41,6 +41,10 @@ import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * The album record.
+ *
+ * @param albumName java.lang.String
+ * @param albumCost int
+ * @param artists   java.util.List&lt;net.jmp.demo.streams.records.Artist&gt;
  */
 public record Album(
         String albumName,

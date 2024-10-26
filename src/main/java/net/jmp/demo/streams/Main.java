@@ -62,6 +62,8 @@ final class Main implements Runnable {
      * A constructor that takes the
      * command line arguments from
      * the bootstrap class.
+     *
+     * @param   args    java.lang.String[]
      */
     Main(final String[] args) {
         super();

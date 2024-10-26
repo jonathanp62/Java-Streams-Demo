@@ -513,7 +513,10 @@ public final class SpliteratorsDemo implements Demo {
      * A word counter class.
      */
     static class WordCounter {
+        /** The counter. */
         private final int counter;
+
+        /** True when the last space is encountered. */
         private final boolean lastSpace;
 
         /**

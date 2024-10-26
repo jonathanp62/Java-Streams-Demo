@@ -164,6 +164,14 @@ public final class MinByGatherer<T, C extends Comparable<C>> implements Gatherer
      * @param   <T> The type of element
      */
     static final class MinByGathererState<T> {
+        /** The minimum element. */
         T minElement;
+
+        /**
+         * The default constructor.
+         */
+        private MinByGathererState() {
+            super();
+        }
     }
 }

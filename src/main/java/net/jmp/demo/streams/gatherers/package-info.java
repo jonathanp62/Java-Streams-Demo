@@ -1,5 +1,3 @@
-package net.jmp.demo.streams.gatherers;
-
 /*
  * (#)package-info.java 0.7.0   09/05/2024
  *
@@ -29,3 +27,11 @@ package net.jmp.demo.streams.gatherers;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/**
+ * A package containing gatherers.
+ *
+ * @version 0.7.0
+ * @since   0.7,0
+ */
+package net.jmp.demo.streams.gatherers;

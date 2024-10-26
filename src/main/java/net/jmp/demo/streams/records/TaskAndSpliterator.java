@@ -38,7 +38,7 @@ import java.util.concurrent.ForkJoinTask;
  * A record containing the submitted fork-join
  * task and its corresponding spliterator.
  *
- * @param   <T>
+ * @param   <T>         The type of spliterator
  * @param   task        java.util.concurrent.ForkJoinTask&lt;?&gt;
  * @param   spliterator java.util.Spliterator&lt;T&gt;
  */

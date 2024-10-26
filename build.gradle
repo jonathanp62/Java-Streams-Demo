@@ -133,7 +133,15 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 tasks.withType(Javadoc).configureEach {
-    options.encoding = 'UTF-8'
+    CoreJavadocOptions cjo = options as CoreJavadocOptions
+    StandardJavadocDocletOptions sjdo = options as StandardJavadocDocletOptions
+
+    cjo.encoding("UTF-8")
+    cjo.addStringOption("source", "23")
+    cjo.addBooleanOption("-enable-preview", true)
+    cjo.memberLevel = JavadocMemberLevel.PRIVATE
+
+    sjdo.version(true)
 }
 
 tasks.withType(JavaExec).configureEach {

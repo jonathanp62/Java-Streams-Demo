@@ -1,5 +1,3 @@
-package net.jmp.demo.streams.demos;
-
 /*
  * (#)package-info.java 0.7.0   09/07/2024
  * (#)package-info.java 0.6.0   09/04/2024
@@ -34,8 +32,9 @@ package net.jmp.demo.streams.demos;
  * SOFTWARE.
  */
 
-/*
- * Demonstrate the basics along with:
+/**
+ * A package containing demonstration classes that
+ * demonstrate the basics along with:
  *   builder(*)
  *   collect(*)
  *   dropWhile(*)
@@ -46,4 +45,8 @@ package net.jmp.demo.streams.demos;
  *   mapMulti(*)
  *   reduce(*)
  *   takeWhile(*)
+ *
+ * @version 0.7.0
+ * @since   0.2.0
  */
+package net.jmp.demo.streams.demos;

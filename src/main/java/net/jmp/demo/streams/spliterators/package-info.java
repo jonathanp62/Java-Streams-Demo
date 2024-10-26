@@ -1,5 +1,3 @@
-package net.jmp.demo.streams.spliterators;
-
 /*
  * (#)package-info.java 0.9.0   09/11/2024
  *
@@ -29,3 +27,11 @@ package net.jmp.demo.streams.spliterators;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/**
+ * A package containing spliterators.
+ *
+ * @version 0.9.0
+ * @since   0.9.0
+ */
+package net.jmp.demo.streams.spliterators;

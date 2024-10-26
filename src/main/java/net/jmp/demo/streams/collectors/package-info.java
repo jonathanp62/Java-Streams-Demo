@@ -1,5 +1,3 @@
-package net.jmp.demo.streams.collectors;
-
 /*
  * (#)package-info.java 0.4.0   09/03/2024
  *
@@ -29,3 +27,11 @@ package net.jmp.demo.streams.collectors;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/**
+ * A package containing collectors.
+ *
+ * @version 0.4.0
+ * @since   0.4.0
+ */
+package net.jmp.demo.streams.collectors;

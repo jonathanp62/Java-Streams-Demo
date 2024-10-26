@@ -35,6 +35,13 @@ package net.jmp.demo.streams;
  */
 public final class Bootstrap {
     /**
+     * The default constructor.
+     */
+    private Bootstrap() {
+        super();
+    }
+
+    /**
      * The main method.
      *
      * @param   args    java.lang.String[]

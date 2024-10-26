@@ -33,6 +33,11 @@ package net.jmp.demo.streams.records;
 
 /**
  * The dish record.
+ *
+ * @param   name        java.lang.String
+ * @param   vegetarian  boolean
+ * @param   calories    int
+ * @param   type        net.jmp.demo.streams.records.DishType
  */
 public record Dish(
         String name,

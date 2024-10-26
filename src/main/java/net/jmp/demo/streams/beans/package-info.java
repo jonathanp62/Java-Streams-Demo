@@ -1,11 +1,9 @@
-package net.jmp.demo.streams.records;
-
 /*
- * (#)DishType.java 0.2.0   08/25/2024
+ * (#)package-info.java 0.9.0   10/26/2024
  *
  * @author   Jonathan Parker
- * @version  0.2.0
- * @since    0.2.0
+ * @version  0.9.0
+ * @since    0.9.0
  *
  * MIT License
  *
@@ -31,15 +29,9 @@ package net.jmp.demo.streams.records;
  */
 
 /**
- * An enumeration of dish types.
+ * A package containing bean classes.
+ *
+ * @version 0.9.0
+ * @since   0.9.0
  */
-public enum DishType {
-    /** Fish. */
-    FISH,
-
-    /** Meat. */
-    MEAT,
-
-    /** Something other than fish or meat. */
-    OTHER
-}
+package net.jmp.demo.streams.beans;

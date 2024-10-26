@@ -813,6 +813,13 @@ public final class BasicsDemo implements Demo {
      * when converting streams to arrays.
      */
     static class GeneratorFunction implements IntFunction<String[]> {
+        /**
+         * The default constructor.
+         */
+        private GeneratorFunction() {
+            super();
+        }
+
         @Override
         public String[] apply(final int size) {
             return new String[size];

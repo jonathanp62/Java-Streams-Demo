@@ -164,6 +164,14 @@ public final class MaxByGatherer<T, C extends Comparable<C>> implements Gatherer
      * @param   <T> The type of element
      */
     static final class MaxByGathererState<T> {
+        /** The maximum element. */
         T maxElement;
+
+        /**
+         * The default constructor.
+         */
+        private MaxByGathererState() {
+            super();
+        }
     }
 }
