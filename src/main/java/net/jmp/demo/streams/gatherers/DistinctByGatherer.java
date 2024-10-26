@@ -95,10 +95,12 @@ public final class DistinctByGatherer<T, A> implements Gatherer<T, Set<A>, T> {
             if (!state.contains(selected)) {
                 state.add(selected);
 
-                if (!downstream.push(item)) {
-                    System.err.println("Failed to push " + item + " downstream");
+                if (!downstream.isRejecting()) {
+                    if (!downstream.push(item)) {
+                        System.err.println("Failed to push " + item + " downstream");
 
-                    return false;   // No subsequent integration is desired
+                        return false;   // No subsequent integration is desired
+                    }
                 }
             }
 

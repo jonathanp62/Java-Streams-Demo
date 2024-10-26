@@ -137,7 +137,7 @@ public final class GatherersDemo implements Demo {
 
             this.customGatherAndThen().forEach(e -> this.logger.info("AndThen: {}", e));
 
-            this.customOfSequential();
+            this.customOfSequential().forEach(e -> this.logger.info("Sequential: {}", e));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -483,9 +483,10 @@ public final class GatherersDemo implements Demo {
     /**
      * Demonstrate creating a gatherer using ofSequential.
      *
+     * @return  java.util.List&lt;java.lang.String&gt;
      * @since   0.11.0
      */
-    private void customOfSequential() {
+    private List<String> customOfSequential() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
@@ -500,11 +501,16 @@ public final class GatherersDemo implements Demo {
 
         final List<Offer> distinctGrandChildOffers = getAllDistinctGrandChildOffersByProductCode(offer);
 
-        this.logger.info(distinctGrandChildOffers.toString());
+        final List<String> distinctGrandChildProductCodes = distinctGrandChildOffers
+                .stream()
+                .map(Offer::productCode)
+                .toList();
 
         if (this.logger.isTraceEnabled()) {
-            this.logger.trace(exit());
+            this.logger.trace(exitWith(distinctGrandChildProductCodes));
         }
+
+        return distinctGrandChildProductCodes;
     }
 
     /**
@@ -519,7 +525,8 @@ public final class GatherersDemo implements Demo {
             this.logger.trace(entryWith(offer));
         }
 
-        final List<Offer> offers = offer.childOffers().stream()
+        final List<Offer> offers = offer.childOffers()
+                .stream()
                 .flatMap(childOffer -> childOffer.childOffers().stream())
                 .gather(distinctByProductCodeGatherer())
                 .toList();
@@ -532,7 +539,9 @@ public final class GatherersDemo implements Demo {
     }
 
     /**
-     * A gatherer that produces a stream of ...
+     * A gatherer that produces a stream of offers and
+     * produces a stream of grandchild offers distinct
+     * by product code.
      *
      * @return  java.util.stream.Gatherer&lt;net.jmp.demo.streams.records.Offer, java.util.List&lt;net.jmp.demo.streams.records.Offer&gt;,net.jmp.demo.streams.records.Offer&gt;
      * @since   0.11.0
@@ -540,7 +549,7 @@ public final class GatherersDemo implements Demo {
     private Gatherer<Offer, List<Offer>, Offer> distinctByProductCodeGatherer() {
         return Gatherer.ofSequential(
                 ArrayList::new,
-                Gatherer.Integrator.<List<Offer>, Offer, Offer>ofGreedy((state, element, downstream) -> {
+                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
                     if (!hasProductWithSameProductCode(state, element)) {
                         state.add(element);
                     }

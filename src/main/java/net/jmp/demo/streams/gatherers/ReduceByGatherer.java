@@ -112,8 +112,10 @@ public final class ReduceByGatherer<T, A> implements Gatherer<T, Map<A, T>, T> {
     @Override
     public BiConsumer<Map<A, T>, Downstream<? super T>> finisher () {
         return (state, downstream) -> {
-            state.values()
-                    .forEach(downstream::push);
+            if (!downstream.isRejecting()) {
+                state.values()
+                        .forEach(downstream::push);
+            }
         };
     }
 }

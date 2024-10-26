@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestGatherersDemo.java    0.11.0  10/26/2024
  * (#)TestGatherersDemo.java    0.10.0  09/24/2024
  * (#)TestGatherersDemo.java    0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.10.0
+ * @version  0.11.0
  * @since    0.7.0
  *
  * MIT License
@@ -308,6 +309,25 @@ public final class TestGatherersDemo {
 
         assertTrue(results.contains(expected0.toString()));
         assertTrue(results.contains(expected1.toString()));
+    }
+
+    @Test
+    public void testOfSequential() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customOfSequential");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final List<?> list = castToType(List.class, o);
+        final List<String> results = listToTypedList(list, String.class);
+
+        assertNotNull(results);
+        assertEquals(3, results.size());
+
+        assertTrue(results.contains("GP1"));
+        assertTrue(results.contains("GP2"));
+        assertTrue(results.contains("GP3"));
     }
 
     /**

@@ -78,7 +78,9 @@ public final class MapNotNullGatherer<T, R> implements Gatherer<T, T, R> {
 
         return Integrator.ofGreedy((_, item, downstream) -> {
             if (item != null) {
-                downstream.push(this.mapper.apply(item));
+                if (!downstream.isRejecting()) {
+                    downstream.push(this.mapper.apply(item));
+                }
             }
 
             return true;    // True if subsequent integration is desired

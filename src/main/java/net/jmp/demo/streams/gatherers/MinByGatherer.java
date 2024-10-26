@@ -155,7 +155,11 @@ public final class MinByGatherer<T, C extends Comparable<C>> implements Gatherer
      */
     @Override
     public BiConsumer<MinByGathererState<T>, Downstream<? super T>> finisher () {
-        return (state, downstream) -> downstream.push(state.minElement);
+        return (state, downstream) -> {
+            if (!downstream.isRejecting()) {
+                downstream.push(state.minElement);
+            }
+        };
     }
 
     /**

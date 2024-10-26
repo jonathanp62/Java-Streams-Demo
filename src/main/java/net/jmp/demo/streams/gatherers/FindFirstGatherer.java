@@ -77,7 +77,9 @@ public final class FindFirstGatherer<T> implements Gatherer<T, T, T> {
 
         return Integrator.ofGreedy((_, item, downstream) -> {
             if (this.predicate.test(item)) {
-                downstream.push(item);
+                if (!downstream.isRejecting()) {
+                    downstream.push(item);
+                }
 
                 return false;   // No subsequent integration is desired
             } else {

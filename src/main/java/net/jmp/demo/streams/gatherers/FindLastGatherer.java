@@ -109,7 +109,9 @@ public final class FindLastGatherer<T>  implements Gatherer<T, List<T>, T> {
             final int count = state.size();
             final T lastItem = state.get(count - 1);
 
-            downstream.push(lastItem);
+            if (!downstream.isRejecting()) {
+                downstream.push(lastItem);
+            }
         };
     }
 }

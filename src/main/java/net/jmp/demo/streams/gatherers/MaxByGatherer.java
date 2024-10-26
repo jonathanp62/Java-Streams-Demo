@@ -155,7 +155,11 @@ public final class MaxByGatherer<T, C extends Comparable<C>> implements Gatherer
      */
     @Override
     public BiConsumer<MaxByGathererState<T>, Downstream<? super T>> finisher () {
-        return (state, downstream) -> downstream.push(state.maxElement);
+        return (state, downstream) -> {
+            if (!downstream.isRejecting()) {
+                downstream.push(state.maxElement);
+            }
+        };
     }
 
     /**
