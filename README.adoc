@@ -73,6 +73,7 @@ Logging is achieved using the SLF4J facade over Logback. The logging configurati
 - fold
 - fixedWindow
 - mapConcurrent
+- ofSequential
 - scan
 - slidingWindow
 
@@ -120,5 +121,5 @@ Gradle JavaExec Tasks
 |execute                |No arguments
 |=======================
 
-Current version: 0.10.0.
+Current version: 0.11.0.
 ~~~~~~~~~~~~~~~~~~~~~~~~
