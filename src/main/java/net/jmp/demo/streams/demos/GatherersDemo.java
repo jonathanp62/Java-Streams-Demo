@@ -1,11 +1,12 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)GatherersDemo.java    0.11.0  10/26/2024
  * (#)GatherersDemo.java    0.10.0  09/24/2024
  * (#)GatherersDemo.java    0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.10.0
+ * @version  0.11.0
  * @since    0.7.0
  *
  * MIT License
@@ -33,6 +34,7 @@ package net.jmp.demo.streams.demos;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
@@ -48,6 +50,7 @@ import net.jmp.demo.streams.gatherers.MapNotNullGatherer;
 import net.jmp.demo.streams.gatherers.ReduceByGatherer;
 
 import net.jmp.demo.streams.records.Money;
+import net.jmp.demo.streams.records.Offer;
 
 import net.jmp.demo.streams.util.GatherersFactory;
 
@@ -133,6 +136,8 @@ public final class GatherersDemo implements Demo {
             this.logger.info("Last: {}", this.customFindLastGatherer(this.getMoney()));
 
             this.customGatherAndThen().forEach(e -> this.logger.info("AndThen: {}", e));
+
+            this.customOfSequential();
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -473,6 +478,93 @@ public final class GatherersDemo implements Demo {
         }
 
         return results;
+    }
+
+    /**
+     * Demonstrate creating a gatherer using ofSequential.
+     *
+     * @since   0.11.0
+     */
+    private void customOfSequential() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Offer grandChildOffer1 = new Offer("GP1", List.of());
+        final Offer grandChildOffer2 = new Offer("GP1", List.of());
+        final Offer grandChildOffer3 = new Offer("GP2", List.of());
+        final Offer grandChildOffer4 = new Offer("GP3", List.of());
+        final Offer childOffer1 = new Offer("CP1", List.of(grandChildOffer1, grandChildOffer4));
+        final Offer childOffer2 = new Offer("CP2", List.of(grandChildOffer2, grandChildOffer3));
+        final Offer offer = new Offer("P1", List.of(childOffer1, childOffer2));
+
+        final List<Offer> distinctGrandChildOffers = getAllDistinctGrandChildOffersByProductCode(offer);
+
+        this.logger.info(distinctGrandChildOffers.toString());
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exit());
+        }
+    }
+
+    /**
+     * Return a list of distinct grandchild offers by product code.
+     *
+     * @param   offer   net.jmp.demo.streams.records.Offer
+     * @return          java.util.List&lt;net.jmp.demo.streams.records.Offer&gt;
+     * @since           0.11.0
+     */
+    private List<Offer> getAllDistinctGrandChildOffersByProductCode(final Offer offer) {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(offer));
+        }
+
+        final List<Offer> offers = offer.childOffers().stream()
+                .flatMap(childOffer -> childOffer.childOffers().stream())
+                .gather(distinctByProductCodeGatherer())
+                .toList();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(offers));
+        }
+
+        return offers;
+    }
+
+    /**
+     * A gatherer that produces a stream of ...
+     *
+     * @return  java.util.stream.Gatherer&lt;net.jmp.demo.streams.records.Offer, java.util.List&lt;net.jmp.demo.streams.records.Offer&gt;,net.jmp.demo.streams.records.Offer&gt;
+     * @since   0.11.0
+     */
+    private Gatherer<Offer, List<Offer>, Offer> distinctByProductCodeGatherer() {
+        return Gatherer.ofSequential(
+                ArrayList::new,
+                Gatherer.Integrator.<List<Offer>, Offer, Offer>ofGreedy((state, element, downstream) -> {
+                    if (!hasProductWithSameProductCode(state, element)) {
+                        state.add(element);
+                    }
+
+                    return true;
+                }),
+                (state, downstream) -> {
+                    if (!state.isEmpty() && !downstream.isRejecting()) {
+                        state.forEach(downstream::push);
+                    }
+                }
+        );
+    }
+
+    /**
+     * Return true if the element matches any in the state list.
+     *
+     * @param   state   java.util.List&lt;net.jmp.demo.streams.records.Offer&gt;
+     * @param   element net.jmp.demo.streams.records.Offer
+     * @return          boolean
+     * @since           0.11.0
+     */
+    private boolean hasProductWithSameProductCode(final List<Offer> state, final Offer element) {
+        return state.stream().anyMatch(offer -> offer.productCode().equals(element.productCode()));
     }
 
     /**
