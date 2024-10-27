@@ -41,10 +41,7 @@ import java.util.List;
 
 import java.util.function.Function;
 
-import java.util.stream.Collectors;
-import java.util.stream.Gatherer;
-import java.util.stream.Gatherers;
-import java.util.stream.Stream;
+import java.util.stream.*;
 
 import net.jmp.demo.streams.gatherers.MapNotNullGatherer;
 import net.jmp.demo.streams.gatherers.ReduceByGatherer;
@@ -138,6 +135,8 @@ public final class GatherersDemo implements Demo {
             this.customGatherAndThen().forEach(e -> this.logger.info("AndThen: {}", e));
 
             this.customOfSequential().forEach(e -> this.logger.info("Sequential: {}", e));
+
+            this.logger.info("Accumulator: {}", this.customOf());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -548,7 +547,10 @@ public final class GatherersDemo implements Demo {
      */
     private Gatherer<Offer, List<Offer>, Offer> distinctByProductCodeGatherer() {
         return Gatherer.ofSequential(
+                // Supplier
                 ArrayList::new,
+
+                // Integrator
                 Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
                     if (!hasProductWithSameProductCode(state, element)) {
                         state.add(element);
@@ -556,6 +558,8 @@ public final class GatherersDemo implements Demo {
 
                     return true;
                 }),
+
+                // Finisher
                 (state, downstream) -> {
                     if (!state.isEmpty() && !downstream.isRejecting()) {
                         state.forEach(downstream::push);
@@ -574,6 +578,87 @@ public final class GatherersDemo implements Demo {
      */
     private boolean hasProductWithSameProductCode(final List<Offer> state, final Offer element) {
         return state.stream().anyMatch(offer -> offer.productCode().equals(element.productCode()));
+    }
+
+    /**
+     * Demonstrate creating a gatherer using of.
+     *
+     * @return  int
+     * @since   0.11.0
+     */
+    private int customOf() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final int numberOfItems = 1_000;
+
+        final List<Integer> integers = IntStream.rangeClosed(1, numberOfItems)
+                .boxed()
+                .toList();
+
+        // A gatherer MUST have a combiner function for a stream to be processed in parallel.
+        // The default combiner turns off parallelization.
+
+        final int result = integers.stream()
+                .parallel()
+                .gather(accumulate(numberOfItems))
+                .findFirst()
+                .orElse(0);
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entryWith(result));
+        }
+
+        return result;
+    }
+
+    /**
+     * A gatherer that accumulates a stream of integers into a single value.
+     * This gatherer implements the combiner function and so can be parallelized.
+     *
+     * @param   numberOfItems   int
+     * @return                  int
+     * @since                   0.11.0
+     */
+    private Gatherer<Integer, List<Integer>, Integer> accumulate(final int numberOfItems) {
+        return Gatherer.of(
+                // Supplier
+                () -> new ArrayList<>(numberOfItems),
+
+                // Integrator
+                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                    state.add(element);
+
+                    return true;
+                }),
+
+                // Combiner
+                (left, right) -> {
+                    int accumulator = 0;
+
+                    for (final var element : left) {
+                        accumulator += element;
+                    }
+
+                    for (final var element : right) {
+                        accumulator += element;
+                    }
+
+                    final List<Integer> result = new ArrayList<>(1);
+
+                    result.add(accumulator);
+
+                    return result;
+                },
+
+                // Finisher
+                (state, downstream) -> {
+                    if (!state.isEmpty() && !downstream.isRejecting()) {
+                        downstream.push(state.getFirst());
+                    }
+                }
+        );
     }
 
     /**

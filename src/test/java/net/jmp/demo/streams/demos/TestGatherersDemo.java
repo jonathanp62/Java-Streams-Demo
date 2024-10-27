@@ -330,6 +330,19 @@ public final class TestGatherersDemo {
         assertTrue(results.contains("GP3"));
     }
 
+    @Test
+    public void testOf() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customOf");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final Integer integer = castToType(Integer.class, o);
+
+        assertEquals(500_500, (long) integer);
+    }
+
     /**
      * Return a stream of money.
      *
