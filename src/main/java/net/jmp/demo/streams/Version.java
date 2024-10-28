@@ -1,6 +1,7 @@
 package net.jmp.demo.streams;
 
 /*
+ * (#)Version.java  0.12.0  10/28/2024
  * (#)Version.java  0.11.0  10/26/2024
  * (#)Version.java  0.10.0  09/24/2024
  * (#)Version.java  0.9.0   09/09/2024
@@ -14,7 +15,7 @@ package net.jmp.demo.streams;
  * (#)Version.java  0.1.0   08/24/2024
  *
  * @author    Jonathan Parker
- * @version   0.11.0
+ * @version   0.12.0
  * @since     0.1.0
  *
  * MIT License
@@ -45,7 +46,7 @@ package net.jmp.demo.streams;
  */
 final class Version {
     /** The version. */
-    static final String VERSION_STRING = "0.11.0";
+    static final String VERSION_STRING = "0.12.0";
 
     /**
      * The default constructor.
