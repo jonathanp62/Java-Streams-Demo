@@ -1,12 +1,13 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)TestGatherersDemo.java    0.12.0  10/28/2024
  * (#)TestGatherersDemo.java    0.11.0  10/26/2024
  * (#)TestGatherersDemo.java    0.10.0  09/24/2024
  * (#)TestGatherersDemo.java    0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.11.0
+ * @version  0.12.0
  * @since    0.7.0
  *
  * MIT License
@@ -36,6 +37,7 @@ import java.math.BigDecimal;
 
 import java.util.Currency;
 import java.util.List;
+
 import java.util.stream.Stream;
 
 import net.jmp.demo.streams.records.Money;
@@ -341,6 +343,25 @@ public final class TestGatherersDemo {
         final Integer integer = castToType(Integer.class, o);
 
         assertEquals(500_500, (long) integer);
+    }
+
+    @Test
+    public void testComposed() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("customComposed");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final List<?> list = castToType(List.class, o);
+        final List<String> results = listToTypedList(list, String.class);
+
+        assertNotNull(results);
+        assertEquals(3, results.size());
+
+        assertTrue(results.contains("2"));
+        assertTrue(results.contains("3"));
+        assertTrue(results.contains("4"));
     }
 
     /**

@@ -1,12 +1,13 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)GatherersDemo.java    0.12.0  10/28/2024
  * (#)GatherersDemo.java    0.11.0  10/26/2024
  * (#)GatherersDemo.java    0.10.0  09/24/2024
  * (#)GatherersDemo.java    0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.11.0
+ * @version  0.12.0
  * @since    0.7.0
  *
  * MIT License
@@ -133,10 +134,11 @@ public final class GatherersDemo implements Demo {
             this.logger.info("Last: {}", this.customFindLastGatherer(this.getMoney()));
 
             this.customGatherAndThen().forEach(e -> this.logger.info("AndThen: {}", e));
-
             this.customOfSequential().forEach(e -> this.logger.info("Sequential: {}", e));
 
             this.logger.info("Accumulator: {}", this.customOf());
+
+            this.customComposed().forEach(e -> this.logger.info("Composed: {}", e));
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -657,6 +659,56 @@ public final class GatherersDemo implements Demo {
                     if (!state.isEmpty() && !downstream.isRejecting()) {
                         downstream.push(state.getFirst());
                     }
+                }
+        );
+    }
+
+    /**
+     * More custom composed gatherers.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     * @since   0.12.0
+     */
+    private List<String> customComposed() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Gatherer<Integer, ?, Integer> increment = this.map(i -> i + 1);
+        final Gatherer<Integer, ?, String> asString = this.map(Object::toString);
+        final Gatherer<Integer, ?, String> incrementThenAsString = increment.andThen(asString);
+
+        final List<Integer> integers = List.of(1, 2, 3);
+        final List<String> results = integers
+                .stream()
+                .gather(incrementThenAsString)
+                .toList();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(results));
+        }
+
+        return results;
+    }
+
+    /**
+     * A mapping gatherer that only requires an integrator.
+     *
+     * @param   <T>     The type of element
+     * @param   <R>     The return type
+     * @param   mapper  java.util.function.Function&lt;? super T, ? extends R&gt;
+     * @return          java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @since           0.12.0
+     */
+    private <T, R> Gatherer<T, ?, R> map(final Function <? super T, ? extends R> mapper) {
+        return Gatherer.of(
+                // Integrator
+                (state, element, downstream) -> {
+                    if (!downstream.isRejecting()) {
+                        downstream.push(mapper.apply(element));
+                    }
+
+                    return true;
                 }
         );
     }
