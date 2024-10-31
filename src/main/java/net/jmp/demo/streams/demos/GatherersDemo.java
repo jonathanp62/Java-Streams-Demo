@@ -140,6 +140,7 @@ public final class GatherersDemo implements Demo {
             this.customComposed().forEach(e -> this.logger.info("Composed: {}", e));
 
             this.logger.info("PrefixScan: {}", this.prefixScan());
+            this.logger.info("ReversePrefixScan: {}", this.reversePrefixScan());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -767,6 +768,31 @@ public final class GatherersDemo implements Demo {
                 return downstream.push(state.currentState);
             })
         );
+    }
+
+    /**
+     * Demonstrate a reverse prefix scan gatherer.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     * @since   0.12.0
+     */
+    private List<String> reversePrefixScan() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Supplier<String> supplier = () -> "";
+        final BiFunction<String, Integer, String> function = (string, number) -> string + number;
+
+        final List<String> results = Stream.of(9, 8, 7, 6, 5, 4, 3, 2, 1)
+                .gather(this.reverseScan(supplier, function))
+                .toList();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(results));
+        }
+
+        return results;
     }
 
     /**

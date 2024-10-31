@@ -389,6 +389,31 @@ public final class TestGatherersDemo {
         assertEquals("987654321", scans.get(8));
     }
 
+    @Test
+    public void testReversePrefixScan() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("reversePrefixScan");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final List<?> list = castToType(List.class, o);
+        final List<String> scans = listToTypedList(list, String.class);
+
+        assertNotNull(scans);
+        assertEquals(9, scans.size());
+
+        assertEquals("9", scans.get(8));
+        assertEquals("98", scans.get(7));
+        assertEquals("987", scans.get(6));
+        assertEquals("9876", scans.get(5));
+        assertEquals("98765", scans.get(4));
+        assertEquals("987654", scans.get(3));
+        assertEquals("9876543", scans.get(2));
+        assertEquals("98765432", scans.get(1));
+        assertEquals("987654321", scans.get(0));
+    }
+
     /**
      * Return a stream of money.
      *
