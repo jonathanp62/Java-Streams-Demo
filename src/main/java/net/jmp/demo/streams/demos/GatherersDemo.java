@@ -35,12 +35,11 @@ package net.jmp.demo.streams.demos;
 
 import java.math.BigDecimal;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import java.util.stream.*;
 
@@ -139,6 +138,8 @@ public final class GatherersDemo implements Demo {
             this.logger.info("Accumulator: {}", this.customOf());
 
             this.customComposed().forEach(e -> this.logger.info("Composed: {}", e));
+
+            this.logger.info("PrefixScan: {}", this.prefixScan());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -549,7 +550,7 @@ public final class GatherersDemo implements Demo {
      */
     private Gatherer<Offer, List<Offer>, Offer> distinctByProductCodeGatherer() {
         return Gatherer.ofSequential(
-                // Supplier
+                // Initializer
                 ArrayList::new,
 
                 // Integrator
@@ -625,7 +626,7 @@ public final class GatherersDemo implements Demo {
      */
     private Gatherer<Integer, List<Integer>, Integer> accumulate(final int numberOfItems) {
         return Gatherer.of(
-                // Supplier
+                // Initializer
                 () -> new ArrayList<>(numberOfItems),
 
                 // Integrator
@@ -709,6 +710,107 @@ public final class GatherersDemo implements Demo {
                     }
 
                     return true;
+                }
+        );
+    }
+
+    /**
+     * Demonstrate a prefix scan gatherer.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     * @since   0.12.0
+     */
+    private List<String> prefixScan() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Supplier<String> supplier = () -> "";
+        final BiFunction<String, Integer, String> function = (string, number) -> string + number;
+
+        final List<String> results = Stream.of(9, 8, 7, 6, 5, 4, 3, 2, 1)
+                .gather(this.scan(supplier, function))
+                .toList();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(results));
+        }
+
+        return results;
+    }
+
+    /**
+     * A prefix scan gatherer.
+     *
+     * @param   <T>         The type of element
+     * @param   <R>         The return type
+     * @param   supplier    java,util.function.Supplier&lt;R&gt;
+     * @param   scanner     java.util.function.BiFunction&lt;? super R, ? super T, ? extends R&gt;
+     * @return              java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @since               0.12.0
+     */
+    private <T, R> Gatherer<T, ?, R> scan(final Supplier<R> supplier,
+                                          final BiFunction<? super R, ? super T, ? extends R> scanner) {
+        class State {
+            /** The value of the current state. */
+            R currentState = supplier.get();
+        }
+
+        return Gatherer.ofSequential(
+            // Initializer
+            State::new,
+
+            // Integrator
+            Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                state.currentState = scanner.apply(state.currentState, element);
+
+                return downstream.push(state.currentState);
+            })
+        );
+    }
+
+    /**
+     * A reverse prefix scan gatherer.
+     *
+     * @param   <T>         The type of element
+     * @param   <R>         The return type
+     * @param   supplier    java,util.function.Supplier&lt;R&gt;
+     * @param   scanner     java.util.function.BiFunction&lt;? super R, ? super T, ? extends R&gt;
+     * @return              java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @since               0.12.0
+     */
+    private <T, R> Gatherer<T, ?, R> reverseScan(final Supplier<R> supplier,
+                                                 final BiFunction<? super R, ? super T, ? extends R> scanner) {
+        class State {
+            /** The list of elements. */
+            final List<R> elements = new ArrayList<>();
+
+            /** The current value of the state. */
+            R current = supplier.get();
+        }
+
+        return Gatherer.ofSequential(
+                // Initializer
+                State::new,
+
+                // Integrator
+                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                    state.current = scanner.apply(state.current, element);
+
+                    state.elements.add(state.current);
+
+                    return true;
+                }),
+
+                // Finisher
+                (state, downstream) -> {
+                    Collections.reverse(state.elements);
+
+                    for (final R element : state.elements) {
+                        if (!downstream.isRejecting()) {
+                            downstream.push(element);
+                        }
+                    }
                 }
         );
     }
