@@ -704,15 +704,9 @@ public final class GatherersDemo implements Demo {
      */
     private <T, R> Gatherer<T, ?, R> map(final Function <? super T, ? extends R> mapper) {
         return Gatherer.of(
-                // Integrator
-                (state, element, downstream) -> {
-                    if (!downstream.isRejecting()) {
-                        downstream.push(mapper.apply(element));
-                    }
-
-                    return true;
-                }
-        );
+                // Integrator (the return value of downstream.push() is returned)
+                Gatherer.Integrator.ofGreedy((state, element, downstream) -> downstream.push(mapper.apply(element))
+        ));
     }
 
     /**
@@ -820,7 +814,7 @@ public final class GatherersDemo implements Demo {
                 State::new,
 
                 // Integrator
-                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                Gatherer.Integrator.of((state, element, downstream) -> {
                     state.current = scanner.apply(state.current, element);
 
                     state.elements.add(state.current);

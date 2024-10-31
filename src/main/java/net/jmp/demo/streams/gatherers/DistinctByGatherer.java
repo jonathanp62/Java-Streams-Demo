@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.gatherers;
 
 /*
+ * (#)DistinctByGatherer.java   0.12.0  10/31/2024
  * (#)DistinctByGatherer.java   0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.7.0
+ * @version  0.12.0
  * @since    0.7.0
  *
  * MIT License
@@ -89,7 +90,7 @@ public final class DistinctByGatherer<T, A> implements Gatherer<T, Set<A>, T> {
          * result type (R).
          */
 
-        return Integrator.ofGreedy((state, item, downstream) -> {
+        return Integrator.of((state, item, downstream) -> {
             final A selected = this.selector.apply(item);   // Apply the selector function
 
             if (!state.contains(selected)) {

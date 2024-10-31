@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.gatherers;
 
 /*
+ * (#)FindLastGatherer.java 0.12.0  10/31/2024
  * (#)FindLastGatherer.java 0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.7.0
+ * @version  0.12.0
  * @since    0.7.0
  *
  * MIT License
@@ -86,7 +87,7 @@ public final class FindLastGatherer<T>  implements Gatherer<T, List<T>, T> {
          * result type (R).
          */
 
-        return Integrator.ofGreedy((state, item, _) -> {
+        return Integrator.of((state, item, _) -> {
             if (this.predicate.test(item)) {
                 state.add(item);
             }

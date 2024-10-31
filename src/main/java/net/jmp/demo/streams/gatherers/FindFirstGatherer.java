@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.gatherers;
 
 /*
+ * (#)FindFirstGatherer.java    0.12.0  10/31/2024
  * (#)FindFirstGatherer.java    0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.7.0
+ * @version  0.12.0
  * @since    0.7.0
  *
  * MIT License
@@ -75,7 +76,7 @@ public final class FindFirstGatherer<T> implements Gatherer<T, T, T> {
          * result type (R).
          */
 
-        return Integrator.ofGreedy((_, item, downstream) -> {
+        return Integrator.of((_, item, downstream) -> {
             if (this.predicate.test(item)) {
                 if (!downstream.isRejecting()) {
                     downstream.push(item);

@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.gatherers;
 
 /*
+ * (#)MapNotNullGatherer.java   0.12.0  10/31/2024
  * (#)MapNotNullGatherer.java   0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.7.0
+ * @version  0.12.0
  * @since    0.7.0
  *
  * MIT License
@@ -77,11 +78,10 @@ public final class MapNotNullGatherer<T, R> implements Gatherer<T, T, R> {
          */
 
         return Integrator.ofGreedy((_, item, downstream) -> {
-            if (item != null) {
-                if (!downstream.isRejecting()) {
-                    downstream.push(this.mapper.apply(item));
-                }
+            if (item != null && !downstream.isRejecting()) {
+                return downstream.push(this.mapper.apply(item));
             }
+
 
             return true;    // True if subsequent integration is desired
         });

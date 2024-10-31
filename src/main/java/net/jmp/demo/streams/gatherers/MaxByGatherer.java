@@ -1,10 +1,11 @@
 package net.jmp.demo.streams.gatherers;
 
 /*
+ * (#)MaxByGatherer.java    0.12.0  10/31/2024
  * (#)MaxByGatherer.java    0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.7.0
+ * @version  0.12.0
  * @since    0.7.0
  *
  * MIT License
@@ -87,7 +88,7 @@ public final class MaxByGatherer<T, C extends Comparable<C>> implements Gatherer
          * result type (R).
          */
 
-        return Integrator.ofGreedy((state, item, _) -> {
+        return Integrator.of((state, item, _) -> {
             if (state.maxElement == null) {
                 state.maxElement = item;
 
