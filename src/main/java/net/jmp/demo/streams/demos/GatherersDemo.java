@@ -871,6 +871,7 @@ public final class GatherersDemo implements Demo {
      * @param   <T>     The type of element
      * @param   limit   int
      * @return          java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @since           0.12.0
      */
     private <T> Gatherer<T, ?, T> limiting(final int limit) {
         class State {
