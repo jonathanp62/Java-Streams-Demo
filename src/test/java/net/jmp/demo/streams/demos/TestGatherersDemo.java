@@ -414,6 +414,27 @@ public final class TestGatherersDemo {
         assertEquals("987654321", scans.get(0));
     }
 
+    @Test
+    public void testTryLimiting() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("tryLimiting");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final List<?> list = castToType(List.class, o);
+        final List<String> scans = listToTypedList(list, String.class);
+
+        assertNotNull(scans);
+        assertEquals(5, scans.size());
+
+        assertEquals("98765", scans.get(4));
+        assertEquals("987654", scans.get(3));
+        assertEquals("9876543", scans.get(2));
+        assertEquals("98765432", scans.get(1));
+        assertEquals("987654321", scans.get(0));
+    }
+
     /**
      * Return a stream of money.
      *

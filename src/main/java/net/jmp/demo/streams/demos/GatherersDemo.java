@@ -141,6 +141,7 @@ public final class GatherersDemo implements Demo {
 
             this.logger.info("PrefixScan: {}", this.prefixScan());
             this.logger.info("ReversePrefixScan: {}", this.reversePrefixScan());
+            this.logger.info("Limiting: {}", this.tryLimiting());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -832,6 +833,65 @@ public final class GatherersDemo implements Demo {
                         }
                     }
                 }
+        );
+    }
+
+    /**
+     * Demonstrate a limiting gatherer. This method also
+     * demonstrates using multiple gatherers in a single
+     * operation.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     * @since   0.12.0
+     */
+    private List<String> tryLimiting() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final Supplier<String> supplier = () -> "";
+        final BiFunction<String, Integer, String> function = (string, number) -> string + number;
+
+        final List<String> results = Stream.of(9, 8, 7, 6, 5, 4, 3, 2, 1)
+                .gather(this.reverseScan(supplier, function))
+                .gather(this.limiting(5))
+                .toList();
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(results));
+        }
+
+        return results;
+    }
+
+    /**
+     * A gatherer that limits the number of
+     * items processed to the specified value.
+     *
+     * @param   <T>     The type of element
+     * @param   limit   int
+     * @return          java.util.stream.Gatherer&lt;T, ?, R&gt;
+     */
+    private <T> Gatherer<T, ?, T> limiting(final int limit) {
+        class State {
+            /** The number of items processed so far. */
+            int count;
+        }
+
+        return Gatherer.ofSequential(
+                // The initializer
+                State::new,
+
+                // The integrator
+                Gatherer.Integrator.of((state, element, downstream) -> {
+                    state.count += 1;
+
+                    if (state.count > limit) {
+                        return false;
+                    } else {
+                        return downstream.push(element);
+                    }
+                })
         );
     }
 
