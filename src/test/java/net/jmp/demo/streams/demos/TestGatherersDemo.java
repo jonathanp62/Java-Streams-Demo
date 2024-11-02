@@ -415,9 +415,9 @@ public final class TestGatherersDemo {
     }
 
     @Test
-    public void testTryLimiting() throws Exception {
+    public void testTryLimitingAndRange() throws Exception {
         final var demo = new GatherersDemo();
-        final var method = GatherersDemo.class.getDeclaredMethod("tryLimiting");
+        final var method = GatherersDemo.class.getDeclaredMethod("tryLimitingAndRange");
 
         method.setAccessible(true);
 
@@ -426,13 +426,12 @@ public final class TestGatherersDemo {
         final List<String> scans = listToTypedList(list, String.class);
 
         assertNotNull(scans);
-        assertEquals(5, scans.size());
+        assertEquals(4, scans.size());
 
-        assertEquals("98765", scans.get(4));
-        assertEquals("987654", scans.get(3));
-        assertEquals("9876543", scans.get(2));
-        assertEquals("98765432", scans.get(1));
-        assertEquals("987654321", scans.get(0));
+        assertEquals("98765", scans.get(3));
+        assertEquals("987654", scans.get(2));
+        assertEquals("9876543", scans.get(1));
+        assertEquals("98765432", scans.get(0));
     }
 
     /**

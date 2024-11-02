@@ -141,7 +141,7 @@ public final class GatherersDemo implements Demo {
 
             this.logger.info("PrefixScan: {}", this.prefixScan());
             this.logger.info("ReversePrefixScan: {}", this.reversePrefixScan());
-            this.logger.info("Limiting: {}", this.tryLimiting());
+            this.logger.info("Limiting: {}", this.tryLimitingAndRange());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -844,7 +844,7 @@ public final class GatherersDemo implements Demo {
      * @return  java.util.List&lt;java.lang.String&gt;
      * @since   0.12.0
      */
-    private List<String> tryLimiting() {
+    private List<String> tryLimitingAndRange() {
         if (this.logger.isTraceEnabled()) {
             this.logger.trace(entry());
         }
@@ -853,8 +853,13 @@ public final class GatherersDemo implements Demo {
         final BiFunction<String, Integer, String> function = (string, number) -> string + number;
 
         final List<String> results = Stream.of(9, 8, 7, 6, 5, 4, 3, 2, 1)
-                .gather(this.reverseScan(supplier, function))
-                .gather(this.limiting(5))
+                .gather(this.reverseScan(supplier, function)
+                        .andThen(this.limiting(5))
+                        .andThen(this.range(1)))
+                // Is the same as:
+//                .gather(this.reverseScan(supplier, function))
+//                .gather(this.limiting(5))
+//                .gather(this.range(1))
                 .toList();
 
         if (this.logger.isTraceEnabled()) {
@@ -893,6 +898,54 @@ public final class GatherersDemo implements Demo {
                         return downstream.push(element);
                     }
                 })
+        );
+    }
+
+    /**
+     * A gatherer that returns the range of
+     * elements starting with the start index
+     * (zero based) and continuing to the
+     * end of the stream.
+     *
+     * @param   <T>     The type of element
+     * @param   start   int
+     * @return          java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @since           0.12.0
+     */
+    private <T> Gatherer<T, ?, T> range(final int start) {
+        class State {
+            /** The number of elements processed so far. */
+            int count;
+
+            /** A list of elements to push downstream. */
+            final List<T> elements = new ArrayList<>();
+        }
+
+        if (start < 0) {
+            throw new IllegalArgumentException("Start must be zero or greater");
+        }
+
+        return Gatherer.ofSequential(
+                // The initializer
+                State::new,
+
+                // The integrator
+                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                    if (state.count++ >= start) {
+                        state.elements.add(element);
+                    }
+
+                    return true;
+                }),
+
+                // The finisher
+                (state, downstream) -> {
+                    for (final T element : state.elements) {
+                        if (!downstream.isRejecting()) {
+                            downstream.push(element);
+                        }
+                    }
+                }
         );
     }
 
