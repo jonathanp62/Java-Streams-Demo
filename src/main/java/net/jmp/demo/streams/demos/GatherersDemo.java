@@ -142,6 +142,7 @@ public final class GatherersDemo implements Demo {
             this.logger.info("PrefixScan: {}", this.prefixScan());
             this.logger.info("ReversePrefixScan: {}", this.reversePrefixScan());
             this.logger.info("Limiting: {}", this.tryLimitingAndRange());
+            this.logger.info("Ranges: {}", this.tryRanges());
         }
 
         if (this.logger.isTraceEnabled()) {
@@ -855,7 +856,8 @@ public final class GatherersDemo implements Demo {
         final List<String> results = Stream.of(9, 8, 7, 6, 5, 4, 3, 2, 1)
                 .gather(this.reverseScan(supplier, function)
                         .andThen(this.limiting(5))
-                        .andThen(this.range(1)))
+                        .andThen(this.range(1))
+                )
                 // Is the same as:
 //                .gather(this.reverseScan(supplier, function))
 //                .gather(this.limiting(5))
@@ -934,6 +936,154 @@ public final class GatherersDemo implements Demo {
                     if (state.count++ >= start) {
                         state.elements.add(element);
                     }
+
+                    return true;
+                }),
+
+                // The finisher
+                (state, downstream) -> {
+                    for (final T element : state.elements) {
+                        if (!downstream.isRejecting()) {
+                            downstream.push(element);
+                        }
+                    }
+                }
+        );
+    }
+
+    /**
+     * Demonstrate open and closed ranges. This method also
+     * demonstrates using multiple gatherers in a single
+     * operation.
+     *
+     * @return  java.util.List&lt;java.lang.String&gt;
+     * @since   0.12.0
+     */
+    private List<String> tryRanges() {
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(entry());
+        }
+
+        final List<String> results = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
+                .map(i -> i + "a")
+                .gather(this.range(1, 7))
+                .gather(this.rangeClosed(2, 3))
+                .toList();
+
+        /*
+         * This code does not compile:
+            final List<String> results = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
+                    .map(i -> i + "a")
+                    .gather(this.range(1, 7)
+                        .andThen(this.rangeClosed(2, 3)
+                     )
+                    .toList();
+         */
+
+        if (this.logger.isTraceEnabled()) {
+            this.logger.trace(exitWith(results));
+        }
+
+        return results;
+    }
+
+    /**
+     * A gatherer that returns the range of
+     * elements starting with the start index
+     * (zero based) and continuing to the
+     * item specified by the end index but
+     * excluding that element.
+     *
+     * @param   <T>             The type of element
+     * @param   start           int
+     * @param   endExclusive    int
+     * @return                  java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @since                   0.12.0
+     */
+    private <T> Gatherer<T, ?, T> range(final int start, final int endExclusive) {
+        class State {
+            /** The number of elements processed so far. */
+            int count;
+
+            /** A list of elements to push downstream. */
+            final List<T> elements = new ArrayList<>();
+        }
+
+        if (start < 0) {
+            throw new IllegalArgumentException("Start must be zero or greater");
+        }
+
+        if (start > endExclusive) {
+            throw new IllegalArgumentException("Start must be less than end (exclusive)");
+        }
+
+        return Gatherer.ofSequential(
+                // The initializer
+                State::new,
+
+                // The integrator
+                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                    if (state.count >= start && state.count < endExclusive) {
+                        state.elements.add(element);
+                    }
+
+                    state.count = state.count + 1;
+
+                    return true;
+                }),
+
+                // The finisher
+                (state, downstream) -> {
+                    for (final T element : state.elements) {
+                        if (!downstream.isRejecting()) {
+                            downstream.push(element);
+                        }
+                    }
+                }
+        );
+    }
+
+    /**
+     * A gatherer that returns the range of
+     * elements starting with the start index
+     * (zero based) and continuing to the
+     * item specified by the end index and
+     * including that element.
+     *
+     * @param   <T>             The type of element
+     * @param   start           int
+     * @param   endInclusive    int
+     * @return                  java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @since                   0.12.0
+     */
+    private <T> Gatherer<T, ?, T> rangeClosed(final int start, final int endInclusive) {
+        class State {
+            /** The number of elements processed so far. */
+            int count;
+
+            /** A list of elements to push downstream. */
+            final List<T> elements = new ArrayList<>();
+        }
+
+        if (start < 0) {
+            throw new IllegalArgumentException("Start must be zero or greater");
+        }
+
+        if (start > endInclusive) {
+            throw new IllegalArgumentException("Start must be less than end (inclusive)");
+        }
+
+        return Gatherer.ofSequential(
+                // The initializer
+                State::new,
+
+                // The integrator
+                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                    if (state.count >= start && state.count <= endInclusive) {
+                        state.elements.add(element);
+                    }
+
+                    state.count = state.count + 1;
 
                     return true;
                 }),

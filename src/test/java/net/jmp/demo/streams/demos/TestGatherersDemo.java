@@ -434,6 +434,24 @@ public final class TestGatherersDemo {
         assertEquals("98765432", scans.get(0));
     }
 
+    @Test
+    public void testTryRanges() throws Exception {
+        final var demo = new GatherersDemo();
+        final var method = GatherersDemo.class.getDeclaredMethod("tryRanges");
+
+        method.setAccessible(true);
+
+        final Object o = method.invoke(demo);
+        final List<?> list = castToType(List.class, o);
+        final List<String> scans = listToTypedList(list, String.class);
+
+        assertNotNull(scans);
+        assertEquals(2, scans.size());
+
+        assertEquals("4a", scans.get(0));
+        assertEquals("5a", scans.get(1));
+    }
+
     /**
      * Return a stream of money.
      *
