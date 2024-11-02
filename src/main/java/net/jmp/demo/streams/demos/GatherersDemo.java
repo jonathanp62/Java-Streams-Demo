@@ -753,7 +753,7 @@ public final class GatherersDemo implements Demo {
             R currentState = supplier.get();
         }
 
-        return Gatherer.ofSequential(
+        return Gatherer.<T, State, R>ofSequential(
             // Initializer
             State::new,
 
@@ -811,7 +811,7 @@ public final class GatherersDemo implements Demo {
             R current = supplier.get();
         }
 
-        return Gatherer.ofSequential(
+        return Gatherer.<T, State, R>ofSequential(
                 // Initializer
                 State::new,
 
@@ -886,7 +886,7 @@ public final class GatherersDemo implements Demo {
             int count;
         }
 
-        return Gatherer.ofSequential(
+        return Gatherer.<T, State, T>ofSequential(
                 // The initializer
                 State::new,
 
@@ -927,7 +927,7 @@ public final class GatherersDemo implements Demo {
             throw new IllegalArgumentException("Start must be zero or greater");
         }
 
-        return Gatherer.ofSequential(
+        return Gatherer.<T, State, T>ofSequential(
                 // The initializer
                 State::new,
 
@@ -964,10 +964,16 @@ public final class GatherersDemo implements Demo {
             this.logger.trace(entry());
         }
 
+        final Gatherer<String, ?, String> gatherer1 = this.range(1, 7);
+        final Gatherer<String, ?, String> gatherer2 = this.rangeClosed(2, 3);
+        final Gatherer<String, ?, String> gatherers = gatherer1.andThen(gatherer2);
+
         final List<String> results = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
                 .map(i -> i + "a")
-                .gather(this.range(1, 7))
-                .gather(this.rangeClosed(2, 3))
+                .gather(gatherers)
+                // Is the same as:
+//                .gather(this.range(1, 7))
+//                .gather(this.rangeClosed(2, 3))
                 .toList();
 
         /*
@@ -1017,7 +1023,7 @@ public final class GatherersDemo implements Demo {
             throw new IllegalArgumentException("Start must be less than end (exclusive)");
         }
 
-        return Gatherer.ofSequential(
+        return Gatherer.<T, State, T>ofSequential(
                 // The initializer
                 State::new,
 
@@ -1073,7 +1079,7 @@ public final class GatherersDemo implements Demo {
             throw new IllegalArgumentException("Start must be less than end (inclusive)");
         }
 
-        return Gatherer.ofSequential(
+        return Gatherer.<T, State, T>ofSequential(
                 // The initializer
                 State::new,
 
