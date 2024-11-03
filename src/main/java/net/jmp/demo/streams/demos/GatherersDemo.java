@@ -64,6 +64,19 @@ public final class GatherersDemo implements Demo {
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /**
+     * The state used for range gatherers.
+     *
+     * @since   0.12.0
+     */
+    class RangeState<T> {
+        /** The number of elements processed so far. */
+        int count;
+
+        /** A list of elements that will be pushed downstream. */
+        final List<T> elements = new ArrayList<>();
+    }
+
+    /**
      * The default constructor.
      */
     public GatherersDemo() {
@@ -877,7 +890,7 @@ public final class GatherersDemo implements Demo {
      *
      * @param   <T>     The type of element
      * @param   limit   int
-     * @return          java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @return          java.util.stream.Gatherer&lt;T, ?, T&gt;
      * @since           0.12.0
      */
     private <T> Gatherer<T, ?, T> limiting(final int limit) {
@@ -911,25 +924,17 @@ public final class GatherersDemo implements Demo {
      *
      * @param   <T>     The type of element
      * @param   start   int
-     * @return          java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @return          java.util.stream.Gatherer&lt;T, net.jmp.demo.streams.demos.GatherersDemo.RangeState&lt;T&gt;, T&gt;
      * @since           0.12.0
      */
-    private <T> Gatherer<T, ?, T> range(final int start) {
-        class State {
-            /** The number of elements processed so far. */
-            int count;
-
-            /** A list of elements to push downstream. */
-            final List<T> elements = new ArrayList<>();
-        }
-
+    private <T> Gatherer<T, RangeState<T>, T> range(final int start) {
         if (start < 0) {
             throw new IllegalArgumentException("Start must be zero or greater");
         }
 
-        return Gatherer.<T, State, T>ofSequential(
+        return Gatherer.<T, RangeState<T>, T>ofSequential(
                 // The initializer
-                State::new,
+                RangeState::new,
 
                 // The integrator
                 Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
@@ -1003,18 +1008,10 @@ public final class GatherersDemo implements Demo {
      * @param   <T>             The type of element
      * @param   start           int
      * @param   endExclusive    int
-     * @return                  java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @return                  java.util.stream.Gatherer&lt;T, net.jmp.demo.streams.demos.GatherersDemo.RangeState&lt;T&gt;, T&gt;
      * @since                   0.12.0
      */
-    private <T> Gatherer<T, ?, T> range(final int start, final int endExclusive) {
-        class State {
-            /** The number of elements processed so far. */
-            int count;
-
-            /** A list of elements to push downstream. */
-            final List<T> elements = new ArrayList<>();
-        }
-
+    private <T> Gatherer<T, RangeState<T>, T> range(final int start, final int endExclusive) {
         if (start < 0) {
             throw new IllegalArgumentException("Start must be zero or greater");
         }
@@ -1023,9 +1020,9 @@ public final class GatherersDemo implements Demo {
             throw new IllegalArgumentException("Start must be less than end (exclusive)");
         }
 
-        return Gatherer.<T, State, T>ofSequential(
+        return Gatherer.<T, RangeState<T>, T>ofSequential(
                 // The initializer
-                State::new,
+                RangeState::new,
 
                 // The integrator
                 Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
@@ -1059,18 +1056,10 @@ public final class GatherersDemo implements Demo {
      * @param   <T>             The type of element
      * @param   start           int
      * @param   endInclusive    int
-     * @return                  java.util.stream.Gatherer&lt;T, ?, R&gt;
+     * @return                  java.util.stream.Gatherer&lt;T, net.jmp.demo.streams.demos.GatherersDemo.RangeState&lt;T&gt;, T&gt;
      * @since                   0.12.0
      */
-    private <T> Gatherer<T, ?, T> rangeClosed(final int start, final int endInclusive) {
-        class State {
-            /** The number of elements processed so far. */
-            int count;
-
-            /** A list of elements to push downstream. */
-            final List<T> elements = new ArrayList<>();
-        }
-
+    private <T> Gatherer<T, RangeState<T>, T> rangeClosed(final int start, final int endInclusive) {
         if (start < 0) {
             throw new IllegalArgumentException("Start must be zero or greater");
         }
@@ -1079,9 +1068,9 @@ public final class GatherersDemo implements Demo {
             throw new IllegalArgumentException("Start must be less than end (inclusive)");
         }
 
-        return Gatherer.<T, State, T>ofSequential(
+        return Gatherer.<T, RangeState<T>, T>ofSequential(
                 // The initializer
-                State::new,
+                RangeState::new,
 
                 // The integrator
                 Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
