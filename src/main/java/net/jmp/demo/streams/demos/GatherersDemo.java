@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 
 import java.util.*;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -68,7 +69,7 @@ public final class GatherersDemo implements Demo {
      *
      * @since   0.12.0
      */
-    class RangeState<T> {
+    private static class RangeState<T> {
         /** The number of elements processed so far. */
         int count;
 
@@ -937,7 +938,7 @@ public final class GatherersDemo implements Demo {
                 RangeState::new,
 
                 // The integrator
-                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                Gatherer.Integrator.<RangeState<T>, T, T>ofGreedy((state, element, downstream) -> {
                     if (state.count++ >= start) {
                         state.elements.add(element);
                     }
@@ -946,14 +947,25 @@ public final class GatherersDemo implements Demo {
                 }),
 
                 // The finisher
-                (state, downstream) -> {
-                    for (final T element : state.elements) {
-                        if (!downstream.isRejecting()) {
-                            downstream.push(element);
-                        }
-                    }
-                }
+                this.getRangeFinisher()
         );
+    }
+
+    /**
+     * A common range finisher function.
+     *
+     * @param   <T> The type of element
+     * @return      java.util.function,BiConsumer&lt;net.jmp.demo.streams.demos.GatherersDemo.RangeState&lt;T&gt;, java,util.stream.Gatherer.Downstream&lt;? super T&gt;&gt;
+     * @since       0.12.0
+     */
+    private <T> BiConsumer<RangeState<T>, Gatherer.Downstream<? super T>> getRangeFinisher() {
+        return (state, downstream) -> {
+            for (final T element : state.elements) {
+                if (!downstream.isRejecting()) {
+                    downstream.push(element);
+                }
+            }
+        };
     }
 
     /**
@@ -969,8 +981,8 @@ public final class GatherersDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Gatherer<String, ?, String> gatherer1 = this.range(1, 7);
-        final Gatherer<String, ?, String> gatherer2 = this.rangeClosed(2, 3);
+        final Gatherer<String, RangeState<String>, String> gatherer1 = this.range(1, 7);
+        final Gatherer<String, RangeState<String>, String> gatherer2 = this.rangeClosed(2, 3);
         final Gatherer<String, ?, String> gatherers = gatherer1.andThen(gatherer2);
 
         final List<String> results = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
@@ -1036,13 +1048,7 @@ public final class GatherersDemo implements Demo {
                 }),
 
                 // The finisher
-                (state, downstream) -> {
-                    for (final T element : state.elements) {
-                        if (!downstream.isRejecting()) {
-                            downstream.push(element);
-                        }
-                    }
-                }
+                this.getRangeFinisher()
         );
     }
 
@@ -1084,13 +1090,7 @@ public final class GatherersDemo implements Demo {
                 }),
 
                 // The finisher
-                (state, downstream) -> {
-                    for (final T element : state.elements) {
-                        if (!downstream.isRejecting()) {
-                            downstream.push(element);
-                        }
-                    }
-                }
+                this.getRangeFinisher()
         );
     }
 
