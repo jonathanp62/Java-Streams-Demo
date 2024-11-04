@@ -122,5 +122,5 @@ Gradle JavaExec Tasks
 |execute                |No arguments
 |=======================
 
-Current version: 0.12.0.
+Current version: 0.13.0.
 ~~~~~~~~~~~~~~~~~~~~~~~~
