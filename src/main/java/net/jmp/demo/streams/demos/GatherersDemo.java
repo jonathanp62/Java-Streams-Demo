@@ -1,13 +1,14 @@
 package net.jmp.demo.streams.demos;
 
 /*
+ * (#)GatherersDemo.java    0.13.0  11/04/2024
  * (#)GatherersDemo.java    0.12.0  10/28/2024
  * (#)GatherersDemo.java    0.11.0  10/26/2024
  * (#)GatherersDemo.java    0.10.0  09/24/2024
  * (#)GatherersDemo.java    0.7.0   09/05/2024
  *
  * @author   Jonathan Parker
- * @version  0.12.0
+ * @version  0.13.0
  * @since    0.7.0
  *
  * MIT License
@@ -67,9 +68,17 @@ public final class GatherersDemo implements Demo {
     /**
      * The state used for range gatherers.
      *
-     * @since   0.12.0
+     * @param   <T> The type of element
+     * @since       0.12.0
      */
     private static class RangeState<T> {
+        /**
+         * The default constructor.
+         */
+        private RangeState() {
+            super();
+        }
+
         /** The number of elements processed so far. */
         int count;
 
@@ -952,6 +961,41 @@ public final class GatherersDemo implements Demo {
     }
 
     /**
+     * Return an integrator for the open
+     * and closed type of range gatherers.
+     *
+     * @param   <T>     The type of element
+     * @param   start   int
+     * @param   end     int
+     * @param   isOpen  boolean
+     * @return          java.util.stream.Gatherer.Integrator&lt;net.jmp.demo.streams.demos.GatherersDemo.RangeState&lt;T&gt;, T, T&gt;
+     * @since           0.13.0
+     */
+    private <T> Gatherer.Integrator<RangeState<T>, T, T> getRangeIntegrator(final int start, final int end, final boolean isOpen) {
+        if (isOpen) {
+            return Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                if (state.count >= start && state.count < end) {
+                    state.elements.add(element);
+                }
+
+                state.count = state.count + 1;
+
+                return true;
+            });
+        } else {
+            return Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
+                if (state.count >= start && state.count <= end) {
+                    state.elements.add(element);
+                }
+
+                state.count = state.count + 1;
+
+                return true;
+            });
+        }
+    }
+
+    /**
      * A common range finisher function.
      *
      * @param   <T> The type of element
@@ -981,7 +1025,7 @@ public final class GatherersDemo implements Demo {
             this.logger.trace(entry());
         }
 
-        final Gatherer<String, RangeState<String>, String> gatherer1 = this.range(1, 7);
+        final Gatherer<String, RangeState<String>, String> gatherer1 = this.rangeOpen(1, 7);
         final Gatherer<String, RangeState<String>, String> gatherer2 = this.rangeClosed(2, 3);
         final Gatherer<String, ?, String> gatherers = gatherer1.andThen(gatherer2);
 
@@ -989,7 +1033,7 @@ public final class GatherersDemo implements Demo {
                 .map(i -> i + "a")
                 .gather(gatherers)
                 // Is the same as:
-//                .gather(this.range(1, 7))
+//                .gather(this.rangeOpen(1, 7))
 //                .gather(this.rangeClosed(2, 3))
                 .toList();
 
@@ -997,7 +1041,7 @@ public final class GatherersDemo implements Demo {
          * This code does not compile:
             final List<String> results = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9)
                     .map(i -> i + "a")
-                    .gather(this.range(1, 7)
+                    .gather(this.rangeOpen(1, 7)
                         .andThen(this.rangeClosed(2, 3)
                      )
                     .toList();
@@ -1023,7 +1067,7 @@ public final class GatherersDemo implements Demo {
      * @return                  java.util.stream.Gatherer&lt;T, net.jmp.demo.streams.demos.GatherersDemo.RangeState&lt;T&gt;, T&gt;
      * @since                   0.12.0
      */
-    private <T> Gatherer<T, RangeState<T>, T> range(final int start, final int endExclusive) {
+    private <T> Gatherer<T, RangeState<T>, T> rangeOpen(final int start, final int endExclusive) {
         if (start < 0) {
             throw new IllegalArgumentException("Start must be zero or greater");
         }
@@ -1037,15 +1081,7 @@ public final class GatherersDemo implements Demo {
                 RangeState::new,
 
                 // The integrator
-                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
-                    if (state.count >= start && state.count < endExclusive) {
-                        state.elements.add(element);
-                    }
-
-                    state.count = state.count + 1;
-
-                    return true;
-                }),
+                this.getRangeIntegrator(start, endExclusive, true),
 
                 // The finisher
                 this.getRangeFinisher()
@@ -1079,15 +1115,7 @@ public final class GatherersDemo implements Demo {
                 RangeState::new,
 
                 // The integrator
-                Gatherer.Integrator.ofGreedy((state, element, downstream) -> {
-                    if (state.count >= start && state.count <= endInclusive) {
-                        state.elements.add(element);
-                    }
-
-                    state.count = state.count + 1;
-
-                    return true;
-                }),
+                this.getRangeIntegrator(start, endInclusive, false),
 
                 // The finisher
                 this.getRangeFinisher()
