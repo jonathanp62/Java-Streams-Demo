@@ -6,7 +6,7 @@ A program that demonstrates various techniques using Java streams. This program 
 Logging
 ~~~~~~~
 
-Logging is achieved using the SLF4J facade over Logback. The logging configuration is supplied in *config/logback.xml*. It can be overriden with a java system property, i.e. *-Dlogback.configurationFile=config/logback.xml*
+Logging is achieved using the SLF4J facade over Logback. The logging configuration is supplied in *config/logback.xml*. It can be overriden with a Java system property, i.e. *-Dlogback.configurationFile=config/logback.xml*
 
 == Demonstrated Concepts
 
